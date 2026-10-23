@@ -3,7 +3,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ZurePicks | Free Football Predictions & Betting Tips</title>
 <meta name="description" content="Free football predictions with win probability, odds and results for leagues worldwide. See which picks won. No sign-up.">
-<meta name="theme-color" content="#06120d">
+<meta name="theme-color" content="#06120d"><link rel="canonical" href="https://sidolly20.github.io/zurepick-site/"><meta property="og:title" content="ZurePicks | Free Football Predictions &amp; Betting Tips"><meta property="og:description" content="Free football predictions with win probability, odds and results. See which picks won."><meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a7d4b'/%3E%3Cpath d='M9 10h14l-10 12h10' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{--bg:#f2f6f3;--card:#fff;--ink:#0b1a14;--mut:#5d6f66;--line:#dfe7e1;--g:#0a7d4b;--g2:#16c172;--gold:#f5b800;--no:#e5484d;--okt:#e3f6ec;--not:#fdeaea;color-scheme:light dark}
@@ -48,8 +48,9 @@ select.chip{appearance:none;padding-right:.9rem}
 .empty{padding:2.2rem 1rem;text-align:center;color:var(--mut);background:var(--card);border:1px dashed var(--line);border-radius:18px}
 footer{margin:2rem 0 3rem;color:var(--mut);font-size:.8rem}footer b{color:var(--ink)}footer a{color:var(--g)}
 @media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.mid{grid-template-columns:1fr auto;grid-template-areas:"t b" "p p"}.tm{grid-area:t}.bd{grid-area:b}.pk{grid-area:p}}
+.nv{display:flex;gap:1rem;font-size:.85rem;font-weight:600}.nv a{color:var(--mut);text-decoration:none;white-space:nowrap}.fl a{margin-right:.8rem;white-space:nowrap;line-height:2}.seo{margin:2rem 0 0;color:var(--mut)}.seo h2{color:var(--ink);font-size:1.1rem;margin:0 0 .4rem}@media(max-width:640px){.nv{display:none}}
 </style></head><body>
-<header><div class="w"><div class="logo"><i>Z</i>ZurePicks</div><button class="chip" id="fav" aria-pressed="false">☆ Saved <span id="fc">0</span></button></div></header>
+<header><div class="w"><div class="logo"><i>Z</i>ZurePicks</div><nav class="nv"><a href="track-record.html">Track record</a><a href="how-it-works.html">How it works</a><a href="tools.html">Tools</a></nav><button class="chip" id="fav" aria-pressed="false">☆ Saved <span id="fc">0</span></button></div></header>
 <main class="w">
 <section class="hero"><h1>Football predictions, <em>checked every day</em></h1><p class="sub">Win probability and odds for each match. When games finish you can see right away whether the pick won. Free, no sign-up.</p>
 <div class="stats"><div class="st"><b id="s1">0</b><span>Predictions</span></div><div class="st w"><b id="s2">0</b><span>Won</span></div><div class="st l"><b id="s3">0</b><span>Lost</span></div><div class="st"><b id="s4">–</b><span>Win rate</span></div></div></section>
@@ -59,15 +60,16 @@ footer{margin:2rem 0 3rem;color:var(--mut);font-size:.8rem}footer b{color:var(--
 <div class="row" id="mk"></div>
 <div class="row"><select class="chip" id="lg" aria-label="League"></select><button class="chip" id="srt" aria-pressed="false">Highest confidence first</button><button class="chip" id="nop" aria-pressed="false">Show matches without a pick</button></div>
 <div id="list"></div>
-<footer><p><b>18+ only.</b> Percentages are worked out from bookmaker odds. They are estimates, not guarantees, and a 70% pick still loses about three times in ten. Only stake what you can afford to lose, and check that betting is legal where you live. Free help: <a href="https://www.begambleaware.org">BeGambleAware.org</a>.</p><p>© 2026 ZurePicks</p></footer>
+<section class="seo"><h2>Free football predictions today</h2><p>ZurePicks turns bookmaker odds into a clear chance for every match: result, double chance, over 1.5 and over 2.5 goals, and both teams to score. Each pick is saved before kick-off and settled when the match ends, so the <a href="track-record.html">track record</a> shows the real wins and losses.</p></section>
+<footer><p class="fl"><a href="football-predictions-today.html">Predictions today</a><a href="football-predictions-tomorrow.html">Tomorrow</a><a href="over-2-5-goals-predictions.html">Over 2.5 goals</a><a href="over-1-5-goals-predictions.html">Over 1.5 goals</a><a href="btts-predictions.html">Both teams to score</a><a href="double-chance-predictions.html">Double chance</a><a href="premier-league-predictions.html">Premier League</a><a href="la-liga-predictions.html">La Liga</a><a href="serie-a-predictions.html">Serie A</a><a href="bundesliga-predictions.html">Bundesliga</a><a href="ligue-1-predictions.html">Ligue 1</a><a href="champions-league-predictions.html">Champions League</a><a href="track-record.html">Track record</a><a href="how-it-works.html">How it works</a><a href="responsible-gambling.html">Responsible gambling</a><a href="tools.html">Odds tools</a></p><p><b>18+ only.</b> Percentages are worked out from bookmaker odds. They are estimates, not guarantees, and a 70% pick still loses about three times in ten. Only stake what you can afford to lose, and check that betting is legal where you live. Free help: <a href="https://www.begambleaware.org">BeGambleAware.org</a>.</p><p>© 2026 ZurePicks</p></footer>
 </main>
 <script>
 const TZ='Africa/Lagos',$=(s)=>document.querySelector(s),esc=(v)=>String(v??'').replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dstr=(o)=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ}).format(new Date(Date.now()+o*864e5)),hm=(i)=>new Date(i).toLocaleTimeString('en-GB',{timeZone:TZ,hour:'2-digit',minute:'2-digit'});
 const LIVE=['1H','HT','2H','ET','BT','P','LIVE','INT'],DONE=['FT','AET','PEN'];
-const MK={o:{l:'1X2',n:['Home win','Draw','Away win'],ev:(i,h,a)=>i==0?h>a:i==1?h==a:a>h},dc:{l:'Double chance',n:['Home or draw','Home or away','Draw or away'],ev:(i,h,a)=>i==0?h>=a:i==1?h!=a:a>=h},ou:{l:'Over/Under 2.5',n:['Over 2.5 goals','Under 2.5 goals'],ev:(i,h,a)=>i==0?h+a>2.5:h+a<2.5},bt:{l:'Both teams score',n:['Both teams score','Not both score'],ev:(i,h,a)=>i==0?h>0&&a>0:!(h>0&&a>0)}};
+const MK={o:{l:'1X2',n:['Home win','Draw','Away win'],ev:(i,h,a)=>i==0?h>a:i==1?h==a:a>h},dc:{l:'Double chance',n:['Home or draw','Home or away','Draw or away'],ev:(i,h,a)=>i==0?h>=a:i==1?h!=a:a>=h},ou:{l:'Over/Under 2.5',n:['Over 2.5 goals','Under 2.5 goals'],ev:(i,h,a)=>i==0?h+a>2.5:h+a<2.5},o15:{l:'Over/Under 1.5',n:['Over 1.5 goals','Under 1.5 goals'],ev:(i,h,a)=>i==0?h+a>1.5:h+a<1.5},bt:{l:'Both teams score',n:['Both teams score','Not both score'],ev:(i,h,a)=>i==0?h>0&&a>0:!(h>0&&a>0)}};
 const norm=(od)=>{const s=od.reduce((t,x)=>t+1/x,0);return od.map((x)=>1/x/s)};
-function pick(m,k){if(k=='dc'){if(!m.o)return null;const p=norm(m.o),q=[p[0]+p[1],p[0]+p[2],p[1]+p[2]],i=q.indexOf(Math.max(...q));return{i,c:Math.round(q[i]*100)}}
+function pick(m,k){if(k=='dc'){if(!m.o||!m.dc)return null;const p=norm(m.o),q=[p[0]+p[1],p[0]+p[2],p[1]+p[2]],i=q.indexOf(Math.max(...q));return{i,c:Math.round(q[i]*100)}}
   const od=m[k];if(!od)return null;const p=norm(od),i=p.indexOf(Math.max(...p));return{i,c:Math.round(p[i]*100)}}
 const status=(m)=>LIVE.includes(m.st)?'live':DONE.includes(m.st)?'done':['NS','TBD'].includes(m.st)?'up':'other';
 const result=(m,p)=>p&&status(m)=='done'&&m.sc[0]!=null?(MK[state.mk].ev(p.i,m.sc[0],m.sc[1])?'won':'lost'):null;

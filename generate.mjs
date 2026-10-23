@@ -21,7 +21,7 @@ async function api(path) {
   return j;
 }
 
-const WANT = { o: ['Match Winner', ['Home', 'Draw', 'Away']], dc: ['Double Chance', ['Home/Draw', 'Home/Away', 'Draw/Away']], ou: ['Goals Over/Under', ['Over 2.5', 'Under 2.5']], bt: ['Both Teams Score', ['Yes', 'No']] };
+const WANT = { o: ['Match Winner', ['Home', 'Draw', 'Away']], dc: ['Double Chance', ['Home/Draw', 'Home/Away', 'Draw/Away']], ou: ['Goals Over/Under', ['Over 2.5', 'Under 2.5']], o15: ['Goals Over/Under', ['Over 1.5', 'Under 1.5']], bt: ['Both Teams Score', ['Yes', 'No']] };
 function oddsOf(item) {
   const out = {};
   for (const bk of item.bookmakers || []) for (const bet of bk.bets || []) for (const [k, [name, vals]] of Object.entries(WANT)) {
@@ -58,7 +58,7 @@ async function fetchOdds(d, extra, start = 1) {
   for (let page = start; page < 80; page++) {
     const r = await api(`/odds?date=${d}&page=${page}&timezone=${encodeURIComponent(TZ)}${BK ? '&bookmaker=' + BK : ''}${extra}`);
     if (!r) return { page: page - 1, done: false };
-    for (const item of r.response || []) { const m = byId.get(item.fixture.id); if (m) Object.assign(m, oddsOf(item)); }
+    for (const item of r.response || []) { const m = byId.get(item.fixture.id); if (m && m.st === 'NS') Object.assign(m, oddsOf(item)); }
     if (!r.paging || r.paging.current >= r.paging.total) return { page, done: true };
   }
   return { page: 79, done: false };
@@ -82,5 +82,5 @@ for (const [d, v] of Object.entries(days)) {
   fs.writeFileSync(file(d), JSON.stringify({ date: d, updated: new Date().toISOString(), od: v.od, op: v.op, matches: v.matches }));
   console.log(d, v.matches.length, 'matches,', v.matches.filter((m) => m.o).length, 'with odds');
 }
-for (const f of fs.readdirSync('data')) if (f.slice(0, 10) < day(-10)) fs.unlinkSync('data/' + f);
+for (const f of fs.readdirSync('data')) if (/^\d{4}-\d\d-\d\d\.json$/.test(f) && f.slice(0, 10) < day(-10)) fs.unlinkSync('data/' + f);
 console.log('API calls used this run:', calls);

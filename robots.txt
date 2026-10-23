@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sidolly20.github.io/zurepick-site/sitemap.xml
