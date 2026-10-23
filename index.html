@@ -1,99 +1,118 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ZurePicks | Free Football Predictions, Odds & Results</title>
-<meta name="description" content="Free football predictions with odds and probability for leagues worldwide. Updated daily, no sign-up.">
-<meta name="theme-color" content="#0a7d4b">
+<title>ZurePicks | Free Football Predictions & Betting Tips</title>
+<meta name="description" content="Free football predictions with win probability, odds and results for leagues worldwide. See which picks won. No sign-up.">
+<meta name="theme-color" content="#06120d">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a7d4b'/%3E%3Cpath d='M9 10h14l-10 12h10' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
-:root{--bg:#f3f6f2;--card:#fff;--ink:#0e1d2b;--mut:#5a6b78;--line:#dbe3dc;--g:#0a7d4b;--gt:#e1f3e8;--gold:#ffc400;--ok:#12924f;--no:#d63a3a;--r:16px;color-scheme:light dark}
-@media(prefers-color-scheme:dark){:root{--bg:#0a1511;--card:#102019;--ink:#e9f2ed;--mut:#92a89c;--line:#223830;--g:#27b872;--gt:#12301f;--ok:#3bc67f;--no:#f06a6a}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
-.w{width:min(1000px,100% - 1.5rem);margin:auto}
-header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+:root{--bg:#f2f6f3;--card:#fff;--ink:#0b1a14;--mut:#5d6f66;--line:#dfe7e1;--g:#0a7d4b;--g2:#16c172;--gold:#f5b800;--no:#e5484d;--okt:#e3f6ec;--not:#fdeaea;color-scheme:light dark}
+@media(prefers-color-scheme:dark){:root{--bg:#06110c;--card:#0d1c15;--ink:#eaf5ee;--mut:#8da598;--line:#1c3126;--g:#1fd186;--g2:#18a86b;--gold:#ffc933;--no:#ff6a70;--okt:#0f3322;--not:#3a1519}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(900px 400px at 85% -10%,color-mix(in srgb,var(--g) 22%,transparent),transparent 60%),radial-gradient(700px 500px at -10% 30%,color-mix(in srgb,var(--gold) 9%,transparent),transparent 60%)}
+.w{width:min(980px,100% - 1.4rem);margin:auto}
+header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 header .w{display:flex;align-items:center;gap:.6rem;height:58px}
-.logo{font:800 1.25rem system-ui;letter-spacing:-.03em;display:flex;align-items:center;gap:.5rem}
-.logo i{width:30px;height:30px;border-radius:9px;background:var(--g);color:#fff;display:grid;place-items:center;font-style:normal;font-size:.95rem}
-.sp{flex:1}
-h1{font-size:clamp(1.6rem,4.5vw,2.4rem);letter-spacing:-.03em;line-height:1.1;margin:1.4rem 0 .4rem}
-.sub{color:var(--mut);margin:0 0 1rem;max-width:62ch}
-.row{display:flex;gap:.45rem;overflow-x:auto;padding:.2rem 0 .6rem;scrollbar-width:none}.row::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:.45rem .9rem;font:600 .86rem inherit;font-family:inherit;cursor:pointer;white-space:nowrap}
+.logo{font:800 1.25rem system-ui;letter-spacing:-.03em;display:flex;align-items:center;gap:.5rem;flex:1}
+.logo i{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--g2),var(--g));color:#fff;display:grid;place-items:center;font-style:normal;font-size:.95rem}
+.hero{margin:1.1rem 0;padding:1.4rem;border-radius:24px;border:1px solid var(--line);background:linear-gradient(135deg,color-mix(in srgb,var(--g) 14%,var(--card)),var(--card));box-shadow:0 20px 50px -30px #000}
+h1{font-size:clamp(1.6rem,4.8vw,2.5rem);letter-spacing:-.035em;line-height:1.08;margin:0 0 .35rem}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--g),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);margin:0 0 1rem;max-width:60ch}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}
+.st{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:.7rem .8rem}.st b{display:block;font-size:1.6rem;letter-spacing:-.03em;line-height:1.1}.st span{font-size:.74rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.st.w b{color:var(--g)}.st.l b{color:var(--no)}
+.row{display:flex;gap:.45rem;overflow-x:auto;padding:.15rem 0 .55rem;scrollbar-width:none;align-items:center}.row::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:.45rem .9rem;font:600 .85rem system-ui;cursor:pointer;white-space:nowrap}
 .chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.day{text-align:center;line-height:1.15;padding:.4rem .85rem}.day small{display:block;font-weight:500;opacity:.7;font-size:.72rem}
-.pop{display:flex;gap:.6rem;overflow-x:auto;padding-bottom:.7rem;scrollbar-width:none}
-.pc{flex:none;width:210px;background:linear-gradient(135deg,#06402a,#0a7d4b);color:#f2fff8;border-radius:var(--r);padding:.8rem .9rem}
-.pc b{display:block;font-size:.92rem}.pc span{font-size:.78rem;opacity:.8}.pc em{font-style:normal;display:flex;justify-content:space-between;margin-top:.5rem;font-weight:700}.pc em u{text-decoration:none;color:var(--gold)}
-.sum{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;align-items:center;margin:.2rem 0 .8rem;color:var(--mut);font-size:.88rem}.sum b{color:var(--ink)}
-.lg{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:.8rem;overflow:hidden}
-.lg h2{display:flex;align-items:center;gap:.5rem;margin:0;padding:.6rem .9rem;font-size:.85rem;background:color-mix(in srgb,var(--g) 8%,var(--card));border-bottom:1px solid var(--line)}
-.lg h2 img{width:20px;height:20px;object-fit:contain}.lg h2 span{color:var(--mut);font-weight:500}
-.m{display:grid;grid-template-columns:26px 54px 1fr auto auto;align-items:center;gap:.5rem;padding:.6rem .9rem;border-top:1px solid var(--line)}.m:first-of-type{border-top:0}
-.star{background:none;border:0;font-size:1.15rem;cursor:pointer;color:var(--mut);padding:0}.star[aria-pressed=true]{color:var(--gold)}
-.t{font-size:.8rem;color:var(--mut);text-align:center}.t.live{color:var(--no);font-weight:700}
-.tm b{display:block;font-weight:600}.tm span{color:var(--ink)}
-.od{display:flex;gap:.3rem}.od i{font-style:normal;min-width:46px;text-align:center;padding:.3rem .2rem;border-radius:9px;background:var(--bg);font-size:.82rem;font-weight:600}.od i.p{background:var(--g);color:#fff}.od i small{display:block;font-size:.62rem;opacity:.7;font-weight:500}
-.rs{text-align:right;min-width:78px;font-size:.84rem}.rs b{display:block}.rs .ok{color:var(--ok);font-weight:800}.rs .no{color:var(--no);font-weight:800}.cf{color:var(--mut);font-size:.76rem}
-.empty{padding:2rem 1rem;text-align:center;color:var(--mut);background:var(--card);border:1px dashed var(--line);border-radius:var(--r)}
-footer{margin:2rem 0 3rem;color:var(--mut);font-size:.82rem}footer b{color:var(--ink)}
-@media(max-width:620px){.m{grid-template-columns:22px 1fr auto;grid-template-areas:"s tm rs" "s od od"}.m .star{grid-area:s}.m .t{display:none}.m .tm{grid-area:tm}.m .od{grid-area:od}.m .rs{grid-area:rs}.od i{flex:1}}
+.chip small{display:block;font-weight:500;opacity:.65;font-size:.7rem}.day{text-align:center;line-height:1.15}
+select.chip{appearance:none;padding-right:.9rem}
+.pop{display:flex;gap:.7rem;overflow-x:auto;padding:.1rem 0 .8rem;scrollbar-width:none}
+.pc{flex:none;width:230px;display:flex;gap:.7rem;align-items:center;background:linear-gradient(135deg,#05301f,#0a7d4b);color:#f2fff8;border-radius:18px;padding:.8rem .9rem;box-shadow:0 12px 30px -18px #000}
+.pc b{display:block;font-size:.9rem;line-height:1.25}.pc span{font-size:.74rem;opacity:.8}.pc p{margin:.25rem 0 0;font-weight:700;font-size:.82rem;color:var(--gold)}
+.ring{flex:none;width:54px;height:54px;border-radius:50%;background:conic-gradient(var(--gold) calc(var(--p)*1%),#ffffff30 0);display:grid;place-items:center;font-weight:800;font-size:.85rem;position:relative}.ring:after{content:"";position:absolute;inset:5px;border-radius:50%;background:#06301f;z-index:0}.ring u{text-decoration:none;position:relative;z-index:1}
+.lgh{margin:1rem 0 .5rem;font-size:.82rem;color:var(--mut);display:flex;align-items:center;gap:.5rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700}.lgh img{width:20px;height:20px;object-fit:contain}
+.m{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:18px;padding:.8rem .95rem;margin-bottom:.6rem}
+.m.won{border-left-color:var(--g);background:linear-gradient(90deg,var(--okt),var(--card) 55%)}.m.lost{border-left-color:var(--no);background:linear-gradient(90deg,var(--not),var(--card) 55%)}
+.top{display:flex;justify-content:space-between;font-size:.76rem;color:var(--mut);margin-bottom:.45rem}.live{color:var(--no);font-weight:800}.live:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--no);margin-right:5px;animation:p 1.4s infinite}@keyframes p{50%{opacity:.25}}
+.mid{display:grid;grid-template-columns:1fr minmax(170px,230px) auto;gap:.9rem;align-items:center}
+.tm b{display:block;font-weight:650;font-size:1rem}
+.pl{font-weight:800;font-size:1.02rem;letter-spacing:-.01em}.pl small{font-weight:600;color:var(--mut);font-size:.78rem;margin-left:.3rem}
+.bar{height:8px;border-radius:9px;background:var(--line);margin:.35rem 0 .2rem;overflow:hidden}.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--g2),var(--g))}.bar i.hi{background:linear-gradient(90deg,var(--gold),#ff9d00)}
+.pcn{font-size:.78rem;color:var(--mut)}.pcn b{color:var(--ink)}
+.bd{min-width:86px;text-align:center;border-radius:12px;padding:.45rem .6rem;font-weight:800;font-size:.8rem;letter-spacing:.03em;background:var(--bg);color:var(--mut);border:1px solid var(--line)}
+.bd.won{background:var(--g);color:#04170f;border-color:var(--g)}.bd.lost{background:var(--no);color:#fff;border-color:var(--no)}.bd.lv{background:transparent;color:var(--no);border-color:var(--no)}
+.bd big{display:block;font-size:1.05rem}
+.bot{display:flex;align-items:center;gap:.4rem;margin-top:.55rem;flex-wrap:wrap}.bot i{font-style:normal;font-size:.74rem;color:var(--mut);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:.1rem .45rem}.bot i.p{border-color:var(--g);color:var(--ink);font-weight:700}
+.bot .sc{margin-left:auto;font-size:.82rem;font-weight:700}.star{background:none;border:0;font-size:1.2rem;cursor:pointer;color:var(--mut);padding:0 .2rem}.star[aria-pressed=true]{color:var(--gold)}
+.empty{padding:2.2rem 1rem;text-align:center;color:var(--mut);background:var(--card);border:1px dashed var(--line);border-radius:18px}
+footer{margin:2rem 0 3rem;color:var(--mut);font-size:.8rem}footer b{color:var(--ink)}footer a{color:var(--g)}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.mid{grid-template-columns:1fr auto;grid-template-areas:"t b" "p p"}.tm{grid-area:t}.bd{grid-area:b}.pk{grid-area:p}}
 </style></head><body>
-<header><div class="w"><div class="logo"><i>Z</i>ZurePicks</div><div class="sp"></div><button class="chip" id="fav" aria-pressed="false">☆ My selection <span id="fc">0</span></button></div></header>
+<header><div class="w"><div class="logo"><i>Z</i>ZurePicks</div><button class="chip" id="fav" aria-pressed="false">☆ Saved <span id="fc">0</span></button></div></header>
 <main class="w">
-<h1>Free football predictions</h1>
-<p class="sub">Odds and win probability for today's matches across leagues worldwide. No sign-up, no payment.</p>
-<div class="row" id="days" aria-label="Choose a day"></div>
-<div class="pop" id="pop" aria-label="Most likely outcomes"></div>
+<section class="hero"><h1>Football predictions, <em>checked every day</em></h1><p class="sub">Win probability and odds for each match. When games finish you can see right away whether the pick won. Free, no sign-up.</p>
+<div class="stats"><div class="st"><b id="s1">0</b><span>Predictions</span></div><div class="st w"><b id="s2">0</b><span>Won</span></div><div class="st l"><b id="s3">0</b><span>Lost</span></div><div class="st"><b id="s4">–</b><span>Win rate</span></div></div></section>
+<div class="row" id="days"></div>
+<div class="pop" id="pop"></div>
 <div class="row" id="tabs"></div>
 <div class="row" id="mk"></div>
-<div class="sum" id="sum"></div>
+<div class="row"><select class="chip" id="lg" aria-label="League"></select><button class="chip" id="srt" aria-pressed="false">Highest confidence first</button><button class="chip" id="nop" aria-pressed="false">Show matches without a pick</button></div>
 <div id="list"></div>
-<footer><p><b>18+ only.</b> Probabilities are worked out from bookmaker odds. They are estimates, not guarantees, and a 70% pick still loses about three times in ten. Only stake what you can afford to lose, and check that betting is legal where you live. Free help: <a href="https://www.begambleaware.org">BeGambleAware.org</a>.</p><p>© 2026 ZurePicks</p></footer>
+<footer><p><b>18+ only.</b> Percentages are worked out from bookmaker odds. They are estimates, not guarantees, and a 70% pick still loses about three times in ten. Only stake what you can afford to lose, and check that betting is legal where you live. Free help: <a href="https://www.begambleaware.org">BeGambleAware.org</a>.</p><p>© 2026 ZurePicks</p></footer>
 </main>
 <script>
-const TZ='Africa/Lagos';
-const $=(s)=>document.querySelector(s),esc=(v)=>String(v??'').replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const dstr=(o)=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ}).format(new Date(Date.now()+o*864e5));
-const hm=(iso)=>new Date(iso).toLocaleTimeString('en-GB',{timeZone:TZ,hour:'2-digit',minute:'2-digit'});
+const TZ='Africa/Lagos',$=(s)=>document.querySelector(s),esc=(v)=>String(v??'').replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dstr=(o)=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ}).format(new Date(Date.now()+o*864e5)),hm=(i)=>new Date(i).toLocaleTimeString('en-GB',{timeZone:TZ,hour:'2-digit',minute:'2-digit'});
 const LIVE=['1H','HT','2H','ET','BT','P','LIVE','INT'],DONE=['FT','AET','PEN'];
-const MK={o:{l:'1X2',n:['1','X','2'],ev:(i,h,a)=>i==0?h>a:i==1?h==a:a>h},dc:{l:'Double chance',n:['1X','12','X2'],ev:(i,h,a)=>i==0?h>=a:i==1?h!=a:a>=h},ou:{l:'Over/Under 2.5',n:['Over','Under'],ev:(i,h,a)=>i==0?h+a>2.5:h+a<2.5},bt:{l:'Both teams score',n:['Yes','No'],ev:(i,h,a)=>i==0?h>0&&a>0:!(h>0&&a>0)}};
-function norm(od){const s=od.reduce((t,x)=>t+1/x,0);return od.map((x)=>1/x/s)}
-function pick(m,k){ // probability from bookmaker odds, margin removed
-  if(k=='dc'){if(!m.o)return null;const p=norm(m.o),q=[p[0]+p[1],p[0]+p[2],p[1]+p[2]],i=q.indexOf(Math.max(...q));return{i,c:Math.round(q[i]*100)}}
+const MK={o:{l:'1X2',n:['Home win','Draw','Away win'],ev:(i,h,a)=>i==0?h>a:i==1?h==a:a>h},dc:{l:'Double chance',n:['Home or draw','Home or away','Draw or away'],ev:(i,h,a)=>i==0?h>=a:i==1?h!=a:a>=h},ou:{l:'Over/Under 2.5',n:['Over 2.5 goals','Under 2.5 goals'],ev:(i,h,a)=>i==0?h+a>2.5:h+a<2.5},bt:{l:'Both teams score',n:['Both teams score','Not both score'],ev:(i,h,a)=>i==0?h>0&&a>0:!(h>0&&a>0)}};
+const norm=(od)=>{const s=od.reduce((t,x)=>t+1/x,0);return od.map((x)=>1/x/s)};
+function pick(m,k){if(k=='dc'){if(!m.o)return null;const p=norm(m.o),q=[p[0]+p[1],p[0]+p[2],p[1]+p[2]],i=q.indexOf(Math.max(...q));return{i,c:Math.round(q[i]*100)}}
   const od=m[k];if(!od)return null;const p=norm(od),i=p.indexOf(Math.max(...p));return{i,c:Math.round(p[i]*100)}}
-const state={off:0,tab:'all',mk:'o',fav:false,data:[],favs:new Set()};
+const status=(m)=>LIVE.includes(m.st)?'live':DONE.includes(m.st)?'done':['NS','TBD'].includes(m.st)?'up':'other';
+const result=(m,p)=>p&&status(m)=='done'&&m.sc[0]!=null?(MK[state.mk].ev(p.i,m.sc[0],m.sc[1])?'won':'lost'):null;
+const state={off:0,tab:'all',mk:'o',fav:false,sort:false,nop:false,lg:'',data:[],favs:new Set()};
 try{state.favs=new Set(JSON.parse(localStorage.getItem('zp_fav')||'[]'))}catch{}
 const saveFav=()=>{try{localStorage.setItem('zp_fav',JSON.stringify([...state.favs]))}catch{}$('#fc').textContent=state.favs.size};
-function chips(el,items,cur,fn){el.innerHTML=items.map(([k,l])=>`<button class="chip" aria-pressed="${k==cur}" data-k="${k}">${l}</button>`).join('');el.onclick=(e)=>{const b=e.target.closest('[data-k]');if(b){fn(b.dataset.k);}}}
-function drawDays(){const el=$('#days');let h='';for(let o=-1;o<=4;o++){const d=new Date(Date.now()+o*864e5);const wd=o==0?'Today':o==1?'Tomorrow':o==-1?'Yesterday':d.toLocaleDateString('en-GB',{timeZone:TZ,weekday:'short'});h+=`<button class="chip day" aria-pressed="${o==state.off}" data-k="${o}">${wd}<small>${d.toLocaleDateString('en-GB',{timeZone:TZ,day:'numeric',month:'short'})}</small></button>`}
-  el.innerHTML=h;el.onclick=(e)=>{const b=e.target.closest('[data-k]');if(b){state.off=+b.dataset.k;load()}}}
-function status(m){return LIVE.includes(m.st)?'live':DONE.includes(m.st)?'done':['NS','TBD'].includes(m.st)?'up':'other'}
+const chips=(el,items,cur,fn)=>{el.innerHTML=items.map(([k,l])=>`<button class="chip" aria-pressed="${k==cur}" data-k="${k}">${l}</button>`).join('');el.onclick=(e)=>{const b=e.target.closest('[data-k]');if(b)fn(b.dataset.k)}};
+function drawDays(){let h='';for(let o=-1;o<=4;o++){const d=new Date(Date.now()+o*864e5),wd=o==0?'Today':o==1?'Tomorrow':o==-1?'Yesterday':d.toLocaleDateString('en-GB',{timeZone:TZ,weekday:'short'});h+=`<button class="chip day" aria-pressed="${o==state.off}" data-k="${o}">${wd}<small>${d.toLocaleDateString('en-GB',{timeZone:TZ,day:'numeric',month:'short'})}</small></button>`}
+  const el=$('#days');el.innerHTML=h;el.onclick=(e)=>{const b=e.target.closest('[data-k]');if(b){state.off=+b.dataset.k;load()}}}
+function card(m,p){const s=status(m),r=result(m,p),M=MK[state.mk],odd=state.mk=='dc'?m.dc:m[state.mk],has=m.sc[0]!=null;
+  const when=s=='live'?`<span class="live">LIVE ${m.el?m.el+"'":m.st}</span>`:`<span>${s=='other'?esc(m.st):hm(m.d)}</span>`;
+  const badge=r=='won'?'<div class="bd won"><big>✓</big>WON</div>':r=='lost'?'<div class="bd lost"><big>✗</big>LOST</div>':s=='live'?'<div class="bd lv"><big>LIVE</big>in play</div>':s=='done'?'<div class="bd">FT</div>':'<div class="bd">PENDING</div>';
+  const pk=p?`<div class="pl">${M.n[p.i]}<small>@ ${odd[p.i].toFixed(2)}</small></div><div class="bar"><i class="${p.c>=70?'hi':''}" style="width:${p.c}%"></i></div><div class="pcn"><b>${p.c}%</b> chance</div>`:'<div class="pcn">No pick yet (odds not available)</div>';
+  const score=has?`<span class="sc">${s=='live'?'Live ':s=='done'?'Final ':''}${m.sc[0]} - ${m.sc[1]}</span>`:'';
+  return `<article class="m ${r||''}"><div class="top"><span>${esc(m.lg)} · ${esc(m.cn)}</span>${when}</div><div class="mid"><div class="tm"><b>${esc(m.h)}</b><b>${esc(m.a)}</b></div><div class="pk">${pk}</div>${badge}</div>`+
+  `<div class="bot">${odd?odd.map((x,i)=>`<i class="${p&&p.i==i?'p':''}">${M.n[i]} ${x.toFixed(2)}</i>`).join(''):''}${score}<button class="star" aria-pressed="${state.favs.has(m.id)}" aria-label="Save match" data-id="${m.id}">${state.favs.has(m.id)?'★':'☆'}</button></div></article>`}
 function draw(){
-  const k=state.mk,M=MK[k];let ms=state.data.slice();
-  chips($('#tabs'),[['all','All matches'],['up','Upcoming'],['live','Live'],['done','Finished']],state.tab,(v)=>{state.tab=v;draw()});
+  const k=state.mk;
+  let preds=state.data.map((m)=>({m,p:pick(m,k)})),all=preds.filter((x)=>x.p);
+  const w=all.filter((x)=>result(x.m,x.p)=='won').length,l=all.filter((x)=>result(x.m,x.p)=='lost').length;
+  $('#s1').textContent=all.length;$('#s2').textContent=w;$('#s3').textContent=l;$('#s4').textContent=w+l?Math.round(w/(w+l)*100)+'%':'–';
+  chips($('#tabs'),[['all','All'],['up','Upcoming'],['live','Live'],['won','Won ✓'],['lost','Lost ✗']],state.tab,(v)=>{state.tab=v;draw()});
   chips($('#mk'),Object.entries(MK).map(([x,v])=>[x,v.l]),k,(v)=>{state.mk=v;draw()});
-  if(state.tab!='all')ms=ms.filter((m)=>status(m)==state.tab);
-  if(state.fav)ms=ms.filter((m)=>state.favs.has(m.id));
-  $('#fav').setAttribute('aria-pressed',state.fav);
-  let ok=0,n=0;
-  ms.forEach((m)=>{const p=pick(m,k);if(p&&status(m)=='done'&&m.sc[0]!=null){n++;if(M.ev(p.i,m.sc[0],m.sc[1]))ok++}});
-  $('#sum').innerHTML=`<span><b>${ms.length}</b> matches</span>`+(n?`<span>Finished picks right: <b>${ok}/${n}</b> (${Math.round(ok/n*100)}%)</span>`:'')+`<span>Showing: <b>${M.l}</b></span>`;
-  if(!ms.length){$('#list').innerHTML=`<div class="empty">${state.data.length?'No matches match this filter.':'No matches loaded for this day yet. Data refreshes a few times a day.'}</div>`;return}
-  const g={};ms.forEach((m)=>(g[m.cn+'|'+m.lg]??=[]).push(m));
-  $('#list').innerHTML=Object.values(g).sort((a,b)=>a[0].d<b[0].d?-1:1).map((arr)=>`<section class="lg"><h2>${arr[0].lo?`<img src="${esc(arr[0].lo)}" alt="" loading="lazy">`:''}${esc(arr[0].lg)} <span>${esc(arr[0].cn)}</span></h2>`+arr.sort((a,b)=>a.d<b.d?-1:1).map((m)=>{
-    const p=pick(m,k),s=status(m),odd=k=='dc'?m.dc:m[k],has=m.sc[0]!=null;
-    const mark=p&&s=='done'&&has?(M.ev(p.i,m.sc[0],m.sc[1])?'<span class="ok">✓</span>':'<span class="no">✗</span>'):'';
-    const t=s=='live'?`<span class="t live">${m.el?m.el+"'":m.st}</span>`:`<span class="t">${s=='other'?esc(m.st):hm(m.d)}</span>`;
-    return `<article class="m"><button class="star" aria-pressed="${state.favs.has(m.id)}" aria-label="Save match" data-id="${m.id}">${state.favs.has(m.id)?'★':'☆'}</button>${t}<div class="tm"><b>${esc(m.h)}</b><span>${esc(m.a)}</span></div>`+
-    `<div class="od">${odd?odd.map((x,i)=>`<i class="${p&&p.i==i?'p':''}"><small>${M.n[i]}</small>${x.toFixed(2)}</i>`).join(''):'<i>–</i>'}</div>`+
-    `<div class="rs">${has?`<b>${m.sc[0]}-${m.sc[1]} ${mark}</b>`:'<b>–</b>'}<span class="cf">${p?`${M.n[p.i]} · ${p.c}%`:'no odds yet'}</span></div></article>`}).join('')+'</section>').join('');
-  pop()}
-function pop(){const c=state.data.filter((m)=>status(m)=='up'&&m.o).map((m)=>({m,p:pick(m,'o')})).sort((a,b)=>b.p.c-a.p.c).slice(0,8);
-  $('#pop').innerHTML=c.map(({m,p})=>`<div class="pc"><span>${esc(m.lg)} · ${hm(m.d)}</span><b>${esc(m.h)} v ${esc(m.a)}</b><em><span>${['Home win','Draw','Away win'][p.i]} @ ${m.o[p.i].toFixed(2)}</span><u>${p.c}%</u></em></div>`).join('')}
+  const lgs=[...new Set(state.data.map((m)=>m.cn+' · '+m.lg))].sort(),sel=$('#lg');
+  sel.innerHTML='<option value="">All leagues</option>'+lgs.map((x)=>`<option ${x==state.lg?'selected':''}>${esc(x)}</option>`).join('');
+  $('#srt').setAttribute('aria-pressed',state.sort);$('#nop').setAttribute('aria-pressed',state.nop);$('#fav').setAttribute('aria-pressed',state.fav);
+  let ms=preds;const hidden=ms.filter((x)=>!x.p).length;
+  if(!state.nop)ms=ms.filter((x)=>x.p);
+  if(state.tab=='up'||state.tab=='live')ms=ms.filter((x)=>status(x.m)==state.tab);
+  if(state.tab=='won'||state.tab=='lost')ms=ms.filter((x)=>result(x.m,x.p)==state.tab);
+  if(state.lg)ms=ms.filter((x)=>x.m.cn+' · '+x.m.lg==state.lg);
+  if(state.fav)ms=ms.filter((x)=>state.favs.has(x.m.id));
+  pop();
+  if(!ms.length){$('#list').innerHTML=`<div class="empty">${state.fav&&!state.favs.size?'You have not saved any matches yet. Tap the ☆ on a match to save it.':state.data.length?'Nothing to show for this filter.'+(hidden&&!state.nop?` ${hidden} matches have no pick yet because their odds are not available.`:''):'No matches loaded for this day yet. Data refreshes a few times a day.'}</div>`;return}
+  const by=(a,b)=>a.m.d<b.m.d?-1:1;let html='';
+  if(state.sort){html=`<div class="lgh">Highest confidence first</div>`+ms.sort((a,b)=>(b.p?.c||0)-(a.p?.c||0)).map((x)=>card(x.m,x.p)).join('')}
+  else{const g={};ms.sort(by).forEach((x)=>(g[x.m.cn+'|'+x.m.lg]??=[]).push(x));
+    html=Object.values(g).map((arr)=>`<div class="lgh">${arr[0].m.lo?`<img src="${esc(arr[0].m.lo)}" alt="" loading="lazy">`:''}${esc(arr[0].m.lg)} · ${esc(arr[0].m.cn)}</div>`+arr.map((x)=>card(x.m,x.p)).join('')).join('')}
+  $('#list').innerHTML=html+(hidden&&!state.nop?`<div class="empty">${hidden} more matches have no pick yet because bookmaker odds are not available for them.</div>`:'')}
+function pop(){const c=state.data.filter((m)=>m.o&&status(m)!='done').map((m)=>({m,p:pick(m,'o')})).sort((a,b)=>b.p.c-a.p.c).slice(0,8);
+  $('#pop').innerHTML=c.map(({m,p})=>`<div class="pc"><div class="ring" style="--p:${p.c}"><u>${p.c}%</u></div><div><span>${esc(m.lg)} · ${hm(m.d)}</span><b>${esc(m.h)} v ${esc(m.a)}</b><p>${MK.o.n[p.i]} @ ${m.o[p.i].toFixed(2)}</p></div></div>`).join('')}
 async function load(){drawDays();$('#list').innerHTML='<div class="empty">Loading…</div>';
   try{const r=await fetch('data/'+dstr(state.off)+'.json',{cache:'no-cache'});state.data=r.ok?(await r.json()).matches:[]}catch{state.data=[]}
-  $('#pop').innerHTML='';draw()}
+  state.lg='';draw()}
 $('#list').addEventListener('click',(e)=>{const b=e.target.closest('.star');if(!b)return;const id=+b.dataset.id;state.favs.has(id)?state.favs.delete(id):state.favs.add(id);saveFav();draw()});
-$('#fav').onclick=()=>{state.fav=!state.fav;draw()};
+$('#fav').onclick=()=>{state.fav=!state.fav;draw()};$('#srt').onclick=()=>{state.sort=!state.sort;draw()};$('#nop').onclick=()=>{state.nop=!state.nop;draw()};$('#lg').onchange=(e)=>{state.lg=e.target.value;draw()};
 saveFav();load();
 </script></body></html>
