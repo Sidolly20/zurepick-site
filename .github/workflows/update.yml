@@ -16,8 +16,15 @@ jobs:
       - run: node generate.mjs
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          BZZOIRO_KEY: ${{ secrets.BZZOIRO_KEY }}
+          FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+      # Pages are built separately so a problem here can never block the data update.
+      - run: node build-pages.mjs
+        continue-on-error: true
+        env:
+          SITE_URL: https://sidolly20.github.io/zurepick-site
       - run: |
           git config user.name "match-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data
+          git add -A
           git diff --cached --quiet || (git commit -m "Update match data" && git push)
