@@ -81,6 +81,7 @@ for (const d of upcoming) {
 }
 
 try { const { bsdFill } = await import('./sources.mjs'); await bsdFill(days, day(0)); } catch (e) { console.error('BSD skipped:', e.message); }
+try { const { updateForm, attachForm } = await import('./form.mjs'); await updateForm(); attachForm(days); } catch (e) { console.error('Form skipped:', e.message); }
 
 for (const [d, v] of Object.entries(days)) {
   fs.writeFileSync(file(d), JSON.stringify({ date: d, updated: new Date().toISOString(), od: v.od, op: v.op, matches: v.matches }));

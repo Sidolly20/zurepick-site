@@ -17,6 +17,7 @@ jobs:
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
           BZZOIRO_KEY: ${{ secrets.BZZOIRO_KEY }}
+          FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
       # Pages are built separately so a problem here can never block the data update.
       - run: node build-pages.mjs
         continue-on-error: true
