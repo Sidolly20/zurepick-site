@@ -35,7 +35,9 @@ function oddsOf(item) {
 fs.mkdirSync('data', { recursive: true });
 const file = (d) => `data/${d}.json`;
 const read = (d) => { try { return JSON.parse(fs.readFileSync(file(d), 'utf8')); } catch { return null; } };
-const dates = [-1, 0, 1].map(day);
+const SETTLED = ['FT', 'AET', 'PEN', 'CANC', 'PST', 'ABD', 'AWD', 'WO'];
+const dates = [0, 1].map(day);
+if (!read(day(-1))?.matches?.length || read(day(-1)).matches.some((m) => !SETTLED.includes(m.st))) dates.unshift(day(-1));
 for (const o of [2, 3, 4]) if (!read(day(o))) dates.push(day(o));
 
 // 1) fixtures
@@ -63,7 +65,7 @@ async function fetchOdds(d, extra, start = 1) {
   }
   return { page: 79, done: false };
 }
-const upcoming = Object.keys(days).filter((d) => d >= day(0)).sort();
+const upcoming = Object.keys(days).filter((d) => d >= day(0) && d <= day(2)).sort();
 
 // 2) big leagues first
 for (const d of upcoming) for (const lid of PRI) {
@@ -77,6 +79,8 @@ for (const d of upcoming) {
   days[d].op = r.done ? 0 : r.page;
   if (r.done) days[d].od = Date.now();
 }
+
+try { const { bsdFill } = await import('./sources.mjs'); await bsdFill(days, day(0)); } catch (e) { console.error('BSD skipped:', e.message); }
 
 for (const [d, v] of Object.entries(days)) {
   fs.writeFileSync(file(d), JSON.stringify({ date: d, updated: new Date().toISOString(), od: v.od, op: v.op, matches: v.matches }));
