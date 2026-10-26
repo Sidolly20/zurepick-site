@@ -13,10 +13,3 @@ input{font:inherit;padding:.5rem .7rem;border-radius:12px;border:1px solid var(-
 .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.6rem;margin:1rem 0}.k div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:.75rem .85rem}.k b{display:block;font-size:1.5rem;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.k span{font-size:.7rem;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
 footer{margin:2.5rem 0 3rem;color:var(--mut);font-size:.8rem}footer p{margin:.5rem 0}footer b{color:var(--ink)}.fl a{margin-right:.8rem;white-space:nowrap;line-height:2}
 :focus-visible{outline:2px solid var(--g);outline-offset:2px}
-
-/* 2026 polish: clearer hierarchy, smoother interactions, and better small-screen spacing */
-:root{--bg:#0b0d10;--card:#12151a;--raised:#171b22;--ink:#f2f5f7;--mut:#a3adba;--dim:#7c8795;--line:rgba(255,255,255,.09);--g:#31f28c;--pu:#9b7bff;--gold:#ffc53d;--no:#ff6b81}
-::selection{background:rgba(49,242,140,.25);color:var(--ink)}
-button,a,input,select{transition:color .16s ease,border-color .16s ease,background-color .16s ease,transform .16s ease}
-button:active{transform:translateY(1px)}
-@media(max-width:560px){.w{width:calc(100% - 1rem)}header .w{gap:.65rem}.nv{gap:.7rem;font-size:.8rem}th,td{padding:.55rem .6rem}}
