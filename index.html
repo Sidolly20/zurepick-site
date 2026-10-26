@@ -3,7 +3,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ZurePicks | Free Football Predictions & Betting Tips</title>
 <meta name="description" content="Free football predictions with win probability, odds and results for leagues worldwide. See which picks won. No sign-up.">
-<meta name="theme-color" content="#0b0d10"><link rel="canonical" href="https://sidolly20.github.io/zurepick-site/"><meta property="og:title" content="ZurePicks | Free Football Predictions &amp; Betting Tips"><meta property="og:description" content="Free football predictions with win probability, odds and results. See which picks won."><meta property="og:type" content="website">
+<meta name="theme-color" content="#0b0d10">
+<meta name="color-scheme" content="dark"><link rel="canonical" href="https://sidolly20.github.io/zurepick-site/"><meta property="og:title" content="ZurePicks | Free Football Predictions &amp; Betting Tips"><meta property="og:description" content="Free football predictions with win probability, odds and results. See which picks won."><meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a7d4b'/%3E%3Cpath d='M9 10h14l-10 12h10' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{--bg:#0b0d10;--card:#12151a;--raised:#171b22;--ink:#f2f5f7;--mut:#a3adba;--dim:#7c8795;--line:rgba(255,255,255,.09);--g:#31f28c;--pu:#9b7bff;--gold:#ffc53d;--no:#ff6b81;--live:#ff5a5f;--glass:rgba(23,27,34,.62);color-scheme:dark}
@@ -18,7 +19,7 @@ header .in{max-width:1440px;margin:auto;padding:0 1rem;display:flex;align-items:
 .nv{display:flex;gap:1rem;font-size:.85rem;font-weight:600}.nv a{color:var(--mut);text-decoration:none;white-space:nowrap}.nv a:hover{color:var(--g)}
 .chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:.42rem .85rem;font:600 .84rem inherit;font-family:inherit;cursor:pointer;white-space:nowrap}
 .chip[aria-pressed=true]{background:var(--g);color:#04130c;border-color:var(--g)}.chip small{display:block;font-weight:500;opacity:.7;font-size:.68rem}
-.app{max-width:1440px;margin:auto;padding:1rem;display:grid;gap:1.1rem;grid-template-columns:minmax(0,1fr)}
+.app{max-width:1480px;margin:auto;padding:1.1rem;display:grid;gap:1.1rem;grid-template-columns:minmax(0,1fr)}
 @media(min-width:1100px){.app{grid-template-columns:260px minmax(0,1fr) 340px;align-items:start}.L,.R{position:sticky;top:78px;max-height:calc(100vh - 90px);overflow:auto}#slipbar{display:none!important}.L summary{display:none}}
 .glass{background:var(--glass);backdrop-filter:blur(16px) saturate(140%);border:1px solid var(--line);border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 40px -26px #000}
 .L{padding:1rem}.L h3,.R h3{margin:.9rem 0 .45rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--dim)}.L h3:first-of-type{margin-top:0}
@@ -35,7 +36,7 @@ h1{font:800 clamp(1.5rem,4.2vw,2.3rem)/1.1 "Plus Jakarta Sans",system-ui,sans-se
 .ac p{margin:.2rem 0 .5rem;font-size:.8rem;color:var(--mut)}.ac p b{color:var(--ink);font-family:"JetBrains Mono",ui-monospace,monospace}
 .btn{border:0;border-radius:12px;padding:.5rem .9rem;font:700 .84rem inherit;font-family:inherit;cursor:pointer;background:var(--g);color:#04130c}.btn.gh{background:transparent;color:var(--ink);border:1px solid var(--line)}
 .lgh{margin:1.1rem 0 .5rem;font-size:.75rem;color:var(--dim);display:flex;align-items:center;gap:.5rem;text-transform:uppercase;letter-spacing:.07em;font-weight:700}.lgh img{width:20px;height:20px;object-fit:contain}
-.m{padding:.8rem .95rem;margin-bottom:.6rem;border-left:4px solid var(--line);background:var(--glass)}.m.won{border-left-color:var(--g);background:linear-gradient(90deg,rgba(49,242,140,.10),var(--glass) 55%)}.m.lost{border-left-color:var(--no);background:linear-gradient(90deg,rgba(255,107,129,.12),var(--glass) 55%)}
+.m{padding:.85rem 1rem;margin-bottom:.65rem;border-left:3px solid var(--line);background:linear-gradient(115deg,rgba(255,255,255,.025),transparent 52%),var(--glass);transition:transform .18s ease,border-color .18s ease,background .18s ease}.m:hover{transform:translateY(-1px);border-color:rgba(49,242,140,.45)}.m.won{border-left-color:var(--g);background:linear-gradient(90deg,rgba(49,242,140,.10),var(--glass) 55%)}.m.lost{border-left-color:var(--no);background:linear-gradient(90deg,rgba(255,107,129,.12),var(--glass) 55%)}
 .top{display:flex;justify-content:space-between;font-size:.76rem;color:var(--dim);margin-bottom:.4rem}.live{color:var(--live);font-weight:800}.live:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--live);margin-right:5px;animation:p 1.4s infinite}@keyframes p{50%{opacity:.25}}
 .mid{display:grid;grid-template-columns:1fr minmax(170px,230px) auto;gap:.9rem;align-items:center}.tm b{display:block;font-weight:650}
 .fm{display:flex;gap:3px;margin:2px 0 4px}.fm i{width:10px;height:10px;border-radius:50%;background:var(--dim)}.fm i.fW{background:var(--g)}.fm i.fL{background:var(--no)}
@@ -57,6 +58,8 @@ h1{font:800 clamp(1.5rem,4.2vw,2.3rem)/1.1 "Plus Jakarta Sans",system-ui,sans-se
 @media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.mid{grid-template-columns:1fr auto;grid-template-areas:"t b" "p p"}.tm{grid-area:t}.bd{grid-area:b}.pk{grid-area:p}.nv a:nth-child(n+2){display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 #x{display:none}@media(max-width:1099px){#x{display:inline-block}}
+
+.data-line{display:flex;align-items:center;gap:.55rem;margin:.3rem 0 .75rem;color:var(--mut);font-size:.76rem}.data-dot{width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:0 0 12px rgba(49,242,140,.45);flex:none}.data-line button{margin-left:auto}.search-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.65rem;margin:.75rem 0;color:var(--mut);font-size:.8rem}.search-row input{width:100%;min-width:0;background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:.68rem .85rem;font:inherit;outline:none}.search-row input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(49,242,140,.10)}.count{font-size:.72rem;white-space:nowrap;color:var(--dim)}@media(max-width:480px){.search-row{grid-template-columns:1fr auto}.search-row label{grid-column:1/-1}.search-row input{grid-column:1/-1}.count{grid-column:2;grid-row:2}}
 </style></head><body>
 <header><div class="in"><div class="logo"><i>Z</i>ZurePicks</div><nav class="nv"><a href="track-record.html">Track record</a><a href="how-it-works.html">How it works</a><a href="tools.html">Tools</a></nav><button class="chip" id="fav" aria-pressed="false">☆ Saved <span id="fc">0</span></button></div></header>
 <div class="app">
@@ -71,6 +74,8 @@ h1{font:800 clamp(1.5rem,4.2vw,2.3rem)/1.1 "Plus Jakarta Sans",system-ui,sans-se
 <main>
 <section class="hero glass"><h1>Football predictions, <em>checked every day</em></h1><p class="sub">Win chances worked out from bookmaker odds. When games finish you can see right away whether the pick won. Free, no sign-up.</p>
 <div class="stats"><div class="s"><b id="s1">0</b><span>Predictions</span></div><div class="s w"><b id="s2">0</b><span>Won</span></div><div class="s l"><b id="s3">0</b><span>Lost</span></div><div class="s"><b id="s4">–</b><span>Win rate</span></div></div></section>
+<div class="data-line"><span class="data-dot" aria-hidden="true"></span><span id="dataStatus" role="status" aria-live="polite">Loading match data…</span><button class="chip" id="refreshData" type="button">↻ Reload data</button></div>
+<div class="search-row"><label for="matchSearch">Find a match</label><input id="matchSearch" type="search" placeholder="Search team, league or country…" autocomplete="off"><span id="matchCount" class="count"></span></div>
 <div class="sec"><h2>Hot accumulators</h2><span>Built from today's most likely picks. More legs means a lower chance.</span></div>
 <div class="acc" id="acc"></div>
 <div id="list"></div>
@@ -89,7 +94,9 @@ h1{font:800 clamp(1.5rem,4.2vw,2.3rem)/1.1 "Plus Jakarta Sans",system-ui,sans-se
 </div>
 <button id="slipbar"><span>Slip <b id="sn">0</b></span><span>Open</span></button>
 <footer style="max-width:1440px;margin:0 auto;padding:0 1rem 5rem"><p class="fl"><a href="football-predictions-today.html">Predictions today</a><a href="football-predictions-tomorrow.html">Tomorrow</a><a href="over-2-5-goals-predictions.html">Over 2.5 goals</a><a href="over-1-5-goals-predictions.html">Over 1.5 goals</a><a href="btts-predictions.html">Both teams to score</a><a href="double-chance-predictions.html">Double chance</a><a href="premier-league-predictions.html">Premier League</a><a href="la-liga-predictions.html">La Liga</a><a href="serie-a-predictions.html">Serie A</a><a href="bundesliga-predictions.html">Bundesliga</a><a href="ligue-1-predictions.html">Ligue 1</a><a href="champions-league-predictions.html">Champions League</a><a href="track-record.html">Track record</a><a href="how-it-works.html">How it works</a><a href="responsible-gambling.html">Responsible gambling</a><a href="tools.html">Odds tools</a></p><p><b>18+ only.</b> Percentages are worked out from bookmaker odds. They are estimates, not guarantees, and a 70% pick still loses about three times in ten. Only stake what you can afford to lose, and check that betting is legal where you live. Free help: <a href="https://www.begambleaware.org">BeGambleAware.org</a>.</p><p>© 2026 ZurePicks</p></footer>
+<script src="api-config.js"></script>
 <script>
+const API_BASE=String(window.ZUREPICKS_API_BASE||'').replace(/\/+$/,'');
 const TZ='Africa/Lagos',$=(s)=>document.querySelector(s),esc=(v)=>String(v??'').replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dstr=(o)=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ}).format(new Date(Date.now()+o*864e5)),hm=(i)=>new Date(i).toLocaleTimeString('en-GB',{timeZone:TZ,hour:'2-digit',minute:'2-digit'});
 const LIVE=['1H','HT','2H','ET','BT','P','LIVE','INT'],DONE=['FT','AET','PEN'];
@@ -101,7 +108,7 @@ const odds=(m,k)=>k=='dc'?m.dc:m[k];
 const status=(m)=>LIVE.includes(m.st)?'live':DONE.includes(m.st)?'done':['NS','TBD'].includes(m.st)?'up':'other';
 const result=(m,p)=>p&&status(m)=='done'&&m.sc[0]!=null?(MK[state.mk].ev(p.i,m.sc[0],m.sc[1])?'won':'lost'):null;
 const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
-const state={off:0,tab:'all',mk:'o',fav:false,sort:false,nop:false,lg:'',mc:0,data:[],favs:new Set(ld('zp_fav',[])),slip:ld('zp_slip',[])};
+const state={off:0,tab:'all',mk:'o',fav:false,sort:false,nop:false,lg:'',mc:0,query:'',data:[],favs:new Set(ld('zp_fav',[])),slip:ld('zp_slip',[])};
 const chips=(el,items,cur,fn)=>{el.innerHTML=items.map(([k,l])=>`<button class="chip" aria-pressed="${k==cur}" data-k="${k}">${l}</button>`).join('');el.onclick=(e)=>{const b=e.target.closest('[data-k]');if(b)fn(b.dataset.k)}};
 function drawDays(){let h='';for(let o=-1;o<=4;o++){const d=new Date(Date.now()+o*864e5),wd=o==0?'Today':o==1?'Tomorrow':o==-1?'Yesterday':d.toLocaleDateString('en-GB',{timeZone:TZ,weekday:'short'});h+=`<button class="chip" aria-pressed="${o==state.off}" data-k="${o}">${wd}<small>${d.toLocaleDateString('en-GB',{timeZone:TZ,day:'numeric',month:'short'})}</small></button>`}
   const el=$('#days');el.innerHTML=h;el.onclick=(e)=>{const b=e.target.closest('[data-k]');if(b){state.off=+b.dataset.k;load()}}}
@@ -132,6 +139,8 @@ function draw(){
   if(state.tab=='won'||state.tab=='lost')ms=ms.filter((x)=>result(x.m,x.p)==state.tab);
   if(state.lg)ms=ms.filter((x)=>x.m.cn+' · '+x.m.lg==state.lg);
   if(state.fav)ms=ms.filter((x)=>state.favs.has(x.m.id));
+  if(state.query){const q=state.query.toLocaleLowerCase();ms=ms.filter((x)=>[x.m.h,x.m.a,x.m.lg,x.m.cn].some(v=>String(v||'').toLocaleLowerCase().includes(q)))}
+  $('#matchCount').textContent=ms.length+' shown';
   accs();drawSlip();
   if(!ms.length){$('#list').innerHTML=`<div class="empty">${state.fav&&!state.favs.size?'You have not saved any matches yet. Tap the ☆ on a match to save it.':state.data.length?'Nothing to show for this filter.'+(hidden&&!state.nop?` ${hidden} matches have no pick yet because their odds are not available.`:''):'No matches loaded for this day yet. Data refreshes a few times a day.'}</div>`;return}
   const by=(a,b)=>a.m.d<b.m.d?-1:1;let html='';
@@ -156,14 +165,18 @@ async function lbd(){try{const H=await (await fetch('data/history.json',{cache:'
   for(const x of Object.values(H))if(x.d>=cut)for(const [k,v] of Object.entries(x.p||{}))if(MK[k]&&v.length>3){const s=S[k]??={n:0,w:0};s.n++;s.w+=v[3]?1:0}
   const tot=Object.values(S).reduce((t,s)=>t+s.n,0),rows=Object.entries(S).filter(([,s])=>s.n>=30).sort((a,b)=>b[1].w/b[1].n-a[1].w/a[1].n);
   $('#lbd').innerHTML=rows.length?`<table class="lb">${rows.map(([k,s])=>`<tr><td>${MK[k].l}<br><small>${s.n} picks</small></td><td>${Math.round(s.w/s.n*100)}%</td></tr>`).join('')}</table>`:`<div class="note">${tot} settled picks so far. A market is listed once it has 30, so the numbers mean something.</div>`}catch{$('#lbd').innerHTML='<div class="note">Not available yet.</div>'}}
-async function load(){drawDays();$('#list').innerHTML='<div class="empty">Loading…</div>';
-  try{const r=await fetch('data/'+dstr(state.off)+'.json',{cache:'no-cache'});state.data=r.ok?(await r.json()).matches:[]}catch{state.data=[]}
+async function load(){drawDays();$('#list').innerHTML='<div class="empty">Loading match data…</div>';$('#dataStatus').textContent='Checking data source…';
+  const date=dstr(state.off);let source='';
+  try{const api=await fetch((API_BASE||'')+'/api/matches?date='+encodeURIComponent(date),{cache:'no-store'});if(api.ok){const j=await api.json();state.data=Array.isArray(j.matches)?j.matches:[];source='API';$('#dataStatus').textContent='API connected · '+(j.updated?'updated '+new Date(j.updated).toLocaleString():'snapshot available');}}catch{}
+  if(!source){try{const r=await fetch('data/'+date+'.json',{cache:'no-cache'});if(r.ok){const j=await r.json();state.data=Array.isArray(j.matches)?j.matches:[];source='snapshot';$('#dataStatus').textContent='Using published data snapshot'+(j.updated?' · updated '+new Date(j.updated).toLocaleString():'')+' · API not connected';}else{state.data=[];$('#dataStatus').textContent='No data snapshot for this date yet.'}}catch{state.data=[];$('#dataStatus').textContent='Unable to load data. Check your connection.'}}
   state.lg='';draw()}
 document.addEventListener('click',(e)=>{const t=e.target,get=(id)=>state.data.find((m)=>m.id==id);
   const st=t.closest('.star');if(st){const id=+st.dataset.id;state.favs.has(id)?state.favs.delete(id):state.favs.add(id);sv('zp_fav',[...state.favs]);return draw()}
   const ad=t.closest('[data-add]');if(ad){const id=+ad.dataset.add,m=get(id);if(inSlip(id))state.slip=state.slip.filter((x)=>x.id!=id);else addPick(m,pick(m,state.mk),state.mk);return draw()}
   const ac=t.closest('[data-acc]');if(ac){ACC[+ac.dataset.acc].forEach((x)=>addPick(x.m,x.p,state.mk));return draw()}
   const rm=t.closest('[data-rm]');if(rm){state.slip=state.slip.filter((x)=>x.id!=rm.dataset.rm);return draw()}});
+$('#matchSearch').addEventListener('input',e=>{state.query=e.target.value.trim();draw()});
+$('#refreshData').onclick=()=>{const b=$('#refreshData');b.disabled=true;b.textContent='Reloading…';load().finally(()=>{b.disabled=false;b.textContent='↻ Reload data'})};
 $('#fav').onclick=()=>{state.fav=!state.fav;draw()};$('#srt').onclick=()=>{state.sort=!state.sort;draw()};$('#nop').onclick=()=>{state.nop=!state.nop;draw()};
 $('#lg').onchange=(e)=>{state.lg=e.target.value;draw()};$('#mc').oninput=(e)=>{state.mc=+e.target.value;draw()};$('#stk').oninput=drawSlip;
 $('#cp').onclick=async(e)=>{if(!state.slip.length)return;try{await navigator.clipboard.writeText(slipText());e.target.textContent='Copied ✓'}catch{e.target.textContent='Copy failed'}setTimeout(()=>e.target.textContent='Copy slip',1600)};
