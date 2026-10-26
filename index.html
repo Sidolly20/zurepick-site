@@ -72,14 +72,14 @@ h1{font:800 clamp(1.5rem,4.2vw,2.3rem)/1.1 "Plus Jakarta Sans",system-ui,sans-se
 <h3>Options</h3><div class="vs"><button class="chip" id="srt" aria-pressed="false">Highest chance first</button><button class="chip" id="nop" aria-pressed="false">Show matches without a pick</button></div>
 </details></aside>
 <main>
-<section class="hero glass"><h1>Football predictions, <em>checked every day</em></h1><p class="sub">Win chances worked out from bookmaker odds. When games finish you can see right away whether the pick won. Free, no sign-up.</p>
+<section class="hero glass"><h1>Football predictions, <em>checked every day</em></h1><p class="sub">Predictions from bookmaker odds when available, supported by historical team statistics when odds are missing. Results are tracked after full time. Free, no sign-up.</p>
 <div class="stats"><div class="s"><b id="s1">0</b><span>Predictions</span></div><div class="s w"><b id="s2">0</b><span>Won</span></div><div class="s l"><b id="s3">0</b><span>Lost</span></div><div class="s"><b id="s4">–</b><span>Win rate</span></div></div></section>
 <div class="data-line"><span class="data-dot" aria-hidden="true"></span><span id="dataStatus" role="status" aria-live="polite">Loading match data…</span><button class="chip" id="refreshData" type="button">↻ Reload data</button></div>
 <div class="search-row"><label for="matchSearch">Find a match</label><input id="matchSearch" type="search" placeholder="Search team, league or country…" autocomplete="off"><span id="matchCount" class="count"></span></div>
 <div class="sec"><h2>Hot accumulators</h2><span>Built from today's most likely picks. More legs means a lower chance.</span></div>
 <div class="acc" id="acc"></div>
 <div id="list"></div>
-<section class="seo"><h2>Free football predictions today</h2><p>ZurePicks turns bookmaker odds into a clear chance for every match: result, double chance, over 1.5 and over 2.5 goals, and both teams to score. Each pick is saved before kick-off and settled when the match ends, so the <a href="track-record.html">track record</a> shows the real wins and losses.</p></section>
+<section class="seo"><h2>Free football predictions today</h2><p>ZurePicks uses bookmaker odds when available and a statistical team-form model when odds are missing and sufficient historical data exists. Odds display as -- when unavailable. Predictions are estimates, not guarantees; the <a href="track-record.html">track record</a> helps evaluate settled results.</p></section>
 
 
 </main>
@@ -102,8 +102,18 @@ const dstr=(o)=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ}).format(new Date(D
 const LIVE=['1H','HT','2H','ET','BT','P','LIVE','INT'],DONE=['FT','AET','PEN'];
 const MK={o:{l:'1X2',n:['Home win','Draw','Away win'],ev:(i,h,a)=>i==0?h>a:i==1?h==a:a>h},dc:{l:'Double chance',n:['Home or draw','Home or away','Draw or away'],ev:(i,h,a)=>i==0?h>=a:i==1?h!=a:a>=h},ou:{l:'Over/Under 2.5',n:['Over 2.5 goals','Under 2.5 goals'],ev:(i,h,a)=>i==0?h+a>2.5:h+a<2.5},o15:{l:'Over/Under 1.5',n:['Over 1.5 goals','Under 1.5 goals'],ev:(i,h,a)=>i==0?h+a>1.5:h+a<1.5},bt:{l:'Both teams score',n:['Both teams score','Not both score'],ev:(i,h,a)=>i==0?h>0&&a>0:!(h>0&&a>0)}};
 const norm=(od)=>{const s=od.reduce((t,x)=>t+1/x,0);return od.map((x)=>1/x/s)};
-function pick(m,k){if(k=='dc'){if(!m.o||!m.dc)return null;const p=norm(m.o),q=[p[0]+p[1],p[0]+p[2],p[1]+p[2]],i=q.indexOf(Math.max(...q));return{i,c:Math.round(q[i]*100)}}
-  const od=m[k];if(!od)return null;const p=norm(od),i=p.indexOf(Math.max(...p));return{i,c:Math.round(p[i]*100)}}
+function pick(m,k){
+  const apiMarket={o:'1x2',dc:'double-chance',ou:'over-under-2.5',o15:'over-under-1.5',bt:'both-teams-score'}[k];
+  const serverPick=m.predictions&&m.predictions[apiMarket];
+  if(serverPick&&Number.isFinite(Number(serverPick.probability))){
+    const labels=MK[k].n,sel=String(serverPick.selection||'').toLowerCase();
+    let i=labels.findIndex(x=>x.toLowerCase()===sel);
+    if(i<0){const aliases={'home win':0,'draw':1,'away win':2,'yes':0,'no':1,'both teams score':0,'not both score':1};i=aliases[sel]??Number(serverPick.index)}
+    if(k==='dc'&&i>=0&&i<3)return {i,c:Number(serverPick.probability),method:serverPick.method,odds:serverPick.decimalOdds};
+    if(i>=0&&i<labels.length)return {i,c:Number(serverPick.probability),method:serverPick.method,odds:serverPick.decimalOdds};
+  }
+  if(k==='dc'){if(!m.o||!m.dc)return null;const p=norm(m.o),q=[p[0]+p[1],p[0]+p[2],p[1]+p[2]],i=q.indexOf(Math.max(...q));return{i,c:Math.round(q[i]*100),method:'bookmaker-odds-normalized'}}
+  const od=m[k];if(!od)return null;const p=norm(od),i=p.indexOf(Math.max(...p));return{i,c:Math.round(p[i]*100),method:'bookmaker-odds-normalized'}}
 const odds=(m,k)=>k=='dc'?m.dc:m[k];
 const status=(m)=>LIVE.includes(m.st)?'live':DONE.includes(m.st)?'done':['NS','TBD'].includes(m.st)?'up':'other';
 const result=(m,p)=>p&&status(m)=='done'&&m.sc[0]!=null?(MK[state.mk].ev(p.i,m.sc[0],m.sc[1])?'won':'lost'):null;
@@ -117,11 +127,11 @@ const inSlip=(id)=>state.slip.some((x)=>x.id==id);
 function card(m,p){const s=status(m),r=result(m,p),M=MK[state.mk],od=odds(m,state.mk),has=m.sc[0]!=null;
   const when=s=='live'?`<span class="live">LIVE ${m.el?m.el+"'":m.st}</span>`:`<span>${s=='other'?esc(m.st):hm(m.d)}</span>`;
   const badge=r=='won'?'<div class="bd won"><big>✓</big>WON</div>':r=='lost'?'<div class="bd lost"><big>✗</big>LOST</div>':s=='live'?'<div class="bd lv"><big>LIVE</big>in play</div>':s=='done'?'<div class="bd">FT</div>':'<div class="bd">PENDING</div>';
-  const pk=p?`<span class="ring" style="--p:${p.c};--c:${p.c>=70?'var(--gold)':p.c>=60?'var(--g)':'var(--dim)'}"><u>${p.c}%</u></span><div class="pl">${M.n[p.i]}<small>@ ${od[p.i].toFixed(2)}</small></div><div class="pcn"><b>${p.c}%</b> chance</div>`:'<div class="pcn">No pick yet (odds not available)</div>';
+  const pk=p?`<span class="ring" style="--p:${p.c};--c:${p.c>=70?'var(--gold)':p.c>=60?'var(--g)':'var(--dim)'}"><u>${p.c}%</u></span><div class="pl">${M.n[p.i]}<small>@ ${Number.isFinite(Number(p.odds))&&Number(p.odds)>1?Number(p.odds).toFixed(2):od&&Number.isFinite(Number(od[p.i]))?Number(od[p.i]).toFixed(2):'--'}</small></div><div class="pcn"><b>${p.c}%</b> chance</div>`:'<div class="pcn">No pick yet (odds not available)</div>';
   const score=has?`<span class="sc">${s=='live'?'Live ':s=='done'?'Final ':''}${m.sc[0]} - ${m.sc[1]}</span>`:'';
-  const add=p&&s=='up'?`<button class="add" aria-pressed="${inSlip(m.id)}" data-add="${m.id}">${inSlip(m.id)?'✓ In slip':'+ Slip'}</button>`:'';
+  const add=p&&s=='up'&&od&&Number(od[p.i])>1?`<button class="add" aria-pressed="${inSlip(m.id)}" data-add="${m.id}">${inSlip(m.id)?'✓ In slip':'+ Slip'}</button>`:'';
   return `<article class="m glass ${r||''}"><div class="top"><span>${esc(m.lg)} · ${esc(m.cn)}</span>${when}</div><div class="mid"><div class="tm"><b>${esc(m.h)}</b>${fm(m.fh)}<b>${esc(m.a)}</b>${fm(m.fa)}</div><div class="pk">${pk}</div>${badge}</div>`+
-  `<div class="bot">${od?od.map((x,i)=>`<i class="${p&&p.i==i?'p':''}">${M.n[i]} ${x.toFixed(2)}</i>`).join(''):''}${score}${add}<button class="star" aria-pressed="${state.favs.has(m.id)}" aria-label="Save match" data-id="${m.id}">${state.favs.has(m.id)?'★':'☆'}</button></div></article>`}
+  `<div class="bot">${od?od.map((x,i)=>`<i class="${p&&p.i==i?'p':''}">${M.n[i]} ${Number(x)>1?Number(x).toFixed(2):'--'}</i>`).join(''):''}${score}${add}<button class="star" aria-pressed="${state.favs.has(m.id)}" aria-label="Save match" data-id="${m.id}">${state.favs.has(m.id)?'★':'☆'}</button></div></article>`}
 function draw(){
   const k=state.mk;
   let preds=state.data.map((m)=>({m,p:pick(m,k)})),all=preds.filter((x)=>x.p);
@@ -142,18 +152,18 @@ function draw(){
   if(state.query){const q=state.query.toLocaleLowerCase();ms=ms.filter((x)=>[x.m.h,x.m.a,x.m.lg,x.m.cn].some(v=>String(v||'').toLocaleLowerCase().includes(q)))}
   $('#matchCount').textContent=ms.length+' shown';
   accs();drawSlip();
-  if(!ms.length){$('#list').innerHTML=`<div class="empty">${state.fav&&!state.favs.size?'You have not saved any matches yet. Tap the ☆ on a match to save it.':state.data.length?'Nothing to show for this filter.'+(hidden&&!state.nop?` ${hidden} matches have no pick yet because their odds are not available.`:''):'No matches loaded for this day yet. Data refreshes a few times a day.'}</div>`;return}
+  if(!ms.length){$('#list').innerHTML=`<div class="empty">${state.fav&&!state.favs.size?'You have not saved any matches yet. Tap the ☆ on a match to save it.':state.data.length?'Nothing to show for this filter.'+(hidden&&!state.nop?` ${hidden} matches have no prediction yet because available data is insufficient.`:''):'No matches loaded for this day yet. Data refreshes a few times a day.'}</div>`;return}
   const by=(a,b)=>a.m.d<b.m.d?-1:1;let html='';
   if(state.sort){html=`<div class="lgh">Highest chance first</div>`+ms.sort((a,b)=>(b.p?.c||0)-(a.p?.c||0)).map((x)=>card(x.m,x.p)).join('')}
   else{const g={};ms.sort(by).forEach((x)=>(g[x.m.cn+'|'+x.m.lg]??=[]).push(x));
     html=Object.values(g).map((arr)=>`<div class="lgh">${arr[0].m.lo?`<img src="${esc(arr[0].m.lo)}" alt="" loading="lazy">`:''}${esc(arr[0].m.lg)} · ${esc(arr[0].m.cn)}</div>`+arr.map((x)=>card(x.m,x.p)).join('')).join('')}
   $('#list').innerHTML=html+(hidden&&!state.nop?`<div class="empty">${hidden} more matches have no pick yet because bookmaker odds are not available for them.</div>`:'')}
 let ACC=[];
-function accs(){const k=state.mk,c=state.data.filter((m)=>status(m)=='up').map((m)=>({m,p:pick(m,k)})).filter((x)=>x.p&&x.p.c>=60).sort((a,b)=>b.p.c-a.p.c);
+function accs(){const k=state.mk,c=state.data.filter((m)=>status(m)=='up').map((m)=>({m,p:pick(m,k)})).filter((x)=>x.p&&x.p.c>=60&&odds(x.m,k)&&Number(odds(x.m,k)[x.p.i])>1).sort((a,b)=>b.p.c-a.p.c);
   ACC=[2,3,4].filter((n)=>c.length>=n).map((n)=>c.slice(0,n));
   $('#acc').innerHTML=ACC.length?ACC.map((a,i)=>{const o=a.reduce((t,x)=>t*odds(x.m,k)[x.p.i],1),ch=a.reduce((t,x)=>t*x.p.c/100,1);
     return `<div class="ac glass"><h4>${a.length}-leg accumulator</h4><ul>${a.map((x)=>`<li><span>${esc(x.m.h)} v ${esc(x.m.a)}<br><small>${MK[k].n[x.p.i]} · ${x.p.c}%</small></span><span>${odds(x.m,k)[x.p.i].toFixed(2)}</span></li>`).join('')}</ul><p>Combined odds <b>${o.toFixed(2)}</b> · combined chance <b>${Math.round(ch*100)}%</b></p><button class="btn" data-acc="${i}">Add all to slip</button></div>`}).join(''):'<div class="empty" style="flex:1">Accumulators appear when at least two upcoming picks have a chance of 60% or more.</div>'}
-function addPick(m,p,k){if(!state.slip.some((x)=>x.id==m.id))state.slip.push({id:m.id,h:m.h,a:m.a,t:MK[k].n[p.i],o:odds(m,k)[p.i],c:p.c})}
+function addPick(m,p,k){if(!state.slip.some((x)=>x.id==m.id)&&odds(m,k)&&Number(odds(m,k)[p.i])>1)state.slip.push({id:m.id,h:m.h,a:m.a,t:MK[k].n[p.i],o:odds(m,k)[p.i],c:p.c})}
 function drawSlip(){sv('zp_slip',state.slip);$('#sn').textContent=state.slip.length;
   $('#sl').innerHTML=state.slip.length?state.slip.map((x)=>`<div class="it"><div><b>${esc(x.h)} v ${esc(x.a)}</b><small>${esc(x.t)} · ${x.c}%</small></div><div><b class="mono">${x.o.toFixed(2)}</b><button data-rm="${x.id}" aria-label="Remove">×</button></div></div>`).join(''):'<div class="note">Tap + Slip on any upcoming pick to build your slip.</div>';
   const o=state.slip.reduce((t,x)=>t*x.o,1),c=state.slip.reduce((t,x)=>t*x.c/100,1),st=parseFloat(($('#stk').value||'').replace(',','.'));
