@@ -3,129 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zurepick | AI-Powered Smart Football Predictions & Analytics</title>
-    <meta name="google-site-verification" content="1BmCB9xtaDwOYkdEFsl8EDYyoj47MzsnrTT83CygajY" />
-    
+    <title>ZurePick | Professional Sports Analytics & Predictions</title>
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Stylesheet -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="site.css">
 </head>
 <body>
 
-    <!-- STICKY GLASSMORPHISM NAVBAR -->
+    <!-- Header Navigation -->
     <header class="glass-header">
         <div class="nav-container">
             <a href="index.html" class="logo">
-                <i class="fa-solid fa-bolt-lightning"></i> ZURE<span>PICK</span>
+                <i class="fa-solid fa-bolt-lightning"></i>ZURE<span>PICK</span>
             </a>
             <nav class="nav-links">
-                <a href="index.html" class="active">Home</a>
-                <a href="football-predictions-today.html">Today's Tips</a>
-                <a href="tools.html">Analytics Hub</a>
-                <a href="track-record.html">Track Record</a>
+                <a href="index.html" class="active">Today</a>
+                <a href="trackrecord.html">Track Record</a>
+                <a href="howitworks.html">How It Works</a>
             </nav>
-            <div class="nav-actions">
-                <a href="football-predictions-today.html" class="btn-glow">Live Tips <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
+            <a href="live.html" class="btn-glow">Live Tips <i class="fa-solid fa-arrow-right"></i></a>
         </div>
     </header>
 
-    <!-- MAIN CONTAINER -->
+    <!-- Main Application Container -->
     <main class="main-content">
-
-        <!-- HERO SECTION -->
+        
+        <!-- Hero Section -->
         <section class="hero-section">
             <div class="hero-badge">
-                <span class="pulse-dot"></span> Advanced Data Analytics Engine Active
+                <i class="fa-solid fa-chart-line"></i> Advanced Model Accuracy • 2026 Edition
             </div>
-            <h1>Smart Football Predictions <br><span class="gradient-text">Engineered for Precision</span></h1>
+            <h1>Engineered for <span class="gradient-text">Precision</span></h1>
             <p>Harnessing real-time statistics, deep historical trends, and algorithm-backed probabilities to give you the ultimate edge.</p>
-            
-            <div class="hero-search-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Search team, league, or match...">
-                <button>Search</button>
+        </section>
+
+        <!-- Market Filter Pills (Competitor-Inspired Quick Navigation) -->
+        <div class="market-pills-scroll">
+            <a href="index.html" class="pill active">All Matches</a>
+            <a href="over2.5.html" class="pill">Over 2.5 Goals</a>
+            <a href="btts.html" class="pill">BTTS / GG</a>
+            <a href="doublechance.html" class="pill">Double Chance</a>
+            <a href="accumulator.html" class="pill">Accumulator</a>
+        </div>
+
+        <!-- Featured Match Section -->
+        <section class="featured-pick-card">
+            <div class="featured-header">
+                <span><i class="fa-solid fa-fire text-orange"></i> Featured Pick of the Day</span>
+                <span class="loading-pill">Loading Data...</span>
+            </div>
+            <div class="featured-body" id="featured-pick-container">
+                <!-- Data injected dynamically later -->
+                <p class="text-muted">Analyzing today's top probability fixture...</p>
             </div>
         </section>
 
-        <!-- QUICK LEAGUE SCROLLER -->
-        <section class="leagues-ticker">
-            <div class="ticker-track">
-                <a href="premier-league-predictions.html" class="league-pill"><i class="fa-solid fa-trophy"></i> Premier League</a>
-                <a href="champions-league-predictions.html" class="league-pill"><i class="fa-solid fa-star"></i> Champions League</a>
-                <a href="la-liga-predictions.html" class="league-pill"><i class="fa-solid fa-futbol"></i> La Liga</a>
-                <a href="serie-a-predictions.html" class="league-pill"><i class="fa-solid fa-shield-halved"></i> Serie A</a>
-                <a href="bundesliga-predictions.html" class="league-pill"><i class="fa-solid fa-bolt"></i> Bundesliga</a>
-                <a href="ligue-1-predictions.html" class="league-pill"><i class="fa-solid fa-crown"></i> Ligue 1</a>
+        <!-- Main Predictions Feed Container -->
+        <section class="predictions-section">
+            <div class="section-title-row">
+                <h2>Football Predictions Today</h2>
+                <span class="date-tag">Updated 27 Oct 2026</span>
             </div>
-        </section>
 
-        <!-- FEATURED MATCH OF THE DAY (Dynamic Container) -->
-        <section class="featured-wrapper" id="featured-match-container">
-            <!-- JavaScript will dynamically inject the featured match card here -->
-            <div class="section-header">
-                <h2><i class="fa-solid fa-fire text-orange"></i> Featured Pick of the Day</h2>
-                <span class="live-badge">Loading Data...</span>
-            </div>
-        </section>
+            <!-- Matches Table / Card Feed -->
+            <div class="predictions-feed" id="matches-feed-container">
+                <!-- Example Structured Row Item (Template for Dynamic Injection) -->
+                <div class="match-card-row">
+                    <div class="match-time-box">
+                        <span class="match-date">27 Oct</span>
+                        <span class="match-hour">21:00</span>
+                    </div>
+                    <div class="match-teams-box">
+                        <span class="team-name home">Alcazar</span>
+                        <span class="team-name away">Malaga</span>
+                        <span class="league-tag">Copa del Rey</span>
+                    </div>
+                    <div class="match-prediction-box">
+                        <span class="pred-label">Over 2.5</span>
+                        <span class="odds-badge">@ 1.14</span>
+                        <span class="chance-badge">83% chance</span>
+                    </div>
+                </div>
 
-        <!-- QUICK MARKET CATEGORIES -->
-        <section class="markets-grid-section">
-            <div class="section-header">
-                <h2>Explore Markets</h2>
-            </div>
-            <div class="markets-grid">
-                <a href="over-2-5-goals-predictions.html" class="market-tile">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <h3>Over 2.5 Goals</h3>
-                    <p>High-scoring match algorithms</p>
-                </a>
-                <a href="btts-predictions.html" class="market-tile">
-                    <i class="fa-solid fa-arrows-split-up-and-left"></i>
-                    <h3>BTTS / GG</h3>
-                    <p>Both teams to find the net</p>
-                </a>
-                <a href="double-chance-predictions.html" class="market-tile">
-                    <i class="fa-solid fa-shield-check"></i>
-                    <h3>Double Chance</h3>
-                    <p>Secure accumulator builders</p>
-                </a>
-                <a href="over-1-5-goals-predictions.html" class="market-tile">
-                    <i class="fa-solid fa-gauge-high"></i>
-                    <h3>Over 1.5 Goals</h3>
-                    <p>Safe banker selections</p>
-                </a>
+                <div class="match-card-row">
+                    <div class="match-time-box">
+                        <span class="match-date">27 Oct</span>
+                        <span class="match-hour">20:45</span>
+                    </div>
+                    <div class="match-teams-box">
+                        <span class="team-name home">Chichester City</span>
+                        <span class="team-name away">Hanworth Villa</span>
+                        <span class="league-tag">Non League Premier</span>
+                    </div>
+                    <div class="match-prediction-box">
+                        <span class="pred-label">Over 2.5</span>
+                        <span class="odds-badge">@ 1.25</span>
+                        <span class="chance-badge">76% chance</span>
+                    </div>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <!-- FOOTER -->
-    <footer class="modern-footer">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <a href="#" class="logo">ZURE<span>PICK</span></a>
-                <p>Next-generation football predictive intelligence.</p>
-            </div>
-            <div class="footer-links">
-                <a href="how-it-works.html">How It Works</a>
-                <a href="responsible-gambling.html">Responsible Gambling</a>
-                <a href="track-record.html">Track Record</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Zurepick. All rights reserved.</p>
-        </div>
+    <!-- Footer -->
+    <footer class="glass-footer">
+        <p>&copy; 2026 ZurePick Analytics. All rights reserved. Odds are estimates, gamble responsibly (18+).</p>
     </footer>
 
-    <!-- Frontend Dynamic Controller Script -->
-    <script src="app.js"></script>
+    <!-- Script Placeholder (Will be wired up after design phase) -->
+    <!-- <script src="app.js"></script> -->
 </body>
 </html>
