@@ -5,9 +5,10 @@
 :root {
     --bg-deep: #030712;
     --bg-card: rgba(17, 24, 39, 0.75);
+    --bg-card-hover: rgba(31, 41, 55, 0.85);
     --border-color: rgba(255, 255, 255, 0.08);
     --accent-green: #10b981;
-    --accent-glow: rgba(16, 185, 129, 0.25);
+    --accent-glow: rgba(16, 185, 129, 0.2);
     --accent-blue: #3b82f6;
     --text-main: #f9fafb;
     --text-muted: #9ca3af;
@@ -27,22 +28,23 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     background-image: 
-        radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 40%);
+        radial-gradient(circle at 15% 10%, rgba(59, 130, 246, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 85% 90%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
 }
 
+/* Header Navbar */
 .glass-header {
     position: sticky;
     top: 0;
     z-index: 1000;
     background: rgba(3, 7, 18, 0.85);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border-color);
-    padding: 1rem 2rem;
+    padding: 1rem 1.5rem;
 }
 
 .nav-container {
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -50,11 +52,14 @@ body {
 }
 
 .logo {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: 800;
     color: #fff;
     text-decoration: none;
     letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .logo span {
@@ -63,18 +68,24 @@ body {
 
 .logo i {
     color: var(--accent-green);
-    margin-right: 4px;
 }
 
 .nav-links {
-    display: flex;
-    gap: 2rem;
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+    }
 }
 
 .nav-links a {
     color: var(--text-muted);
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.95rem;
     transition: color 0.2s ease;
 }
 
@@ -85,25 +96,25 @@ body {
 .btn-glow {
     background: linear-gradient(135deg, #10b981, #059669);
     color: white;
-    padding: 0.6rem 1.2rem;
+    padding: 0.5rem 1.1rem;
     border-radius: 9999px;
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.9rem;
-    box-shadow: 0 0 20px var(--accent-glow);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 0.85rem;
+    box-shadow: 0 0 15px var(--accent-glow);
+    transition: transform 0.2s ease;
 }
 
+/* Main Content Layout */
 .main-content {
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 2.5rem 1.5rem;
+    padding: 2rem 1rem;
 }
 
 .hero-section {
     text-align: center;
-    padding: 3rem 1rem;
-    margin-bottom: 2rem;
+    padding: 2rem 1rem 1.5rem 1rem;
 }
 
 .hero-badge {
@@ -112,19 +123,25 @@ body {
     gap: 8px;
     background: rgba(16, 185, 129, 0.1);
     border: 1px solid rgba(16, 185, 129, 0.2);
-    padding: 0.4rem 1rem;
+    padding: 0.35rem 0.9rem;
     border-radius: 99px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--accent-green);
     font-weight: 500;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .hero-section h1 {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
     font-weight: 800;
     line-height: 1.2;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .hero-section h1 {
+        font-size: 3rem;
+    }
 }
 
 .gradient-text {
@@ -135,123 +152,211 @@ body {
 
 .hero-section p {
     color: var(--text-muted);
-    font-size: 1.1rem;
-    max-width: 650px;
-    margin: 0 auto 2rem auto;
+    font-size: 1rem;
+    max-width: 580px;
+    margin: 0 auto;
 }
 
-.markets-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.2rem;
-    margin-bottom: 3rem;
+/* Market Category Pills Scroll */
+.market-pills-scroll {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.5rem 0;
+    scrollbar-width: none; /* Hide scrollbar for mobile sleekness */
 }
 
-.market-tile {
+.market-pills-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.pill {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    padding: 1.5rem;
-    border-radius: 16px;
+    color: var(--text-muted);
+    padding: 0.5rem 1rem;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
     text-decoration: none;
-    color: var(--text-main);
     transition: all 0.2s ease;
+}
+
+.pill:hover, .pill.active {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: var(--accent-green);
+    color: #fff;
+}
+
+/* Featured Card */
+.featured-pick-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
     backdrop-filter: blur(10px);
 }
 
-.market-tile:hover {
-    border-color: var(--accent-blue);
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+.featured-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-green);
+    margin-bottom: 0.75rem;
 }
 
-.market-tile i {
-    font-size: 1.5rem;
-    color: var(--accent-blue);
+.loading-pill {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+/* Predictions Feed & Structured Rows (Competitor Benchmarked Card Layout) */
+.section-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 1rem;
 }
 
-.market-tile h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 0.4rem;
+.section-title-row h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
 }
 
-.market-tile p {
-    font-size: 0.85rem;
+.date-tag {
+    font-size: 0.8rem;
     color: var(--text-muted);
 }
 
-/* ==========================================
-   MOBILE TABLE-TO-CARD REDESIGN (CLEAN ROW FIX)
-   ========================================== */
-
-@media (max-width: 768px) {
-    table thead, 
-    .predictions-table thead {
-        display: none !important;
-    }
-
-    table, 
-    .predictions-table {
-        width: 100% !important;
-        border-collapse: separate !important;
-        border-spacing: 0 !important;
-        background: transparent !important;
-    }
-
-    tr, 
-    .predictions-table tr {
-        display: flex !important;
-        flex-direction: column !important;
-        background: rgba(17, 24, 39, 0.9) !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 16px !important;
-        padding: 1.25rem !important;
-        margin-bottom: 1rem !important;
-        backdrop-filter: blur(12px) !important;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
-    }
-
-    td, 
-    .predictions-table td {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        padding: 0.6rem 0 !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
-        text-align: right !important;
-        color: #f9fafb !important;
-        font-size: 0.95rem !important;
-        width: 100% !important;
-    }
-
-    td:last-child, 
-    .predictions-table td:last-child {
-        border-bottom: none !important;
-        padding-bottom: 0 !important;
-    }
-
-    td:nth-child(2), 
-    .match-col {
-        font-weight: 700 !important;
-        font-size: 1.05rem !important;
-        color: #ffffff !important;
-        text-align: left !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 4px !important;
-    }
-
-    td:nth-child(1) {
-        background: rgba(255, 255, 255, 0.05);
-        padding: 0.35rem 0.7rem !important;
-        border-radius: 6px;
-        font-size: 0.85rem !important;
-        color: #9ca3af !important;
-        width: auto !important;
-        align-self: flex-start;
-        margin-bottom: 0.5rem;
-        border-bottom: none !important;
-    }
+.predictions-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
+
+/* Individual Match Row Card */
+.match-card-row {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 70px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    backdrop-filter: blur(10px);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.match-card-row:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Time Box */
+.match-time-box {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    padding: 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.match-date {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.match-hour {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* Teams Box */
+.match-teams-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.team-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.team-name.away {
+    color: #d1d5db;
+    font-weight: 500;
+}
+
+.league-tag {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Prediction & Odds Box */
+.match-prediction-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.pred-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.odds-badge {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--accent-green);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.chance-badge {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Footer */
+.glass-footer {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: 3rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Responsive adjustments for extremely small screens */
+@media (max-width: 480px) {
+    .match-card-row {
+        grid-template-columns: 55px 1fr;
+        grid-template-rows: auto auto;
+    }
+    .match-prediction-box {
+        grid-column: span 2;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid rgba(255,255,255,0.04);
+        padding-top: 8px;
+        margin-top: 4px;
+    }
+               }
