@@ -1,196 +1,131 @@
-<!doctype html>
-<html lang="en"><head>
-  <meta name="google-site-verification" content="1BmCB9xtaDwOYkdEFsl8EDYyoj47MzsnrTT83CygajY" />
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ZurePicks | Free Football Predictions & Betting Tips</title>
-<meta name="description" content="Free football predictions with win probability, odds and results for leagues worldwide. See which picks won. No sign-up.">
-<meta name="theme-color" content="#0b0d10">
-<meta name="color-scheme" content="dark"><link rel="canonical" href="https://sidolly20.github.io/zurepick-site/"><meta property="og:title" content="ZurePicks | Free Football Predictions &amp; Betting Tips"><meta property="og:description" content="Free football predictions with win probability, odds and results. See which picks won."><meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a7d4b'/%3E%3Cpath d='M9 10h14l-10 12h10' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<style>
-:root{--bg:#0b0d10;--card:#12151a;--raised:#171b22;--ink:#f2f5f7;--mut:#a3adba;--dim:#7c8795;--line:rgba(255,255,255,.09);--g:#31f28c;--pu:#9b7bff;--gold:#ffc53d;--no:#ff6b81;--live:#ff5a5f;--glass:rgba(23,27,34,.62);color-scheme:dark}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(800px 420px at 90% -10%,rgba(49,242,140,.14),transparent 60%),radial-gradient(700px 480px at -10% 100%,rgba(155,123,255,.10),transparent 60%)}
-.mono,.od,.pl small,.bd,.s b{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums}
-a{color:var(--g)}:focus-visible{outline:2px solid var(--g);outline-offset:2px}
-header{position:sticky;top:0;z-index:20;background:rgba(11,13,16,.78);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
-header .in{max-width:1440px;margin:auto;padding:0 1rem;display:flex;align-items:center;gap:1rem;height:62px}
-.logo{font:800 1.25rem "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:-.03em;display:flex;align-items:center;gap:.55rem;margin-right:auto}
-.logo i{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--g),var(--pu));color:#04130c;display:grid;place-items:center;font-style:normal;font-size:.95rem}
-.nv{display:flex;gap:1rem;font-size:.85rem;font-weight:600}.nv a{color:var(--mut);text-decoration:none;white-space:nowrap}.nv a:hover{color:var(--g)}
-.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:.42rem .85rem;font:600 .84rem inherit;font-family:inherit;cursor:pointer;white-space:nowrap}
-.chip[aria-pressed=true]{background:var(--g);color:#04130c;border-color:var(--g)}.chip small{display:block;font-weight:500;opacity:.7;font-size:.68rem}
-.app{max-width:1480px;margin:auto;padding:1.1rem;display:grid;gap:1.1rem;grid-template-columns:minmax(0,1fr)}
-@media(min-width:1100px){.app{grid-template-columns:260px minmax(0,1fr) 340px;align-items:start}.L,.R{position:sticky;top:78px;max-height:calc(100vh - 90px);overflow:auto}#slipbar{display:none!important}.L summary{display:none}}
-.glass{background:var(--glass);backdrop-filter:blur(16px) saturate(140%);border:1px solid var(--line);border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 40px -26px #000}
-.L{padding:1rem}.L h3,.R h3{margin:.9rem 0 .45rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--dim)}.L h3:first-of-type{margin-top:0}
-.L summary{font-weight:700;cursor:pointer}.vs{display:flex;flex-wrap:wrap;gap:.4rem}.vs .chip{flex:1 1 auto;text-align:center}
-.days{display:flex;flex-wrap:wrap;gap:.4rem}.days .chip{flex:1 1 40%;text-align:left}
-select.chip{width:100%;appearance:none;border-radius:12px}input[type=range]{width:100%;accent-color:var(--g)}
-.hero{padding:1.1rem 1.2rem;margin-bottom:1rem;background:linear-gradient(135deg,rgba(49,242,140,.10),rgba(155,123,255,.07)),var(--glass)}
-h1{font:800 clamp(1.5rem,4.2vw,2.3rem)/1.1 "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:-.035em;margin:0 0 .3rem}h1 em{font-style:normal;background:linear-gradient(90deg,var(--g),var(--pu));-webkit-background-clip:text;background-clip:text;color:transparent}
-.sub{color:var(--mut);margin:0 0 .9rem;max-width:62ch}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem}
-.s{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:.55rem .75rem}.s b{display:block;font-size:1.45rem;line-height:1.15}.s span{font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}.s.w b{color:var(--g)}.s.l b{color:var(--no)}
-.sec{margin:1.1rem 0 .5rem;display:flex;align-items:baseline;justify-content:space-between;gap:.6rem}.sec h2{margin:0;font-size:1.1rem}.sec span{font-size:.78rem;color:var(--dim)}
-.acc{display:flex;gap:.7rem;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.4rem;scrollbar-width:none}.acc::-webkit-scrollbar{display:none}
-.ac{flex:none;width:300px;scroll-snap-align:start;padding:.85rem .95rem}.ac h4{margin:0 0 .45rem;font-size:.82rem;color:var(--gold)}.ac ul{list-style:none;margin:0 0 .6rem;padding:0;font-size:.82rem}.ac li{display:flex;justify-content:space-between;gap:.5rem;padding:.18rem 0;border-bottom:1px dashed var(--line)}.ac li span:last-child{font-family:"JetBrains Mono",ui-monospace,monospace;color:var(--g)}
-.ac p{margin:.2rem 0 .5rem;font-size:.8rem;color:var(--mut)}.ac p b{color:var(--ink);font-family:"JetBrains Mono",ui-monospace,monospace}
-.btn{border:0;border-radius:12px;padding:.5rem .9rem;font:700 .84rem inherit;font-family:inherit;cursor:pointer;background:var(--g);color:#04130c}.btn.gh{background:transparent;color:var(--ink);border:1px solid var(--line)}
-.lgh{margin:1.1rem 0 .5rem;font-size:.75rem;color:var(--dim);display:flex;align-items:center;gap:.5rem;text-transform:uppercase;letter-spacing:.07em;font-weight:700}.lgh img{width:20px;height:20px;object-fit:contain}
-.m{padding:.85rem 1rem;margin-bottom:.65rem;border-left:3px solid var(--line);background:linear-gradient(115deg,rgba(255,255,255,.025),transparent 52%),var(--glass);transition:transform .18s ease,border-color .18s ease,background .18s ease}.m:hover{transform:translateY(-1px);border-color:rgba(49,242,140,.45)}.m.won{border-left-color:var(--g);background:linear-gradient(90deg,rgba(49,242,140,.10),var(--glass) 55%)}.m.lost{border-left-color:var(--no);background:linear-gradient(90deg,rgba(255,107,129,.12),var(--glass) 55%)}
-.top{display:flex;justify-content:space-between;font-size:.76rem;color:var(--dim);margin-bottom:.4rem}.live{color:var(--live);font-weight:800}.live:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--live);margin-right:5px;animation:p 1.4s infinite}@keyframes p{50%{opacity:.25}}
-.mid{display:grid;grid-template-columns:1fr minmax(170px,230px) auto;gap:.9rem;align-items:center}.tm b{display:block;font-weight:650}
-.fm{display:flex;gap:3px;margin:2px 0 4px}.fm i{width:10px;height:10px;border-radius:50%;background:var(--dim)}.fm i.fW{background:var(--g)}.fm i.fL{background:var(--no)}
-.pl{font-weight:800;letter-spacing:-.01em}.pl small{font-weight:600;color:var(--mut);font-size:.76rem;margin-left:.3rem}
-.ring{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--c,var(--g)) calc(var(--p)*1%),rgba(255,255,255,.1) 0);position:relative;font-size:.78rem;font-weight:700;float:right;margin-left:.5rem}.ring:after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--card)}.ring u{position:relative;z-index:1;text-decoration:none}
-.pcn{font-size:.78rem;color:var(--mut)}.pcn b{color:var(--ink)}
-.bd{min-width:84px;text-align:center;border-radius:12px;padding:.42rem .6rem;font-weight:800;font-size:.78rem;letter-spacing:.03em;background:var(--bg);color:var(--mut);border:1px solid var(--line)}.bd big{display:block;font-size:1.05rem}
-.bd.won{background:var(--g);color:#04130c;border-color:var(--g)}.bd.lost{background:var(--no);color:#2a0710;border-color:var(--no)}.bd.lv{background:transparent;color:var(--live);border-color:var(--live)}
-.bot{display:flex;align-items:center;gap:.4rem;margin-top:.55rem;flex-wrap:wrap}.bot i{font-style:normal;font-size:.72rem;color:var(--mut);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:.1rem .45rem;font-family:"JetBrains Mono",ui-monospace,monospace}.bot i.p{border-color:var(--g);color:var(--ink);font-weight:700}
-.bot .sc{margin-left:auto;font-size:.8rem;font-weight:700;font-family:"JetBrains Mono",ui-monospace,monospace}.star,.add{background:none;border:1px solid var(--line);border-radius:10px;cursor:pointer;color:var(--mut);padding:.1rem .5rem;font:600 .78rem inherit;font-family:inherit}.star[aria-pressed=true]{color:var(--gold)}.add{color:var(--g);border-color:var(--g)}.add[aria-pressed=true]{background:var(--g);color:#04130c}
-.R{padding:1rem}.R .it{display:flex;justify-content:space-between;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--line);font-size:.82rem}.R .it b{display:block}.R .it small{color:var(--dim)}.R .it button{background:none;border:0;color:var(--no);cursor:pointer;font-size:1rem}
-.tot{margin:.7rem 0;display:grid;grid-template-columns:1fr 1fr;gap:.5rem}.tot div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:.45rem .6rem}.tot b{display:block;font-family:"JetBrains Mono",ui-monospace,monospace}.tot span{font-size:.68rem;color:var(--dim);text-transform:uppercase}
-.R input{width:100%;margin:.2rem 0;font:inherit;padding:.5rem .7rem;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}.note{font-size:.76rem;color:var(--dim);margin:.5rem 0}
-.lb{width:100%;font-size:.8rem;border-collapse:collapse}.lb td{padding:.3rem 0;border-bottom:1px solid var(--line)}.lb td:last-child{text-align:right;font-family:"JetBrains Mono",ui-monospace,monospace}
-#slipbar{position:fixed;left:.7rem;right:.7rem;bottom:calc(.7rem + env(safe-area-inset-bottom));z-index:30;display:flex;justify-content:space-between;padding:.8rem 1rem;border-radius:16px;background:var(--g);color:#04130c;font-weight:800;border:0;cursor:pointer}
-@media(max-width:1099px){.R{position:fixed;inset:auto 0 0 0;z-index:40;max-height:82vh;overflow:auto;border-radius:22px 22px 0 0;background:var(--raised);transform:translateY(105%);transition:transform .22s cubic-bezier(.2,.8,.2,1)}.R.open{transform:none}}
-.empty{padding:2rem 1rem;text-align:center;color:var(--mut);background:var(--card);border:1px dashed var(--line);border-radius:18px}
-.seo{margin-top:2rem;color:var(--mut);font-size:.9rem}.seo h2{color:var(--ink);font-size:1.05rem}footer{margin:1.5rem 0 5rem;color:var(--mut);font-size:.8rem}footer b{color:var(--ink)}.fl a{margin-right:.8rem;white-space:nowrap;line-height:2}
-@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.mid{grid-template-columns:1fr auto;grid-template-areas:"t b" "p p"}.tm{grid-area:t}.bd{grid-area:b}.pk{grid-area:p}.nv a:nth-child(n+2){display:none}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-#x{display:none}@media(max-width:1099px){#x{display:inline-block}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zurepick | AI-Powered Smart Football Predictions & Analytics</title>
+    <meta name="google-site-verification" content="1BmCB9xtaDwOYkdEFsl8EDYyoj47MzsnrTT83CygajY" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="site.css">
+</head>
+<body>
 
-.data-line{display:flex;align-items:center;gap:.55rem;margin:.3rem 0 .75rem;color:var(--mut);font-size:.76rem}.data-dot{width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:0 0 12px rgba(49,242,140,.45);flex:none}.data-line button{margin-left:auto}.search-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.65rem;margin:.75rem 0;color:var(--mut);font-size:.8rem}.search-row input{width:100%;min-width:0;background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:.68rem .85rem;font:inherit;outline:none}.search-row input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(49,242,140,.10)}.count{font-size:.72rem;white-space:nowrap;color:var(--dim)}@media(max-width:480px){.search-row{grid-template-columns:1fr auto}.search-row label{grid-column:1/-1}.search-row input{grid-column:1/-1}.count{grid-column:2;grid-row:2}}
-</style><script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"zurepicks","url":"https://sidolly20.github.io/zurepick-site/"}</script></head><body>
-<header><div class="in"><div class="logo"><i>Z</i>ZurePicks</div><nav class="nv"><a href="track-record.html">Track record</a><a href="how-it-works.html">How it works</a><a href="tools.html">Tools</a></nav><button class="chip" id="fav" aria-pressed="false">☆ Saved <span id="fc">0</span></button></div></header>
-<div class="app">
-<aside class="L glass"><details id="flt" open><summary>Filters</summary>
-<h3>View</h3><div class="vs" id="tabs"></div>
-<h3>Day</h3><div class="days" id="days"></div>
-<h3>Market</h3><div class="vs" id="mk"></div>
-<h3>League</h3><select class="chip" id="lg" aria-label="League"></select>
-<h3>Minimum chance: <span id="mcv">0</span>%</h3><input type="range" id="mc" min="0" max="90" step="5" value="0" aria-label="Minimum chance">
-<h3>Options</h3><div class="vs"><button class="chip" id="srt" aria-pressed="false">Highest chance first</button><button class="chip" id="nop" aria-pressed="false">Show matches without a pick</button></div>
-</details></aside>
-<main>
-<section class="hero glass"><h1>Football predictions, <em>checked every day</em></h1><p class="sub">Predictions from bookmaker odds when available, supported by historical team statistics when odds are missing. Results are tracked after full time. Free, no sign-up.</p>
-<div class="stats"><div class="s"><b id="s1">0</b><span>Predictions</span></div><div class="s w"><b id="s2">0</b><span>Won</span></div><div class="s l"><b id="s3">0</b><span>Lost</span></div><div class="s"><b id="s4">–</b><span>Win rate</span></div></div></section>
-<div class="data-line"><span class="data-dot" aria-hidden="true"></span><span id="dataStatus" role="status" aria-live="polite">Loading match data…</span><button class="chip" id="refreshData" type="button">↻ Reload data</button></div>
-<div class="search-row"><label for="matchSearch">Find a match</label><input id="matchSearch" type="search" placeholder="Search team, league or country…" autocomplete="off"><span id="matchCount" class="count"></span></div>
-<div class="sec"><h2>Hot accumulators</h2><span>Built from today's most likely picks. More legs means a lower chance.</span></div>
-<div class="acc" id="acc"></div>
-<div id="list"></div>
-<section class="seo"><h2>Free football predictions today</h2><p>ZurePicks uses bookmaker odds when available and a statistical team-form model when odds are missing and sufficient historical data exists. Odds display as -- when unavailable. Predictions are estimates, not guarantees; the <a href="track-record.html">track record</a> helps evaluate settled results.</p></section>
+    <!-- STICKY GLASSMORPHISM NAVBAR -->
+    <header class="glass-header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-bolt-lightning"></i> ZURE<span>PICK</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="football-predictions-today.html">Today's Tips</a>
+                <a href="tools.html">Analytics Hub</a>
+                <a href="track-record.html">Track Record</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="football-predictions-today.html" class="btn-glow">Live Tips <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </header>
 
+    <!-- MAIN CONTAINER -->
+    <main class="main-content">
 
-</main>
-<aside class="R glass" id="slip"><h3>Your slip <button class="chip" id="x" type="button" style="float:right">Close</button></h3><div id="sl"></div>
-<div class="tot"><div><span>Combined odds</span><b id="to">–</b></div><div><span>Combined chance</span><b id="tc">–</b></div></div>
-<input id="stk" inputmode="decimal" placeholder="Stake (optional)" aria-label="Stake"><div class="note" id="ret"></div>
-<h3>Take it to your bookmaker</h3><input id="bk" maxlength="30" placeholder="Bookmaker name (optional)" aria-label="Bookmaker"><input id="bc" maxlength="30" placeholder="Booking code you created (optional)" aria-label="Booking code">
-<div style="display:flex;gap:.5rem;margin-top:.4rem"><button class="btn" id="cp">Copy slip</button><button class="btn gh" id="cl">Clear</button></div>
-<div class="note">Odds change. Check the price at your bookmaker before you bet. ZurePicks cannot create booking codes; copy your slip and enter it on your bookmaker's site, or add a code you already made.</div>
-<h3>Best markets, last 30 days</h3><div id="lbd"><div class="note">Loading…</div></div>
-<div class="note"><b>18+ only.</b> <a href="responsible-gambling.html">Responsible gambling help</a></div></aside>
-</div>
-<button id="slipbar"><span>Slip <b id="sn">0</b></span><span>Open</span></button>
-<footer style="max-width:1440px;margin:0 auto;padding:0 1rem 5rem"><p class="fl"><a href="football-predictions-today.html">Predictions today</a><a href="football-predictions-tomorrow.html">Tomorrow</a><a href="over-2-5-goals-predictions.html">Over 2.5 goals</a><a href="over-1-5-goals-predictions.html">Over 1.5 goals</a><a href="btts-predictions.html">Both teams to score</a><a href="double-chance-predictions.html">Double chance</a><a href="premier-league-predictions.html">Premier League</a><a href="la-liga-predictions.html">La Liga</a><a href="serie-a-predictions.html">Serie A</a><a href="bundesliga-predictions.html">Bundesliga</a><a href="ligue-1-predictions.html">Ligue 1</a><a href="champions-league-predictions.html">Champions League</a><a href="track-record.html">Track record</a><a href="how-it-works.html">How it works</a><a href="responsible-gambling.html">Responsible gambling</a><a href="tools.html">Odds tools</a></p><p><b>18+ only.</b> Percentages are worked out from bookmaker odds. They are estimates, not guarantees, and a 70% pick still loses about three times in ten. Only stake what you can afford to lose, and check that betting is legal where you live. Free help: <a href="https://www.begambleaware.org">BeGambleAware.org</a>.</p><p>© 2026 ZurePicks</p></footer>
-<script src="api-config.js"></script>
-<script>
-const API_BASE=String(window.ZUREPICKS_API_BASE||'').replace(/\/+$/,'');
-const TZ='Africa/Lagos',$=(s)=>document.querySelector(s),esc=(v)=>String(v??'').replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const dstr=(o)=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ}).format(new Date(Date.now()+o*864e5)),hm=(i)=>new Date(i).toLocaleTimeString('en-GB',{timeZone:TZ,hour:'2-digit',minute:'2-digit'});
-const LIVE=['1H','HT','2H','ET','BT','P','LIVE','INT'],DONE=['FT','AET','PEN'];
-const MK={o:{l:'1X2',n:['Home win','Draw','Away win'],ev:(i,h,a)=>i==0?h>a:i==1?h==a:a>h},dc:{l:'Double chance',n:['Home or draw','Home or away','Draw or away'],ev:(i,h,a)=>i==0?h>=a:i==1?h!=a:a>=h},ou:{l:'Over/Under 2.5',n:['Over 2.5 goals','Under 2.5 goals'],ev:(i,h,a)=>i==0?h+a>2.5:h+a<2.5},o15:{l:'Over/Under 1.5',n:['Over 1.5 goals','Under 1.5 goals'],ev:(i,h,a)=>i==0?h+a>1.5:h+a<1.5},bt:{l:'Both teams score',n:['Both teams score','Not both score'],ev:(i,h,a)=>i==0?h>0&&a>0:!(h>0&&a>0)}};
-const norm=(od)=>{const s=od.reduce((t,x)=>t+1/x,0);return od.map((x)=>1/x/s)};
-function pick(m,k){
-  const apiMarket={o:'1x2',dc:'double-chance',ou:'over-under-2.5',o15:'over-under-1.5',bt:'both-teams-score'}[k];
-  const serverPick=m.predictions&&m.predictions[apiMarket];
-  if(serverPick&&Number.isFinite(Number(serverPick.probability))){
-    const labels=MK[k].n,sel=String(serverPick.selection||'').toLowerCase();
-    let i=labels.findIndex(x=>x.toLowerCase()===sel);
-    if(i<0){const aliases={'home win':0,'draw':1,'away win':2,'yes':0,'no':1,'both teams score':0,'not both score':1};i=aliases[sel]??Number(serverPick.index)}
-    if(k==='dc'&&i>=0&&i<3)return {i,c:Number(serverPick.probability),method:serverPick.method,odds:serverPick.decimalOdds};
-    if(i>=0&&i<labels.length)return {i,c:Number(serverPick.probability),method:serverPick.method,odds:serverPick.decimalOdds};
-  }
-  if(k==='dc'){if(!m.o||!m.dc)return null;const p=norm(m.o),q=[p[0]+p[1],p[0]+p[2],p[1]+p[2]],i=q.indexOf(Math.max(...q));return{i,c:Math.round(q[i]*100),method:'bookmaker-odds-normalized'}}
-  const od=m[k];if(!od)return null;const p=norm(od),i=p.indexOf(Math.max(...p));return{i,c:Math.round(p[i]*100),method:'bookmaker-odds-normalized'}}
-const odds=(m,k)=>k=='dc'?m.dc:m[k];
-const status=(m)=>LIVE.includes(m.st)?'live':DONE.includes(m.st)?'done':['NS','TBD'].includes(m.st)?'up':'other';
-const result=(m,p)=>p&&status(m)=='done'&&m.sc[0]!=null?(MK[state.mk].ev(p.i,m.sc[0],m.sc[1])?'won':'lost'):null;
-const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
-const state={off:0,tab:'all',mk:'o',fav:false,sort:false,nop:false,lg:'',mc:0,query:'',data:[],favs:new Set(ld('zp_fav',[])),slip:ld('zp_slip',[])};
-const chips=(el,items,cur,fn)=>{el.innerHTML=items.map(([k,l])=>`<button class="chip" aria-pressed="${k==cur}" data-k="${k}">${l}</button>`).join('');el.onclick=(e)=>{const b=e.target.closest('[data-k]');if(b)fn(b.dataset.k)}};
-function drawDays(){let h='';for(let o=-1;o<=4;o++){const d=new Date(Date.now()+o*864e5),wd=o==0?'Today':o==1?'Tomorrow':o==-1?'Yesterday':d.toLocaleDateString('en-GB',{timeZone:TZ,weekday:'short'});h+=`<button class="chip" aria-pressed="${o==state.off}" data-k="${o}">${wd}<small>${d.toLocaleDateString('en-GB',{timeZone:TZ,day:'numeric',month:'short'})}</small></button>`}
-  const el=$('#days');el.innerHTML=h;el.onclick=(e)=>{const b=e.target.closest('[data-k]');if(b){state.off=+b.dataset.k;load()}}}
-const fm=(s)=>s?`<div class="fm" title="Last results, newest on the right">${[...s].map((c)=>`<i class="f${c}"></i>`).join('')}</div>`:'';
-const inSlip=(id)=>state.slip.some((x)=>x.id==id);
-function card(m,p){const s=status(m),r=result(m,p),M=MK[state.mk],od=odds(m,state.mk),has=m.sc[0]!=null;
-  const when=s=='live'?`<span class="live">LIVE ${m.el?m.el+"'":m.st}</span>`:`<span>${s=='other'?esc(m.st):hm(m.d)}</span>`;
-  const badge=r=='won'?'<div class="bd won"><big>✓</big>WON</div>':r=='lost'?'<div class="bd lost"><big>✗</big>LOST</div>':s=='live'?'<div class="bd lv"><big>LIVE</big>in play</div>':s=='done'?'<div class="bd">FT</div>':'<div class="bd">PENDING</div>';
-  const pk=p?`<span class="ring" style="--p:${p.c};--c:${p.c>=70?'var(--gold)':p.c>=60?'var(--g)':'var(--dim)'}"><u>${p.c}%</u></span><div class="pl">${M.n[p.i]}<small>@ ${Number.isFinite(Number(p.odds))&&Number(p.odds)>1?Number(p.odds).toFixed(2):od&&Number.isFinite(Number(od[p.i]))?Number(od[p.i]).toFixed(2):'--'}</small></div><div class="pcn"><b>${p.c}%</b> chance</div>`:'<div class="pcn">No pick yet (odds not available)</div>';
-  const score=has?`<span class="sc">${s=='live'?'Live ':s=='done'?'Final ':''}${m.sc[0]} - ${m.sc[1]}</span>`:'';
-  const add=p&&s=='up'&&od&&Number(od[p.i])>1?`<button class="add" aria-pressed="${inSlip(m.id)}" data-add="${m.id}">${inSlip(m.id)?'✓ In slip':'+ Slip'}</button>`:'';
-  return `<article class="m glass ${r||''}"><div class="top"><span>${esc(m.lg)} · ${esc(m.cn)}</span>${when}</div><div class="mid"><div class="tm"><b>${esc(m.h)}</b>${fm(m.fh)}<b>${esc(m.a)}</b>${fm(m.fa)}</div><div class="pk">${pk}</div>${badge}</div>`+
-  `<div class="bot">${od?od.map((x,i)=>`<i class="${p&&p.i==i?'p':''}">${M.n[i]} ${Number(x)>1?Number(x).toFixed(2):'--'}</i>`).join(''):''}${score}${add}<button class="star" aria-pressed="${state.favs.has(m.id)}" aria-label="Save match" data-id="${m.id}">${state.favs.has(m.id)?'★':'☆'}</button></div></article>`}
-function draw(){
-  const k=state.mk;
-  let preds=state.data.map((m)=>({m,p:pick(m,k)})),all=preds.filter((x)=>x.p);
-  const w=all.filter((x)=>result(x.m,x.p)=='won').length,l=all.filter((x)=>result(x.m,x.p)=='lost').length;
-  $('#s1').textContent=all.length;$('#s2').textContent=w;$('#s3').textContent=l;$('#s4').textContent=w+l?Math.round(w/(w+l)*100)+'%':'–';
-  chips($('#tabs'),[['all','All'],['up','Upcoming'],['live','Live'],['won','Won ✓'],['lost','Lost ✗']],state.tab,(v)=>{state.tab=v;draw()});
-  chips($('#mk'),Object.entries(MK).map(([x,v])=>[x,v.l]),k,(v)=>{state.mk=v;draw()});
-  const lgs=[...new Set(state.data.map((m)=>m.cn+' · '+m.lg))].sort(),sel=$('#lg');
-  sel.innerHTML='<option value="">All leagues</option>'+lgs.map((x)=>`<option ${x==state.lg?'selected':''}>${esc(x)}</option>`).join('');
-  $('#srt').setAttribute('aria-pressed',state.sort);$('#nop').setAttribute('aria-pressed',state.nop);$('#fav').setAttribute('aria-pressed',state.fav);$('#fc').textContent=state.favs.size;$('#mcv').textContent=state.mc;
-  let ms=preds;const hidden=ms.filter((x)=>!x.p).length;
-  if(!state.nop)ms=ms.filter((x)=>x.p);
-  if(state.mc)ms=ms.filter((x)=>x.p&&x.p.c>=state.mc);
-  if(state.tab=='up'||state.tab=='live')ms=ms.filter((x)=>status(x.m)==state.tab);
-  if(state.tab=='won'||state.tab=='lost')ms=ms.filter((x)=>result(x.m,x.p)==state.tab);
-  if(state.lg)ms=ms.filter((x)=>x.m.cn+' · '+x.m.lg==state.lg);
-  if(state.fav)ms=ms.filter((x)=>state.favs.has(x.m.id));
-  if(state.query){const q=state.query.toLocaleLowerCase();ms=ms.filter((x)=>[x.m.h,x.m.a,x.m.lg,x.m.cn].some(v=>String(v||'').toLocaleLowerCase().includes(q)))}
-  $('#matchCount').textContent=ms.length+' shown';
-  accs();drawSlip();
-  if(!ms.length){$('#list').innerHTML=`<div class="empty">${state.fav&&!state.favs.size?'You have not saved any matches yet. Tap the ☆ on a match to save it.':state.data.length?'Nothing to show for this filter.'+(hidden&&!state.nop?` ${hidden} matches have no prediction yet because available data is insufficient.`:''):'No matches loaded for this day yet. Data refreshes a few times a day.'}</div>`;return}
-  const by=(a,b)=>a.m.d<b.m.d?-1:1;let html='';
-  if(state.sort){html=`<div class="lgh">Highest chance first</div>`+ms.sort((a,b)=>(b.p?.c||0)-(a.p?.c||0)).map((x)=>card(x.m,x.p)).join('')}
-  else{const g={};ms.sort(by).forEach((x)=>(g[x.m.cn+'|'+x.m.lg]??=[]).push(x));
-    html=Object.values(g).map((arr)=>`<div class="lgh">${arr[0].m.lo?`<img src="${esc(arr[0].m.lo)}" alt="" loading="lazy">`:''}${esc(arr[0].m.lg)} · ${esc(arr[0].m.cn)}</div>`+arr.map((x)=>card(x.m,x.p)).join('')).join('')}
-  $('#list').innerHTML=html+(hidden&&!state.nop?`<div class="empty">${hidden} more matches have no pick yet because bookmaker odds are not available for them.</div>`:'')}
-let ACC=[];
-function accs(){const k=state.mk,c=state.data.filter((m)=>status(m)=='up').map((m)=>({m,p:pick(m,k)})).filter((x)=>x.p&&x.p.c>=60&&odds(x.m,k)&&Number(odds(x.m,k)[x.p.i])>1).sort((a,b)=>b.p.c-a.p.c);
-  ACC=[2,3,4].filter((n)=>c.length>=n).map((n)=>c.slice(0,n));
-  $('#acc').innerHTML=ACC.length?ACC.map((a,i)=>{const o=a.reduce((t,x)=>t*odds(x.m,k)[x.p.i],1),ch=a.reduce((t,x)=>t*x.p.c/100,1);
-    return `<div class="ac glass"><h4>${a.length}-leg accumulator</h4><ul>${a.map((x)=>`<li><span>${esc(x.m.h)} v ${esc(x.m.a)}<br><small>${MK[k].n[x.p.i]} · ${x.p.c}%</small></span><span>${odds(x.m,k)[x.p.i].toFixed(2)}</span></li>`).join('')}</ul><p>Combined odds <b>${o.toFixed(2)}</b> · combined chance <b>${Math.round(ch*100)}%</b></p><button class="btn" data-acc="${i}">Add all to slip</button></div>`}).join(''):'<div class="empty" style="flex:1">Accumulators appear when at least two upcoming picks have a chance of 60% or more.</div>'}
-function addPick(m,p,k){if(!state.slip.some((x)=>x.id==m.id)&&odds(m,k)&&Number(odds(m,k)[p.i])>1)state.slip.push({id:m.id,h:m.h,a:m.a,t:MK[k].n[p.i],o:odds(m,k)[p.i],c:p.c})}
-function drawSlip(){sv('zp_slip',state.slip);$('#sn').textContent=state.slip.length;
-  $('#sl').innerHTML=state.slip.length?state.slip.map((x)=>`<div class="it"><div><b>${esc(x.h)} v ${esc(x.a)}</b><small>${esc(x.t)} · ${x.c}%</small></div><div><b class="mono">${x.o.toFixed(2)}</b><button data-rm="${x.id}" aria-label="Remove">×</button></div></div>`).join(''):'<div class="note">Tap + Slip on any upcoming pick to build your slip.</div>';
-  const o=state.slip.reduce((t,x)=>t*x.o,1),c=state.slip.reduce((t,x)=>t*x.c/100,1),st=parseFloat(($('#stk').value||'').replace(',','.'));
-  $('#to').textContent=state.slip.length?o.toFixed(2):'–';$('#tc').textContent=state.slip.length?Math.round(c*100)+'%':'–';
-  $('#ret').textContent=state.slip.length&&st>0?`Return if every pick wins: ${(st*o).toFixed(2)} (profit ${(st*o-st).toFixed(2)}). Most slips lose.`:''}
-function slipText(){const o=state.slip.reduce((t,x)=>t*x.o,1),b=$('#bk').value.trim(),c=$('#bc').value.trim();
-  return 'ZurePicks slip\n'+state.slip.map((x)=>`${x.h} v ${x.a}: ${x.t} @ ${x.o.toFixed(2)}`).join('\n')+`\nCombined odds: ${o.toFixed(2)}`+(b?`\nBookmaker: ${b}`:'')+(c?`\nBooking code: ${c}`:'')+'\nOdds change. Check the price before you bet. 18+'}
-async function lbd(){try{const H=await (await fetch('data/history.json',{cache:'no-cache'})).json(),cut=dstr(-30),S={};
-  for(const x of Object.values(H))if(x.d>=cut)for(const [k,v] of Object.entries(x.p||{}))if(MK[k]&&v.length>3){const s=S[k]??={n:0,w:0};s.n++;s.w+=v[3]?1:0}
-  const tot=Object.values(S).reduce((t,s)=>t+s.n,0),rows=Object.entries(S).filter(([,s])=>s.n>=30).sort((a,b)=>b[1].w/b[1].n-a[1].w/a[1].n);
-  $('#lbd').innerHTML=rows.length?`<table class="lb">${rows.map(([k,s])=>`<tr><td>${MK[k].l}<br><small>${s.n} picks</small></td><td>${Math.round(s.w/s.n*100)}%</td></tr>`).join('')}</table>`:`<div class="note">${tot} settled picks so far. A market is listed once it has 30, so the numbers mean something.</div>`}catch{$('#lbd').innerHTML='<div class="note">Not available yet.</div>'}}
-async function load(){drawDays();$('#list').innerHTML='<div class="empty">Loading match data…</div>';$('#dataStatus').textContent='Checking data source…';
-  const date=dstr(state.off);let source='';
-  try{const api=await fetch((API_BASE||'')+'/api/matches?date='+encodeURIComponent(date),{cache:'no-store'});if(api.ok){const j=await api.json();state.data=Array.isArray(j.matches)?j.matches:[];source='API';$('#dataStatus').textContent='API connected · '+(j.updated?'updated '+new Date(j.updated).toLocaleString():'snapshot available');}}catch{}
-  if(!source){try{const r=await fetch('data/'+date+'.json',{cache:'no-cache'});if(r.ok){const j=await r.json();state.data=Array.isArray(j.matches)?j.matches:[];source='snapshot';$('#dataStatus').textContent='Using published data snapshot'+(j.updated?' · updated '+new Date(j.updated).toLocaleString():'')+' · API not connected';}else{state.data=[];$('#dataStatus').textContent='No data snapshot for this date yet.'}}catch{state.data=[];$('#dataStatus').textContent='Unable to load data. Check your connection.'}}
-  state.lg='';draw()}
-document.addEventListener('click',(e)=>{const t=e.target,get=(id)=>state.data.find((m)=>m.id==id);
-  const st=t.closest('.star');if(st){const id=+st.dataset.id;state.favs.has(id)?state.favs.delete(id):state.favs.add(id);sv('zp_fav',[...state.favs]);return draw()}
-  const ad=t.closest('[data-add]');if(ad){const id=+ad.dataset.add,m=get(id);if(inSlip(id))state.slip=state.slip.filter((x)=>x.id!=id);else addPick(m,pick(m,state.mk),state.mk);return draw()}
-  const ac=t.closest('[data-acc]');if(ac){ACC[+ac.dataset.acc].forEach((x)=>addPick(x.m,x.p,state.mk));return draw()}
-  const rm=t.closest('[data-rm]');if(rm){state.slip=state.slip.filter((x)=>x.id!=rm.dataset.rm);return draw()}});
-$('#matchSearch').addEventListener('input',e=>{state.query=e.target.value.trim();draw()});
-$('#refreshData').onclick=()=>{const b=$('#refreshData');b.disabled=true;b.textContent='Reloading…';load().finally(()=>{b.disabled=false;b.textContent='↻ Reload data'})};
-$('#fav').onclick=()=>{state.fav=!state.fav;draw()};$('#srt').onclick=()=>{state.sort=!state.sort;draw()};$('#nop').onclick=()=>{state.nop=!state.nop;draw()};
-$('#lg').onchange=(e)=>{state.lg=e.target.value;draw()};$('#mc').oninput=(e)=>{state.mc=+e.target.value;draw()};$('#stk').oninput=drawSlip;
-$('#cp').onclick=async(e)=>{if(!state.slip.length)return;try{await navigator.clipboard.writeText(slipText());e.target.textContent='Copied ✓'}catch{e.target.textContent='Copy failed'}setTimeout(()=>e.target.textContent='Copy slip',1600)};
-$('#cl').onclick=()=>{state.slip=[];draw()};$('#slipbar').onclick=()=>$('#slip').classList.add('open');$('#x').onclick=()=>$('#slip').classList.remove('open');
-$('#flt').open=innerWidth>=1100;load();lbd();
-</script></body></html>
+        <!-- HERO SECTION -->
+        <section class="hero-section">
+            <div class="hero-badge">
+                <span class="pulse-dot"></span> Advanced Data Analytics Engine Active
+            </div>
+            <h1>Smart Football Predictions <br><span class="gradient-text">Engineered for Precision</span></h1>
+            <p>Harnessing real-time statistics, deep historical trends, and algorithm-backed probabilities to give you the ultimate edge.</p>
+            
+            <div class="hero-search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search team, league, or match...">
+                <button>Search</button>
+            </div>
+        </section>
+
+        <!-- QUICK LEAGUE SCROLLER -->
+        <section class="leagues-ticker">
+            <div class="ticker-track">
+                <a href="premier-league-predictions.html" class="league-pill"><i class="fa-solid fa-trophy"></i> Premier League</a>
+                <a href="champions-league-predictions.html" class="league-pill"><i class="fa-solid fa-star"></i> Champions League</a>
+                <a href="la-liga-predictions.html" class="league-pill"><i class="fa-solid fa-futbol"></i> La Liga</a>
+                <a href="serie-a-predictions.html" class="league-pill"><i class="fa-solid fa-shield-halved"></i> Serie A</a>
+                <a href="bundesliga-predictions.html" class="league-pill"><i class="fa-solid fa-bolt"></i> Bundesliga</a>
+                <a href="ligue-1-predictions.html" class="league-pill"><i class="fa-solid fa-crown"></i> Ligue 1</a>
+            </div>
+        </section>
+
+        <!-- FEATURED MATCH OF THE DAY (Dynamic Container) -->
+        <section class="featured-wrapper" id="featured-match-container">
+            <!-- JavaScript will dynamically inject the featured match card here -->
+            <div class="section-header">
+                <h2><i class="fa-solid fa-fire text-orange"></i> Featured Pick of the Day</h2>
+                <span class="live-badge">Loading Data...</span>
+            </div>
+        </section>
+
+        <!-- QUICK MARKET CATEGORIES -->
+        <section class="markets-grid-section">
+            <div class="section-header">
+                <h2>Explore Markets</h2>
+            </div>
+            <div class="markets-grid">
+                <a href="over-2-5-goals-predictions.html" class="market-tile">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <h3>Over 2.5 Goals</h3>
+                    <p>High-scoring match algorithms</p>
+                </a>
+                <a href="btts-predictions.html" class="market-tile">
+                    <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                    <h3>BTTS / GG</h3>
+                    <p>Both teams to find the net</p>
+                </a>
+                <a href="double-chance-predictions.html" class="market-tile">
+                    <i class="fa-solid fa-shield-check"></i>
+                    <h3>Double Chance</h3>
+                    <p>Secure accumulator builders</p>
+                </a>
+                <a href="over-1-5-goals-predictions.html" class="market-tile">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <h3>Over 1.5 Goals</h3>
+                    <p>Safe banker selections</p>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="#" class="logo">ZURE<span>PICK</span></a>
+                <p>Next-generation football predictive intelligence.</p>
+            </div>
+            <div class="footer-links">
+                <a href="how-it-works.html">How It Works</a>
+                <a href="responsible-gambling.html">Responsible Gambling</a>
+                <a href="track-record.html">Track Record</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Zurepick. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Frontend Dynamic Controller Script -->
+    <script src="app.js"></script>
+</body>
+</html>
