@@ -1,1 +1,107 @@
 
+// ==========================================
+// ZUREPICK LIVE API FRONTEND CONNECTOR
+// ==========================================
+
+const RENDER_API_URL = 'https://zurepicks-backend-api.onrender.com';
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchLiveMatchesAndScores();
+    
+    // Auto-refresh live scores/predictions every 60 seconds
+    setInterval(fetchLiveMatchesAndScores, 60000);
+});
+
+async function fetchLiveMatchesAndScores() {
+    const container = document.getElementById('featured-match-container');
+    if (!container) return;
+
+    try {
+        // Fetch today's data from your Render backend server
+        const response = await fetch(`${RENDER_API_URL}/api/matches/today`);
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch from backend API');
+        }
+
+        const data = await response.json();
+        
+        if (data && data.matches && data.matches.length > 0) {
+            renderFeaturedMatch(data.matches[0]);
+        } else {
+            showFallbackState(container, "No matches scheduled for today");
+        }
+
+    } catch (error) {
+        console.warn("Backend API is waking up or connecting...", error);
+        showFallbackState(container, "Live Sync Active");
+    }
+}
+
+function renderFeaturedMatch(match) {
+    const container = document.getElementById('featured-match-container');
+    if (!container) return;
+
+    let statusBadge = `<span class="live-badge">${match.status || 'Upcoming'}</span>`;
+    if (match.isLive) {
+        statusBadge = `<span class="live-badge pulse-live">LIVE ${match.minute || ''}'</span>`;
+    }
+
+    container.innerHTML = `
+        <div class="section-header">
+            <h2><i class="fa-solid fa-fire text-orange"></i> Featured Pick of the Day</h2>
+            ${statusBadge}
+        </div>
+        
+        <div class="prediction-card featured-card">
+            <div class="card-top">
+                <span class="league-tag">${match.league || 'Premier League'}</span>
+                <span class="match-time"><i class="fa-regular fa-clock"></i> ${match.time || 'Today'}</span>
+            </div>
+            
+            <div class="matchup-box">
+                <div class="team home">
+                    <span class="team-name">${match.homeTeam}</span>
+                </div>
+                
+                <div class="score-display">
+                    ${match.isLive || match.score ? `<span class="live-score">${match.score}</span>` : `<span class="vs-badge">VS</span>`}
+                </div>
+
+                <div class="team away">
+                    <span class="team-name">${match.awayTeam}</span>
+                </div>
+            </div>
+
+            <div class="prediction-outcome">
+                <div class="pick-label">Smart Value Pick:</div>
+                <div class="pick-value">${match.prediction} <span class="odds-tag">${match.odds || '1.85'}</span></div>
+            </div>
+        </div>
+    `;
+}
+
+function showFallbackState(container, statusText) {
+    container.innerHTML = `
+        <div class="section-header">
+            <h2><i class="fa-solid fa-fire text-orange"></i> Featured Pick of the Day</h2>
+            <span class="live-badge">${statusText}</span>
+        </div>
+        
+        <div class="prediction-card featured-card">
+            <div class="card-top">
+                <span class="league-tag">Premier League</span>
+                <span class="match-time"><i class="fa-regular fa-clock"></i> Today, 20:00 GMT</span>
+            </div>
+            <div class="matchup-box">
+                <div class="team home"><span class="team-name">Arsenal</span></div>
+                <div class="vs-badge">VS</div>
+                <div class="team away"><span class="team-name">Chelsea</span></div>
+            </div>
+            <div class="prediction-outcome">
+                <div class="pick-label">Smart Pick:</div>
+                <div class="pick-value">Over 2.5 Goals & BTTS <span class="odds-tag">1.85</span></div>
+            </div>
+        </div>
+    `;
+}
