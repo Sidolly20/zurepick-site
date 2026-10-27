@@ -1,7 +1,7 @@
 // Builds the whole ZurePicks website from data/*.json: history, every page (SEO pre-rendered), sitemap and robots.
 // Run after generate.mjs. Set SITE_URL when you move to your own domain.
 import fs from 'node:fs';
-import { MK, TZ, DONE, pick, won, settled, esc, board, topCards } from './render.js';
+import { MK, TZ, pick, won, settled, esc, board, topCards, statsHtml } from './render.js';
 const SITE = (process.env.SITE_URL || 'https://sidolly20.github.io/zurepick-site').replace(/\/$/, '');
 const dstr = (o) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date(Date.now() + o * 864e5));
 const nice = (o) => new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(Date.now() + o * 864e5));
@@ -9,13 +9,35 @@ const short = (o) => new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: '
 
 // ---- history: every finished match with pre-match odds, each market's pick and result ----
 let H = {}; try { H = JSON.parse(fs.readFileSync('data/history.json', 'utf8')); } catch {}
-const snaps = {};
+const snaps = {}, files = {};
 for (const f of fs.readdirSync('data').filter((f) => /^\d{4}-\d\d-\d\d\.json$/.test(f))) {
-  const j = JSON.parse(fs.readFileSync('data/' + f, 'utf8')); snaps[j.date] = j.matches;
+  const j = JSON.parse(fs.readFileSync('data/' + f, 'utf8')); snaps[j.date] = j.matches; files[j.date] = j;
   for (const m of j.matches) {
     if (!settled(m)) continue;
     const p = {}; for (const k in MK) { const x = pick(m, k); if (x && x.od > 1) p[k] = [x.i, x.c, x.od, won(m, k, x) ? 1 : 0]; }
     if (Object.keys(p).length) H[m.id] = { d: m.d.slice(0, 10), lg: m.lg, cn: m.cn, h: m.h, a: m.a, sc: m.sc, p };
+  }
+}
+
+// ---- team-record model for fixtures without odds (Poisson on goals scored/conceded in tracked results) ----
+let RES = {}; try { RES = JSON.parse(fs.readFileSync('data/results.json', 'utf8')); } catch {}
+for (const d in snaps) for (const m of snaps[d]) if (settled(m)) RES[m.id] = [m.d.slice(0, 10), m.h, m.a, m.sc[0], m.sc[1]];
+fs.writeFileSync('data/results.json', JSON.stringify(RES));
+{
+  const R = Object.values(RES).sort((a, b) => a[0].localeCompare(b[0])), T = {}; let ri = 0, G = 0, N = 0;
+  const add = ([, h, a, x, y]) => { for (const [t, f, c] of [[h, x, y], [a, y, x]]) { const r = (T[t] ??= { n: 0, f: 0, c: 0 }); r.n++; r.f += f; r.c += c; } G += x + y; N += 2; };
+  const pois = (l, k) => Math.exp(-l) * l ** k / [1, 1, 2, 6, 24, 120, 720, 5040, 40320][k];
+  for (const d of Object.keys(snaps).sort()) {
+    while (ri < R.length && R[ri][0] < d) add(R[ri++]); // only results from BEFORE the match day, so finished games are never predicted from their own score
+    const g = N ? G / N : 1.35, K = 2;
+    for (const m of snaps[d]) {
+      delete m.pm; const A = T[m.h], B = T[m.a]; if (m.o || !A || !B || A.n < 3 || B.n < 3) continue;
+      const att = (t) => (t.f + K * g) / (t.n + K), def = (t) => (t.c + K * g) / (t.n + K);
+      const lh = Math.min(4, (att(A) * def(B) / g) * 1.1), la = Math.min(4, (att(B) * def(A) / g) / 1.1); let h = 0, dr = 0, aw = 0;
+      for (let x = 0; x < 9; x++) for (let y = 0; y < 9; y++) { const p = pois(lh, x) * pois(la, y); if (x > y) h += p; else if (x == y) dr += p; else aw += p; }
+      const t = h + dr + aw; m.pm = [Math.round((h / t) * 100), Math.round((dr / t) * 100), Math.round((aw / t) * 100)];
+    }
+    fs.writeFileSync('data/' + d + '.json', JSON.stringify({ date: d, updated: files[d].updated, od: files[d].od, op: files[d].op, matches: snaps[d] }));
   }
 }
 fs.writeFileSync('data/history.json', JSON.stringify(H));
@@ -36,8 +58,25 @@ const MKT = {
 };
 const LG = [[39, 'premier-league', 'Premier League', 'England'], [140, 'la-liga', 'La Liga', 'Spain'], [135, 'serie-a', 'Serie A', 'Italy'], [78, 'bundesliga', 'Bundesliga', 'Germany'], [61, 'ligue-1', 'Ligue 1', 'France'], [2, 'champions-league', 'UEFA Champions League', 'Europe'], [3, 'europa-league', 'UEFA Europa League', 'Europe']];
 const NAV = [['index.html', 'Today'], ['football-predictions-tomorrow.html', 'Tomorrow'], ['1x2-predictions.html', '1X2'], ['over-2-5-goals-predictions.html', 'Goals'], ['btts-predictions.html', 'BTTS'], ['leagues.html', 'Leagues'], ['track-record.html', 'Track record']];
-const FOOT = [['Predictions', [['index.html', 'Predictions today'], ['football-predictions-tomorrow.html', 'Predictions tomorrow'], ['football-predictions-yesterday.html', 'Yesterday’s results']]], ['Markets', Object.values(MKT).map((x) => [x[0], x[1]])], ['Leagues', LG.map((l) => [l[1] + '-predictions.html', l[2]])], ['About', [['track-record.html', 'Track record'], ['how-it-works.html', 'How it works'], ['tools.html', 'Odds tools'], ['responsible-gambling.html', 'Responsible gambling']]]];
+const FOOT = [['Predictions', [['index.html', 'Predictions today'], ['football-predictions-tomorrow.html', 'Predictions tomorrow'], ['football-predictions-yesterday.html', 'Yesterday’s results']]], ['Markets', Object.values(MKT).map((x) => [x[0], x[1]])], ['Leagues', LG.map((l) => [l[1] + '-predictions.html', l[2]])], ['About', [['about.html', 'About ZurePicks'], ['track-record.html', 'Track record'], ['how-it-works.html', 'How it works'], ['tools.html', 'Odds tools'], ['responsible-gambling.html', 'Responsible gambling']]]];
 const FAV = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b8a52'/%3E%3Cpath d='M9 10h14l-10 12h10' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
+
+// Hero banner: uses assets/hero.(webp|png|jpg) if you add one (e.g. made in Flow AI); otherwise a built-in illustration.
+const heroImg = ['webp', 'png', 'jpg'].map((e) => 'assets/hero.' + e).find((f) => fs.existsSync(f));
+const banner = () => heroImg ? `<div class="bn"><img src="${heroImg}" alt="Footballers ready for kick-off" width="560" height="380" fetchpriority="high"></div>` : `<div class="bn" aria-hidden="true"><svg viewBox="0 0 520 380" role="img"><defs><linearGradient id="gb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12c26f"/><stop offset="1" stop-color="#6d4aff"/></linearGradient><linearGradient id="gk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b8a52"/><stop offset="1" stop-color="#075c37"/></linearGradient></defs>
+<circle cx="270" cy="190" r="170" fill="url(#gb)" opacity=".92"/><circle cx="270" cy="190" r="128" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/><path d="M270 20v340M100 190h340" stroke="#fff" stroke-opacity=".18" stroke-width="3"/>
+<ellipse cx="270" cy="352" rx="190" ry="16" fill="#000" opacity=".18"/>
+<g transform="translate(150 0)"><path d="M70 150c-22 6-34 26-32 54l14 4c2-20 10-32 24-36z" fill="#8d5524"/><circle cx="104" cy="92" r="26" fill="#8d5524"/><path d="M78 88c2-24 20-34 38-30 14 3 22 14 22 30-10-14-22-18-34-16-10 2-20 6-26 16z" fill="#1b1410"/>
+<path d="M72 128h64l14 96h-92z" fill="url(#gk)"/><path d="M72 150h64v14H72z" fill="#fff" opacity=".9"/><text x="104" y="205" font-family="ui-sans-serif,Arial" font-weight="800" font-size="30" text-anchor="middle" fill="#fff">9</text>
+<path d="M58 224h92l8 50h-38l-6-24-6 24H50z" fill="#fff"/><path d="M62 274h30l-2 56H66z" fill="#8d5524"/><path d="M118 274h30l4 56h-26z" fill="#8d5524"/><path d="M64 310h28l-2 26H62zM120 310h28l4 26h-28z" fill="#0b8a52"/><path d="M54 336h42l-4 14H50zM118 336h42l4 14h-42z" fill="#111"/>
+<path d="M136 134c16 10 24 30 20 56l-14-4c2-16-2-28-10-36z" fill="#8d5524"/><circle cx="154" cy="206" r="24" fill="#fff"/><path d="M154 192l12 9-5 14h-14l-5-14z" fill="#111"/><path d="M154 182v10M166 201l9-4M161 215l7 8M147 215l-7 8M142 201l-9-4" stroke="#111" stroke-width="2.5" stroke-linecap="round"/></g>
+<g transform="translate(300 12) rotate(14 80 200)"><circle cx="86" cy="92" r="24" fill="#f1c9a5"/><path d="M62 88c0-22 16-32 32-30 14 2 22 12 22 26-8-10-18-12-28-10-10 2-18 6-26 14z" fill="#3a2315"/><path d="M58 126h60l12 92h-84z" fill="#6d4aff"/><path d="M58 146h60v13H58z" fill="#fff" opacity=".9"/><text x="88" y="198" font-family="ui-sans-serif,Arial" font-weight="800" font-size="28" text-anchor="middle" fill="#fff">10</text>
+<path d="M50 218h86l6 44h-40l-4-22-6 22H44z" fill="#fff"/><path d="M52 262h28l-4 60H54z" fill="#f1c9a5"/><path d="M96 262h28l22 40-20 14z" fill="#f1c9a5"/><path d="M54 300h24l-2 28H52z" fill="#6d4aff"/><path d="M44 328h40l-4 14H40z" fill="#111"/><path d="M128 296l32 18-8 14-34-18z" fill="#6d4aff"/><path d="M150 318l30 14-6 12-30-14z" fill="#111"/>
+<path d="M62 134c-18 8-26 24-22 44l14 2c-2-12 2-22 12-28z" fill="#f1c9a5"/><path d="M116 132c18-14 30-34 34-58l-14-4c-2 18-10 32-24 42z" fill="#f1c9a5"/></g>
+<circle cx="404" cy="78" r="21" fill="#fff"/><path d="M404 64l10 7-4 12h-12l-4-12z" fill="#111"/>
+<g font-family="ui-sans-serif,Arial" font-weight="800"><rect x="20" y="40" width="108" height="56" rx="16" fill="#fff"/><text x="74" y="66" font-size="11" text-anchor="middle" fill="#556459">HOME WIN</text><text x="74" y="88" font-size="22" text-anchor="middle" fill="#0b8a52">1.85</text>
+<rect x="392" y="262" width="112" height="56" rx="16" fill="#fff"/><text x="448" y="288" font-size="11" text-anchor="middle" fill="#556459">IMPLIED CHANCE</text><text x="448" y="310" font-size="22" text-anchor="middle" fill="#6d4aff">72%</text>
+<rect x="12" y="270" width="88" height="48" rx="24" fill="#0b8a52"/><text x="56" y="301" font-size="17" text-anchor="middle" fill="#fff">✓ WON</text></g></svg></div>`;
 const PAGES = [], ldj = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
 const faqHtml = (q) => `<div class="prose"><h2>Frequently asked questions</h2>${q.map(([a, b]) => `<details><summary>${esc(a)}</summary><p>${esc(b)}</p></details>`).join('')}</div>`;
 
@@ -48,15 +87,15 @@ function page(file, o) {
   if (o.faq) ld.push({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: o.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
   const b = o.board;
   const boardHtml = !b ? '' : `<div class="bar"><div class="scr" id="days" aria-label="Choose a day"></div><div class="scr" id="mkts" aria-label="Choose a market"></div></div>
-<div class="tools"><input type="search" id="q" placeholder="Search team or league" aria-label="Search team or league"><select id="min" aria-label="Minimum implied chance"><option value="0">Any chance</option><option value="60">60%+</option><option value="70">70%+</option><option value="80">80%+</option></select><label><input type="checkbox" id="all"> Show fixtures without odds</label></div>
-<p id="status" role="status">Loaded from the latest data snapshot.</p><p id="count" class="mut" style="margin:.2rem 0 .8rem;font-size:.82rem"></p>
-<div id="board" data-mk="${b.k}" data-off="${b.off}" data-lg="${b.lg || ''}">${board(b.ms, b.k, { lg: b.lg, max: 80 })}</div>
+<div class="tools"><input type="search" id="q" placeholder="Search team or league" aria-label="Search team or league"><select id="min" aria-label="Minimum implied chance"><option value="0">Any chance</option><option value="60">60%+</option><option value="70">70%+</option><option value="80">80%+</option></select></div>
+<p id="status" role="status">Loaded from the latest data snapshot.</p>
+<div id="board" data-mk="${b.k}" data-off="${b.off}" data-lg="${b.lg || ''}" data-hit="${R30.r ?? ''}">${board(b.ms, b.k, { lg: b.lg, max: 100 })}</div>
 <div id="slip" hidden><span><b id="slipn"></b> · <b id="slipo"></b></span><button type="button" id="slipx">Copy slip</button><button type="button" id="slipc">Clear</button></div>`;
   const topHtml = o.top ? `<h2>Top picks by implied chance</h2><div class="tops" id="top">${topCards(b.ms) || '<div class="empty">Top picks appear once odds are published.</div>'}</div>` : '';
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${esc(o.title)}</title><meta name="description" content="${esc(o.desc)}"><link rel="canonical" href="${canon}"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:title" content="${esc(o.title)}"><meta property="og:description" content="${esc(o.desc)}"><meta property="og:type" content="website"><meta property="og:url" content="${canon}"><meta property="og:site_name" content="ZurePicks"><meta name="twitter:card" content="summary"><meta name="theme-color" content="#0b8a52"><link rel="icon" href="${FAV}"><link rel="stylesheet" href="zp.css">${ld.map(ldj).join('')}</head><body>
 <header><div class="w"><a class="logo" href="index.html"><i>Z</i>ZurePicks</a><nav aria-label="Main">${NAV.map(([h, t]) => `<a href="${h}"${h == file ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav><span class="age">18+</span></div></header>
 <main class="w"><p class="crumbs">${crumbs.map((c, i) => i < crumbs.length - 1 ? `<a href="${c[1]}">${esc(c[0])}</a> › ` : esc(c[0])).join('')}</p>
-<section class="hero"><h1>${o.h1}</h1><p class="lead">${o.lead}</p>${o.kp ? `<div class="kp">${o.kp.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>` : ''}</section>
+<section class="hero${o.art ? ' art' : ''}"><div class="ht">${o.eyebrow ? `<p class="eyebrow">${o.eyebrow}</p>` : ''}<h1>${o.h1}</h1><p class="lead">${o.lead}</p>${b ? `<div class="kp" id="kp">${statsHtml(b.ms, R30.r)}</div>` : o.kp ? `<div class="kp">${o.kp.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>` : ''}</div>${o.art ? banner() : ''}</section>
 ${topHtml}${boardHtml}${o.body || ''}${o.faq ? faqHtml(o.faq) : ''}
 <footer><div class="fg">${FOOT.map(([t, l]) => `<div><b>${t}</b>${l.map(([h, x]) => `<a href="${h}">${x}</a>`).join('')}</div>`).join('')}</div><p><b>18+ only.</b> Percentages are estimates worked out from bookmaker odds, not guarantees, and no pick is a “sure” win. Only stake what you can afford to lose and check that betting is legal where you live. <a href="responsible-gambling.html">Get help</a>.</p><p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p></footer></main>
 ${b ? '<script src="api-config.js"></script><script type="module" src="app.js"></script>' : ''}</body></html>`;
@@ -71,8 +110,9 @@ const faqCommon = [
   ['What does the percentage mean?', 'A 70% pick is one the market gives roughly a 70% chance, so it still loses around three times in ten. Use it as a guide to how one-sided a match looks, not as a promise.'],
 ];
 // Home / today
-const dayPage = (file, off, h1, lead, extra = {}) => page(file, { title: extra.title, desc: extra.desc, h1, lead, crumb: extra.crumb, canon: extra.canon, kp: kpFor(snapFor(off), 'o'), board: { k: 'o', off, ms: snapFor(off) }, top: off >= 0, faq: faqCommon, body: extra.body });
-dayPage('index.html', 0, 'Football predictions <em>today</em>', `Free football predictions for ${nice(0)}: 1X2, double chance, over/under goals and both teams to score, with odds, implied chance and results as they finish. Tap any odds to build a slip.`, { title: `Football Predictions Today (${short(0)}) | Free 1X2, Over 2.5 & BTTS Tips – ZurePicks`, desc: `Free football predictions for ${short(0)}: 1X2, double chance, Over 2.5 and BTTS tips with odds, win probability and tracked results. No sign-up.` });
+const dayPage = (file, off, h1, lead, extra = {}) => page(file, { title: extra.title, desc: extra.desc, h1, lead, crumb: extra.crumb, canon: extra.canon, kp: kpFor(snapFor(off), 'o'), board: { k: 'o', off, ms: snapFor(off) }, top: off >= 0, faq: faqCommon, body: extra.body, art: extra.art, eyebrow: extra.eyebrow });
+const nLg = new Set(snapFor(0).map((m) => m.li)).size;
+dayPage('index.html', 0, 'Football predictions <em>today</em>', `Welcome to ZurePicks. Every day we line up ${snapFor(0).length ? 'all ' + snapFor(0).length + ' fixtures across ' + nLg + ' leagues' : 'the day’s fixtures'} with the odds, the market’s chance of each result and a pick for every match. Watch scores go live, see each pick turn green or red at full time, and build your slip in one tap. Free, no sign-up.`, { art: true, eyebrow: 'Free predictions · Live scores · Results tracked', title: `Football Predictions Today (${short(0)}) | Free 1X2, Over 2.5 & BTTS Tips – ZurePicks`, desc: `Free football predictions for ${short(0)}: 1X2, double chance, Over 2.5 and BTTS tips with odds, win probability, live scores and tracked results. No sign-up.` });
 dayPage('football-predictions-today.html', 0, 'Football predictions <em>today</em>', `Today’s football predictions for ${nice(0)}.`, { canon: 'index.html', title: `Football Predictions Today (${short(0)}) | ZurePicks`, desc: `Free football predictions for ${short(0)} with odds and results.`, crumb: 'Predictions today' });
 dayPage('football-predictions-tomorrow.html', 1, 'Football predictions <em>tomorrow</em>', `Free football predictions for ${nice(1)}. Fixtures and odds are added as bookmakers publish prices, usually a day or two before kick-off.`, { title: `Football Predictions Tomorrow (${short(1)}) | Free Tips & Odds – ZurePicks`, desc: `Free football predictions for tomorrow, ${short(1)}: 1X2, Over 2.5, BTTS and double chance tips with odds and implied chance.`, crumb: 'Predictions tomorrow' });
 dayPage('football-predictions-yesterday.html', -1, 'Yesterday’s football <em>results</em>', `How the picks did on ${nice(-1)}. Green ticks are winning picks, red crosses are losing ones, shown for every market.`, { title: `Football Predictions Yesterday (${short(-1)}) | Results & Tracked Picks – ZurePicks`, desc: `Yesterday’s football predictions and results for ${short(-1)}, with every pick marked as a win or a loss.`, crumb: 'Yesterday’s results' });
@@ -99,6 +139,8 @@ page('track-record.html', { title: 'Track Record – Football Prediction Results
 // How it works
 page('how-it-works.html', { title: 'How ZurePicks Works – Methodology & Data | ZurePicks', desc: 'How ZurePicks turns bookmaker odds into implied probabilities, what the percentages mean and where the data comes from.', h1: 'How ZurePicks <em>works</em>', lead: 'No hidden tricks. Here is exactly where the numbers come from and what they can and cannot tell you.',
   body: `<div class="prose"><h2>1. Fixtures and odds</h2><p>Fixtures, scores and pre-match odds come from football data providers and are refreshed several times a day by an automatic job.</p><h2>2. Implied probability</h2><p>Decimal odds convert to a probability by dividing 1 by the odds. Bookmaker prices add up to more than 100% because of their margin, so ZurePicks rescales each market back to 100%. That rescaled figure is the percentage you see.</p><h2>3. The pick</h2><p>The pick is the outcome with the highest rescaled probability in that market. For double chance, it is the pair of results with the highest combined probability.</p><h2>4. Results</h2><p>When a match finishes, the pick is marked won or lost and stored permanently for the <a href="track-record.html">track record</a>.</p><h2>Limits</h2><p>The picks are market-based estimates. They do not use private information, and no site can promise winners. Football is unpredictable, so stake responsibly.</p></div>` });
+page('about.html', { title: 'About ZurePicks – Free Football Predictions & How We Work', desc: 'ZurePicks publishes free football predictions with odds, implied chance and tracked results. Learn who we are, what we publish and how we stay honest.', h1: 'About <em>ZurePicks</em>', lead: 'A free football predictions site built around one idea: show the numbers, then show whether they were right.',
+  body: `<div class="prose"><h2>What we publish</h2><p>Every day ZurePicks lists the day’s football fixtures with bookmaker odds, the market’s implied chance for each result and a pick in the main markets: 1X2, double chance, over/under 1.5 and 2.5 goals and both teams to score. Scores update as games are played, and every pick turns green or red at full time.</p><h2>Why you can trust the numbers</h2><p>Every finished pick is stored and counted on the <a href="track-record.html">track record</a> page, wins and losses alike. We explain exactly how picks are made on <a href="how-it-works.html">How it works</a>, and we never promise sure wins, because nobody can.</p><h2>For fixtures without odds</h2><p>Many smaller games have no bookmaker prices. For those, ZurePicks uses a team-record model built from results we have tracked. It starts predicting a team once we have seen enough of its games, and it is labelled so you can tell it apart from odds-based picks.</p><h2>Play responsibly</h2><p>ZurePicks is for adults aged 18+ and is information, not betting advice. Read our <a href="responsible-gambling.html">responsible gambling</a> page.</p></div>` });
 page('responsible-gambling.html', { title: 'Responsible Gambling – Help & Limits | ZurePicks', desc: 'Betting should be entertainment. Set limits, never chase losses and find free support if gambling stops being fun.', h1: 'Responsible <em>gambling</em>', lead: 'Predictions are information, not advice. Betting is for adults aged 18+.', body: `<div class="prose"><ul><li>Only stake money you can afford to lose and set a budget first.</li><li>Never chase losses. A bad run does not mean a win is due.</li><li>Take breaks, and stop if betting stops being enjoyable.</li><li>Check that betting is legal where you live.</li></ul><p>Free support: <a href="https://www.begambleaware.org" rel="noopener">BeGambleAware.org</a> · <a href="https://www.gamblingtherapy.org" rel="noopener">GamblingTherapy.org</a></p></div>` });
 // Tools
 page('tools.html', { title: 'Betting Odds Tools – Odds Converter & Accumulator Calculator | ZurePicks', desc: 'Free odds converter (decimal, fractional, American) and accumulator calculator with implied chance.', h1: 'Odds <em>tools</em>', lead: 'Convert odds and see what an accumulator really pays and risks.',
