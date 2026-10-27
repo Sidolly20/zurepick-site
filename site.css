@@ -438,4 +438,71 @@ body {
     .footer-content { flex-direction: column; text-align: center; }
     .footer-links { justify-content: center; }
   }
-      
+  /* ==========================================
+   CLEAN MOBILE PREDICTION TABLE & ROW FIX
+   ========================================== */
+
+table, .predictions-table, .match-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+/* Transform messy table columns into structured modern rows */
+tr, .match-row {
+    display: flex;
+    flex-direction: column;
+    background: rgba(17, 24, 39, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    backdrop-filter: blur(10px);
+}
+
+@media (min-width: 768px) {
+    tr, .match-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+/* Clean spacing for table data cells */
+td, th, .match-cell {
+    padding: 0.4rem 0;
+    text-align: left;
+    color: #f9fafb;
+    font-size: 0.95rem;
+}
+
+/* Prevent team names and league tags from overlapping */
+.match-teams {
+    font-weight: 700;
+    font-size: 1.05rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0.4rem 0;
+}
+
+.match-league, .league-subtext {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    font-weight: 400;
+}
+
+/* Structured odds and probability tag */
+.odds-badge-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    color: #10b981;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    }
+                     
