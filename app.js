@@ -36,12 +36,12 @@ if (B) {
     try { const r = await fetch('data/' + date + '.json', { cache: 'no-cache' }); if (r.ok) snap = await r.json(); } catch {}
     if (tok != S.tok) return;
     S.data = snap?.matches || [];
-    paint(snap ? 'Snapshot · updated ' + fmt(snap.updated) : 'No data for this date yet');
+    paint(snap ? 'Snapshot · updated ' + fmt(snap.liveUpdated || snap.updated) : 'No data for this date yet');
     if (!API) return;
     try {
       const c = new AbortController(), t = setTimeout(() => c.abort(), 9000);
       const r = await fetch(API + '/api/matches?date=' + date, { signal: c.signal, cache: 'no-store' }); clearTimeout(t);
-      if (r.ok) { const j = await r.json(); if (tok == S.tok && Array.isArray(j.matches) && j.matches.length) { const pm = new Map(S.data.filter((m) => m.pm).map((m) => [m.id, m.pm])); S.data = j.matches.map((m) => (!m.o && !m.pm && pm.has(m.id) ? { ...m, pm: pm.get(m.id) } : m)); paint('Live API · updated ' + fmt(j.updated)); } }
+      if (r.ok) { const j = await r.json(); if (tok == S.tok && Array.isArray(j.matches) && j.matches.length) { const pm = new Map(S.data.filter((m) => m.pm).map((m) => [m.id, m.pm])); S.data = j.matches.map((m) => (!m.o && !m.pm && pm.has(m.id) ? { ...m, pm: pm.get(m.id) } : m)); paint('Live API · updated ' + fmt(j.liveUpdated || j.updated)); } }
     } catch {}
   }
   const strip = $('#days'); strip.innerHTML = [-2, -1, 0, 1, 2, 3].map((o) => `<button type="button" class="chip" data-o="${o}" aria-pressed="${o == S.off}">${lab(o)}</button>`).join('');
