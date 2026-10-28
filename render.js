@@ -22,6 +22,14 @@ export function pick(m, k) {
   if (!q) return null;
   const i = q.indexOf(Math.max(...q)); return { i, c: Math.round(q[i] * 100), od: o ? od[i] : null, model: !o };
 }
+// Quality bar: a pick is only published when its implied chance reaches this level (own tracked results: 1X2 picks under 60% won ~45-50%, 60%+ won ~80%).
+export const MIN = { o: 60, dc: 75, ou: 60, o15: 75, bt: 60 };
+export function visible(ms, k, o = {}) {
+  const min = o.min === undefined || o.min === '' || o.min === null ? MIN[k] : +o.min; // min 0 = show every pick
+  let L = ms.filter((m) => { const p = pick(m, k); return p && p.c >= min && (!o.lg || m.li == o.lg); });
+  if (o.q) { const q = o.q.toLowerCase(); L = L.filter((m) => (m.h + ' ' + m.a + ' ' + m.lg + ' ' + m.cn).toLowerCase().includes(q)); }
+  return L;
+}
 export const settled = (m) => DONE.includes(m.st) && m.sc && m.sc[0] != null;
 export const won = (m, k, pk) => settled(m) && MK[k].ev(pk.i, m.sc[0], m.sc[1]);
 const END = ['PST', 'CANC', 'ABD', 'AWD', 'WO', 'SUSP'];
@@ -35,12 +43,12 @@ export function state(m, now = Date.now()) {
   return { k: 'ns', big: '–', sm: 'Not started' };
 }
 export function stats(ms, now = Date.now()) {
-  let done = 0, live = 0; for (const m of ms) { const k = state(m, now).k; if (k == 'fin') done++; else if (k == 'live') live++; }
-  const n = ms.length; return { n, done, live, left: n - done - live, pct: n ? Math.round((done / n) * 100) : 0 };
+  let done = 0, live = 0, wait = 0; for (const m of ms) { const k = state(m, now).k; if (k == 'fin') done++; else if (k == 'live') live++; else if (k == 'ko') wait++; }
+  const n = ms.length; return { n, done, live, wait, left: n - done - live - wait, pct: n ? Math.round((done / n) * 100) : 0 };
 }
 export function statsHtml(ms, hit) {
-  const s = stats(ms);
-  return `<div><b>${s.n || '–'}</b><span>Fixtures</span></div><div><b>${s.done}</b><span>Played · ${s.pct}%</span></div><div class="lv"><b>${s.live}</b><span>Live now</span></div><div><b>${s.left}</b><span>Not started · ${s.n ? 100 - s.pct - Math.round((s.live / s.n) * 100) : 0}%</span></div>${hit == null ? '' : `<div><b>${hit}%</b><span>Favourite hit rate · 30d</span></div>`}`;
+  const s = stats(ms), p = (x) => (s.n ? Math.round((x / s.n) * 100) : 0);
+  return `<div><b>${s.n || '–'}</b><span>Picks today</span></div><div><b>${s.done}</b><span>Played · ${s.pct}%</span></div><div class="lv"><b>${s.live}</b><span>Live now</span></div>${s.wait ? `<div><b>${s.wait}</b><span>Awaiting score</span></div>` : ''}<div><b>${s.left}</b><span>Not started · ${p(s.left)}%</span></div>${hit && hit.n ? `<div><b>${hit.r}%</b><span>Won ${hit.w} of ${hit.n} · 30 days</span></div>` : ''}`;
 }
 export function row(m, k) {
   const pk = pick(m, k), M = MK[k], od = m[k] || [], st = state(m);
@@ -48,15 +56,13 @@ export function row(m, k) {
   const cells = (od.length ? od : M.s.map(() => null)).map((x, i) => x
     ? `<button type="button" class="oc${pk && pk.i == i ? ' pick' : ''}" data-id="${m.id}" data-i="${i}" data-od="${x}" aria-label="${esc(M.n[i])} at ${x}"><small>${M.s[i]}</small>${Number(x).toFixed(2)}</button>`
     : `<span class="oc nil"><small>${M.s[i]}</small>–</span>`).join('');
-  const pkh = pk ? `<span>${esc(M.n[pk.i])}</span><i style="--w:${pk.c}%"></i><em>${pk.c}% · ${pk.model ? 'team-record model' : 'from odds'}</em>` : '<span class="mut">Prediction pending</span><i style="--w:0%"></i><em>Needs more team data</em>';
+  const pkh = pk ? `<span>${esc(M.n[pk.i])}</span><i style="--w:${pk.c}%"></i><em>${pk.c}% · ${pk.model ? 'team-record model' : 'from odds'}</em>` : '<span class="mut">No pick</span><i style="--w:0%"></i><em>Below quality bar</em>';
   return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time><div class="tm"><b>${esc(m.h)}</b><b>${esc(m.a)}</b></div><div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
 }
 export function board(ms, k, o = {}) {
-  let L = ms.filter((m) => !o.lg || m.li == o.lg);
-  if (o.q) { const q = o.q.toLowerCase(); L = L.filter((m) => (m.h + ' ' + m.a + ' ' + m.lg + ' ' + m.cn).toLowerCase().includes(q)); }
-  if (o.min) L = L.filter((m) => { const p = pick(m, k); return p && p.c >= o.min; });
+  let L = visible(ms, k, o);
   if (o.max) L = L.slice().sort((a, b) => (pick(b, k)?.c || 0) - (pick(a, k)?.c || 0)).slice(0, o.max);
-  if (!L.length) return '<div class="empty">No fixtures for this day yet. Fixtures are added as the data provider publishes them.</div>';
+  if (!L.length) return '<div class="empty">No picks meet our quality bar for this day yet. We only publish games where the chance is strong enough, so quiet days are normal.</div>';
   const G = {}; for (const m of L) (G[m.li + '|' + m.cn + '|' + m.lg] ??= []).push(m);
   const rank = (g) => { const i = PRIO.indexOf(+g.split('|')[0]); return i < 0 ? 99 : i; };
   return Object.keys(G).sort((a, b) => rank(a) - rank(b) || G[b].length - G[a].length || a.localeCompare(b)).map((g) => {

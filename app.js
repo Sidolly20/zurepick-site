@@ -1,7 +1,7 @@
-import { MK, TZ, board, topCards, statsHtml, state } from './render.js';
+import { MK, TZ, board, topCards, statsHtml, state, visible } from './render.js';
 const $ = (s) => document.querySelector(s), B = $('#board');
 if (B) {
-  const S = { k: B.dataset.mk || 'o', off: +(B.dataset.off || 0), lg: +(B.dataset.lg || 0), q: '', min: 0, data: [], tok: 0, hit: null };
+  const S = { k: B.dataset.mk || 'o', off: +(B.dataset.off || 0), lg: +(B.dataset.lg || 0), q: '', min: '', data: [], tok: 0, hit: null };
   const day = (o) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date(Date.now() + o * 864e5));
   const lab = (o) => o == -1 ? 'Yesterday' : o == 0 ? 'Today' : o == 1 ? 'Tomorrow' : new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'short', day: 'numeric', month: 'short' }).format(new Date(Date.now() + o * 864e5));
   // API address: set in api-config.js, or test a local API once with ?api=http://localhost:10000 (?api=reset clears it).
@@ -19,7 +19,7 @@ if (B) {
     B.innerHTML = board(S.data, S.k, { lg: S.lg, q: S.q, min: S.min });
     const t = $('#top'); if (t) t.innerHTML = topCards(S.data) || '<div class="empty">Top picks appear once odds are published.</div>';
     const st = $('#status'); if (st && status) st.textContent = status;
-    const kp = $('#kp'); if (kp) kp.innerHTML = statsHtml(S.data, S.hit);
+    const kp = $('#kp'); if (kp) kp.innerHTML = statsHtml(visible(S.data, S.k, { lg: S.lg, q: S.q, min: S.min }), S.hit);
     mark();
   }
   function mark() {
@@ -49,7 +49,7 @@ if (B) {
   const tabs = $('#mkts'); tabs.innerHTML = Object.keys(MK).map((k) => `<button type="button" class="chip" data-k="${k}" aria-pressed="${k == S.k}">${MK[k].l}</button>`).join('');
   tabs.onclick = (e) => { const b = e.target.closest('[data-k]'); if (!b) return; S.k = b.dataset.k; tabs.querySelectorAll('.chip').forEach((x) => x.setAttribute('aria-pressed', x == b)); paint(); };
   $('#q').oninput = (e) => { S.q = e.target.value.trim(); paint(); };
-  $('#min').onchange = (e) => { S.min = +e.target.value; paint(); };
+  $('#min').onchange = (e) => { S.min = e.target.value; paint(); };
   B.onclick = (e) => {
     const b = e.target.closest('.oc'); if (!b) return;
     const m = S.data.find((x) => x.id == b.dataset.id), i = +b.dataset.i, at = slip.findIndex((s) => s.id == m.id);
@@ -64,7 +64,7 @@ if (B) {
     try { await navigator.clipboard.writeText(txt); $('#slipx').textContent = 'Copied'; setTimeout(() => $('#slipx').textContent = 'Copy slip', 1500); } catch {}
   };
   // While games are in play, ask the API again every minute (only works with an API; snapshots update a few times a day).
-  setInterval(() => { if (API && !document.hidden && S.off == 0 && S.data.some((m) => ['live', 'ko'].includes(state(m).k))) load(true); }, 60000);
-  S.hit = B.dataset.hit ? +B.dataset.hit : null;
+  setInterval(() => { if (API && !document.hidden && S.off == 0 && visible(S.data, S.k, { lg: S.lg }).some((m) => ['live', 'ko'].includes(state(m).k))) load(true); }, 60000);
+  { const h = (B.dataset.hit || '').split('|'); S.hit = h.length == 3 ? { r: +h[0], w: +h[1], n: +h[2] } : null; }
   load();
 }

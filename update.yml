@@ -14,10 +14,14 @@ jobs:
         with:
           node-version: 22
       - run: node generate.mjs
+        continue-on-error: true
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
           BZZOIRO_KEY: ${{ secrets.BZZOIRO_KEY }}
           FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+      # Free results feed for the team-record model (no key needed).
+      - run: node collect-results.mjs
+        continue-on-error: true
       # Pages are built separately so a problem here can never block the data update.
       - run: node build-pages.mjs
         continue-on-error: true

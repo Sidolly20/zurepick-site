@@ -47,3 +47,4 @@ button,input,select{font-family:inherit}
 .row.win .sb{background:var(--g);border-color:var(--g)}.row.win .sb *{color:var(--gi)}.row.loss .sb{background:var(--no);border-color:var(--no)}.row.loss .sb *{color:#fff}
 .pk em{font-size:.7rem}
 @media(max-width:720px){.sb{min-width:76px}.sb strong{font-size:1.45rem}}
+@media(min-width:721px){.ods .oc{width:66px}}
