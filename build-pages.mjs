@@ -1,7 +1,7 @@
 // Builds the whole ZurePicks website from data/*.json: history, every page (SEO pre-rendered), sitemap and robots.
 // Run after generate.mjs. Set SITE_URL when you move to your own domain.
 import fs from 'node:fs';
-import { MK, TZ, MIN, pick, won, settled, esc, board, topCards, statsHtml, visible } from './render.js';
+import { MK, TZ, MIN, pick, won, settled, esc, board, comboHtml, statsHtml, visible } from './render.js';
 import { teamKey } from './teams.js';
 const SITE = (process.env.SITE_URL || 'https://sidolly20.github.io/zurepick-site').replace(/\/$/, '');
 const dstr = (o) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date(Date.now() + o * 864e5));
@@ -93,7 +93,7 @@ function page(file, o) {
 <p id="status" role="status">Loaded from the latest data snapshot.</p>
 <div id="board" data-mk="${b.k}" data-off="${b.off}" data-lg="${b.lg || ''}" data-hit="${HIT(b.k) ? [HIT(b.k).r, HIT(b.k).w, HIT(b.k).n].join('|') : ''}">${board(b.ms, b.k, { lg: b.lg, max: 100 })}</div>
 <div id="slip" hidden><span><b id="slipn"></b> · <b id="slipo"></b></span><button type="button" id="slipx">Copy slip</button><button type="button" id="slipc">Clear</button></div>`;
-  const topHtml = o.top ? `<h2>Top picks by implied chance</h2><div class="tops" id="top">${topCards(b.ms) || '<div class="empty">Top picks appear once odds are published.</div>'}</div>` : '';
+  const topHtml = o.top ? `<h2>Odds combos</h2><p class="mut cn">Picks combined by the system so the odds multiply to about 2, 3 and 5, from today’s and tomorrow’s games. Every extra game lowers the chance that all of them win, so each slip shows its combined chance and its weakest pick.</p><div class="combos" id="top">${comboHtml([...snapFor(0), ...snapFor(1), ...snapFor(2)])}</div>` : '';
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${esc(o.title)}</title><meta name="description" content="${esc(o.desc)}"><link rel="canonical" href="${canon}"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:title" content="${esc(o.title)}"><meta property="og:description" content="${esc(o.desc)}"><meta property="og:type" content="website"><meta property="og:url" content="${canon}"><meta property="og:site_name" content="ZurePicks"><meta name="twitter:card" content="summary"><meta name="theme-color" content="#0b8a52"><link rel="icon" href="${FAV}"><link rel="stylesheet" href="zp.css">${ld.map(ldj).join('')}</head><body>
 <header><div class="w"><a class="logo" href="index.html"><i>Z</i>ZurePicks</a><nav aria-label="Main">${NAV.map(([h, t]) => `<a href="${h}"${h == file ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav><span class="age">18+</span></div></header>
 <main class="w"><p class="crumbs">${crumbs.map((c, i) => i < crumbs.length - 1 ? `<a href="${c[1]}">${esc(c[0])}</a> › ` : esc(c[0])).join('')}</p>

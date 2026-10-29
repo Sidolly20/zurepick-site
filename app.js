@@ -1,4 +1,4 @@
-import { MK, TZ, board, topCards, statsHtml, state, visible } from './render.js';
+import { MK, TZ, board, comboHtml, combos, statsHtml, state, visible } from './render.js';
 const $ = (s) => document.querySelector(s), B = $('#board');
 if (B) {
   const S = { k: B.dataset.mk || 'o', off: +(B.dataset.off || 0), lg: +(B.dataset.lg || 0), q: '', min: '', data: [], tok: 0, hit: null };
@@ -15,12 +15,31 @@ if (B) {
   let slip = []; try { slip = JSON.parse(localStorage.getItem('zp_slip') || '[]'); } catch {}
   const save = () => { try { localStorage.setItem('zp_slip', JSON.stringify(slip)); } catch {} };
   const fmt = (t) => t ? new Date(t).toLocaleString('en-GB', { timeZone: TZ, day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' WAT' : '';
+  // Redraw without flicker: skip if nothing changed, swap only the rows that changed, and rebuild everything only when the list of games changes.
   function paint(status) {
-    B.innerHTML = board(S.data, S.k, { lg: S.lg, q: S.q, min: S.min });
-    const t = $('#top'); if (t) t.innerHTML = topCards(S.data) || '<div class="empty">Top picks appear once odds are published.</div>';
-    const st = $('#status'); if (st && status) st.textContent = status;
-    const kp = $('#kp'); if (kp) kp.innerHTML = statsHtml(visible(S.data, S.k, { lg: S.lg, q: S.q, min: S.min }), S.hit);
+    const html = board(S.data, S.k, { lg: S.lg, q: S.q, min: S.min });
+    if (html !== S.last) {
+      S.last = html;
+      const tmp = document.createElement('div'); tmp.innerHTML = html;
+      const a = [...B.querySelectorAll('.row')], b = [...tmp.querySelectorAll('.row')];
+      const same = a.length > 0 && a.length === b.length && a.every((r, i) => r.dataset.id === b[i].dataset.id) && B.querySelectorAll('.lg').length === tmp.querySelectorAll('.lg').length;
+      if (same) a.forEach((r, i) => { if (r.outerHTML !== b[i].outerHTML) r.replaceWith(b[i]); }); else B.innerHTML = html;
+    }
+    paintTop();
+    const st = $('#status'); if (st && status && st.textContent !== status) st.textContent = status;
+    const kp = $('#kp'); if (kp) { const h = statsHtml(visible(S.data, S.k, { lg: S.lg, q: S.q, min: S.min }), S.hit); if (h !== S.lastKp) { S.lastKp = h; kp.innerHTML = h; } }
     mark();
+  }
+  // The combo slips use upcoming games from today, tomorrow and the day after, whichever day is selected below.
+  function paintTop() { const t = $('#top'); if (!t || !S.pool) return; const h = comboHtml(S.pool); if (h !== S.lastTop) { S.lastTop = h; t.innerHTML = h; } }
+  async function loadPool() {
+    let all = [];
+    for (const d of [0, 1, 2].map(day)) {
+      let ms = []; try { const r = await fetch('data/' + d + '.json', { cache: 'no-store' }); if (r.ok) ms = (await r.json()).matches || []; } catch {}
+      if (API) { try { const c = new AbortController(), t = setTimeout(() => c.abort(), 9000); const r = await fetch(API + '/api/matches?date=' + d, { signal: c.signal, cache: 'no-store' }); clearTimeout(t); if (r.ok) { const j = await r.json(); if (Array.isArray(j.matches) && j.matches.length) ms = j.matches; } } catch {} }
+      all = all.concat(ms);
+    }
+    if (all.length) { S.pool = all; paintTop(); }
   }
   function mark() {
     document.querySelectorAll('.oc').forEach((b) => b.classList.toggle('sel', slip.some((s) => s.id == b.dataset.id && s.k == S.k && s.i == b.dataset.i)));
@@ -30,13 +49,15 @@ if (B) {
     $('#slipn').textContent = slip.length + (slip.length == 1 ? ' selection' : ' selections');
     $('#slipo').textContent = 'Odds ' + tot.toFixed(2);
   }
+  // quiet = a background refresh while games are live: fetch one source, change nothing on screen unless the data changed.
   async function load(quiet) {
-    const date = day(S.off), tok = ++S.tok; let snap = null;
+    const date = day(S.off), tok = ++S.tok;
     if (!quiet) $('#status').textContent = 'Loading…';
-    try { const r = await fetch('data/' + date + '.json', { cache: 'no-cache' }); if (r.ok) snap = await r.json(); } catch {}
-    if (tok != S.tok) return;
-    S.data = snap?.matches || [];
-    paint(snap ? 'Snapshot · updated ' + fmt(snap.liveUpdated || snap.updated) : 'No data for this date yet');
+    if (!quiet || !API) { // snapshot file (also the only source on the public site)
+      let snap = null; try { const r = await fetch('data/' + date + '.json', { cache: 'no-store' }); if (r.ok) snap = await r.json(); } catch {}
+      if (tok != S.tok) return;
+      if (snap || !quiet) { S.data = snap?.matches || []; paint(snap ? 'Snapshot · updated ' + fmt(snap.liveUpdated || snap.updated) : 'No data for this date yet'); }
+    }
     if (!API) return;
     try {
       const c = new AbortController(), t = setTimeout(() => c.abort(), 9000);
@@ -58,13 +79,20 @@ if (B) {
     if (!same) slip.push({ id: m.id, h: m.h, a: m.a, k: S.k, i, od: +b.dataset.od, n: MK[S.k].n[i] });
     save(); mark();
   };
+  // "Add games to slip" on a combo: adds every game of that combo (one pick per game)
+  const top = $('#top'); if (top) top.onclick = (e) => {
+    const b = e.target.closest('.cb'); if (!b) return; const c = combos(S.pool || S.data).find((x) => x.target == b.dataset.t); if (!c) return;
+    for (const x of c.legs) { const at = slip.findIndex((s) => s.id == x.m.id); if (at >= 0) slip.splice(at, 1); slip.push({ id: x.m.id, h: x.m.h, a: x.m.a, k: x.k, i: x.i, od: x.od, n: MK[x.k].n[x.i] }); }
+    save(); mark(); b.textContent = 'Added ✓'; setTimeout(() => paint(), 1200);
+  };
   $('#slipc').onclick = () => { slip = []; save(); mark(); };
   $('#slipx').onclick = async () => {
     const txt = slip.map((s) => `${s.h} v ${s.a}: ${s.n} @ ${s.od.toFixed(2)}`).join('\n') + '\nTotal odds ' + slip.reduce((p, s) => p * s.od, 1).toFixed(2);
     try { await navigator.clipboard.writeText(txt); $('#slipx').textContent = 'Copied'; setTimeout(() => $('#slipx').textContent = 'Copy slip', 1500); } catch {}
   };
-  // While games are in play, ask the API again every minute (only works with an API; snapshots update a few times a day).
-  setInterval(() => { if (API && !document.hidden && S.off == 0 && visible(S.data, S.k, { lg: S.lg }).some((m) => ['live', 'ko'].includes(state(m).k))) load(true); }, 60000);
+  // While games are live: with an API, refresh every minute; on the public site, re-read the data file every 3 minutes.
+  let n = 0;
+  setInterval(() => { n++; if (document.hidden || S.off != 0 || (!API && n % 3)) return; if (visible(S.data, S.k, { lg: S.lg }).some((m) => ['live', 'ko'].includes(state(m).k))) load(true); }, 60000);
   { const h = (B.dataset.hit || '').split('|'); S.hit = h.length == 3 ? { r: +h[0], w: +h[1], n: +h[2] } : null; }
-  load();
+  load(); loadPool(); setInterval(() => { if (!document.hidden) loadPool(); }, 300000);
 }

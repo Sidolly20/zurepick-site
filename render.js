@@ -77,3 +77,59 @@ export function topCards(ms, n = 6) {
   if (!L.length) return '';
   return L.map(({ m, p }) => `<div class="tc"><small>${esc(m.lg)} · ${hm(m.d)}</small><b>${esc(m.h)} v ${esc(m.a)}</b><div><span class="tag">${esc(MK.o.n[p.i])}</span><span class="mono">${p.od.toFixed(2)}</span></div><i style="--w:${p.c}%"></i><em>${p.c}% implied</em></div>`).join('');
 }
+
+// ---- Odds combos: slips whose odds multiply to about 2, 3 and 5. They are always filled: the search widens step by step when strong picks are scarce. ----
+export const COMBOS = [[2, 4], [3, 5], [5, 6]]; // [target odds, most games to start with]
+const CAP = 1.45; // a slip may overshoot its target by at most 45%
+const LADDER = [70, 65, 60, 55, 50]; // lowest chance allowed for any single game, tried in this order
+function bestCombo(C, T, maxLegs) {
+  // suf[j] = odds of C[j..] from highest to lowest, used to drop paths that can no longer reach the target
+  const n = C.length, suf = new Array(n + 1); suf[n] = []; for (let j = n - 1; j >= 0; j--) suf[j] = [...suf[j + 1], C[j].od].sort((a, b) => b - a);
+  const ub = (j, slots) => { let p = 1; for (let t = 0; t < slots && t < suf[j].length; t++) p *= suf[j][t]; return p; };
+  let best = null, nodes = 0;
+  const go = (i, k, od, pr, legs) => {
+    if (od >= T) { if (!best || pr > best.pr + 1e-9 || (Math.abs(pr - best.pr) < 1e-9 && od < best.od)) best = { legs: legs.slice(), od, pr }; return; }
+    if (k >= maxLegs || nodes > 400000 || od * ub(i, maxLegs - k) < T) return;
+    for (let j = i; j < n; j++) {
+      nodes++; const o = od * C[j].od; if (o > T * CAP || o * ub(j + 1, maxLegs - k - 1) < T) continue;
+      legs.push(C[j]); go(j + 1, k + 1, o, pr * C[j].p, legs); legs.pop();
+    }
+  };
+  go(0, 0, 1, 1, []); return best;
+}
+export function combos(ms, now = Date.now()) {
+  // every odds-based pick of every game that has not started
+  const games = [];
+  for (const m of ms) {
+    if (state(m, now).k != 'ns') continue;
+    const L = []; for (const k in MK) { const p = pick(m, k); if (p && !p.model && p.od > 1.04) L.push({ m, k, i: p.i, od: p.od, c: p.c, p: p.c / 100 }); }
+    if (L.length) games.push(L);
+  }
+  // one leg per game: its strongest pick that meets the chance and odds limits
+  const pool = (minC, minOd, skip) => games.map((L) => L.filter((x) => x.c >= minC && x.od >= minOd && !skip.has(x.m.id)).sort((a, b) => b.c - a.c)[0]).filter(Boolean).sort((a, b) => b.p - a.p || b.od - a.od);
+  // half the safest games, half the highest-odds ones: only safe short-odds games could never add up to 5.0
+  const mix = (P, size) => { const h = Math.ceil(size / 2), hi = [...P].sort((a, b) => b.od - a.od || b.p - a.p); return [...new Set([...P.slice(0, h), ...hi.slice(0, h)])].sort((a, b) => b.p - a.p || b.od - a.od); };
+  const used = new Set(), out = [];
+  for (const [T, max] of COMBOS) {
+    let r = null, minC = 0;
+    search: for (const c of LADDER) for (const bonus of [0, 1, 2]) for (const skip of [used, new Set()]) { // prefer new games, then allow repeats
+      const P = mix(pool(c, c >= 60 ? 1.15 : 1.08, skip), bonus ? 22 : 28); r = bestCombo(P, T, max + bonus);
+      if (r) { minC = Math.min(...r.legs.map((x) => x.c)); break search; }
+    }
+    if (!r) { // last resort: stack the strongest picks until the target is reached (or all are used)
+      const P = pool(0, 1.04, new Set()); let od = 1, pr = 1; const legs = [];
+      for (const x of P) { if (od >= T || legs.length >= 10) break; legs.push(x); od *= x.od; pr *= x.p; }
+      if (legs.length) { r = { legs, od, pr }; minC = Math.min(...legs.map((x) => x.c)); }
+    }
+    if (r) r.legs.forEach((x) => used.add(x.m.id));
+    out.push({ target: T, legs: r ? r.legs.sort((a, b) => Date.parse(a.m.d) - Date.parse(b.m.d)) : [], od: r ? r.od : 0, chance: r ? Math.round(r.pr * 100) : 0, minC, short: !!r && r.od < T });
+  }
+  return out;
+}
+export function comboHtml(ms, now = Date.now()) {
+  const day = (t) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(t), today = day(now), tomorrow = day(now + 864e5);
+  const tag = (m) => { const d = day(Date.parse(m.d)); return d == today ? '' : d == tomorrow ? 'Tmrw' : new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'short', day: 'numeric' }).format(Date.parse(m.d)); };
+  return combos(ms, now).map((c) => !c.legs.length
+    ? `<div class="cbx empty"><div class="ch"><span>${c.target} odds</span><b>–</b></div><p>Today’s slips are being prepared. They appear as soon as games and odds are published.</p></div>`
+    : `<div class="cbx"><div class="ch"><span>${c.short ? 'Best available' : c.target + '+ odds'}</span><b>${c.od.toFixed(2)}</b></div><div class="cm">${c.legs.length} games · combined chance ${c.chance}% · weakest pick ${c.minC}%</div>${c.legs.map((x) => `<div class="cl"><time>${tag(x.m) ? `<small>${tag(x.m)}</small>` : ''}${hm(x.m.d)}</time><div><b>${esc(x.m.h)} v ${esc(x.m.a)}</b><small>${esc(x.m.lg)}</small></div><span class="tag">${esc(MK[x.k].n[x.i])}</span><span class="mono">${x.od.toFixed(2)}</span></div>`).join('')}<button type="button" class="cb" data-t="${c.target}">Add ${c.legs.length} games to slip</button></div>`).join('');
+}
