@@ -18,9 +18,10 @@ export function pick(m, k) {
     if (k == 'dc') { if (m.o && !m.o.some((x) => !(x > 1))) { const p = norm(m.o); q = [p[0] + p[1], p[0] + p[2], p[1] + p[2]]; } } else q = norm(od);
     o = true;
   }
+  if (!q && k == 'dc' && m.o && !m.o.some((x) => !(x > 1))) { const p = norm(m.o); q = [p[0] + p[1], p[0] + p[2], p[1] + p[2]]; o = 'derived'; } // no double-chance prices: derive the chance from 1X2 odds
   if (!q && m.pm && (k == 'o' || k == 'dc')) { const p = m.pm.map((x) => x / 100); q = k == 'o' ? p : [p[0] + p[1], p[0] + p[2], p[1] + p[2]]; o = false; }
   if (!q) return null;
-  const i = q.indexOf(Math.max(...q)); return { i, c: Math.round(q[i] * 100), od: o ? od[i] : null, model: !o };
+  const i = q.indexOf(Math.max(...q)); return { i, c: Math.round(q[i] * 100), od: o === true ? od[i] : null, model: !o };
 }
 // Quality bar: a pick is only published when its implied chance reaches this level (own tracked results: 1X2 picks under 60% won ~45-50%, 60%+ won ~80%).
 export const MIN = { o: 60, dc: 75, ou: 60, o15: 75, bt: 60 };

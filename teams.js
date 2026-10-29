@@ -6,3 +6,11 @@ export function teamKey(name) {
     .map((w) => (w in ALIAS ? ALIAS[w] : w)).filter((w) => w && !DROP.has(w) && !/^\d+$/.test(w) && w !== 'and');
   return [...new Set(t)].sort().join(' ');
 }
+// Same real team? Equal keys, or one key inside the other. Youth/women/reserve sides never match a senior side.
+const TAGS = /^(u\d\d|ii|iii|b|w|women|reserves|youth|jong|sub21|castilla)$/;
+const tagsOf = (n) => String(n || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => TAGS.test(w)).sort().join();
+export function sameTeam(a, b) {
+  const x = teamKey(a), y = teamKey(b);
+  if (!x || !y || tagsOf(a) !== tagsOf(b)) return false;
+  return x === y || (Math.min(x.length, y.length) >= 4 && (x.includes(y) || y.includes(x)));
+}

@@ -15,7 +15,7 @@ for (const f of fs.readdirSync('data').filter((f) => /^\d{4}-\d\d-\d\d\.json$/.t
   const j = JSON.parse(fs.readFileSync('data/' + f, 'utf8')); snaps[j.date] = j.matches; files[j.date] = j;
   for (const m of j.matches) {
     if (!settled(m)) continue;
-    const p = {}; for (const k in MK) { const x = pick(m, k); if (x && x.od > 1) p[k] = [x.i, x.c, x.od, won(m, k, x) ? 1 : 0]; }
+    const p = {}; for (const k in MK) { const x = pick(m, k); if (x && !x.model) p[k] = [x.i, x.c, x.od, won(m, k, x) ? 1 : 0]; }
     if (Object.keys(p).length) H[m.id] = { d: m.d.slice(0, 10), lg: m.lg, cn: m.cn, h: m.h, a: m.a, sc: m.sc, p };
   }
 }

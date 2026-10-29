@@ -8,6 +8,8 @@ const y = new Date().getFullYear(), m = new Date().getMonth(), s0 = m >= 6 ? y :
 const season = (a) => `${a}-${String(a + 1).slice(2)}`;
 const SEASONS = [season(s0 - 1), season(s0)];
 fs.mkdirSync('data', { recursive: true });
+const META = 'data/results.meta.json'; // the feed changes slowly: refresh at most every 12 hours
+try { if (Date.now() - JSON.parse(fs.readFileSync(META, 'utf8')).t < 12 * 36e5 && !process.env.FORCE) { console.log('Results feed: fresh, skipped'); process.exit(0); } } catch {}
 let RES = {}; try { RES = JSON.parse(fs.readFileSync('data/results.json', 'utf8')); } catch {}
 let added = 0, files = 0, failed = 0;
 for (const L of LEAGUES) for (const S of SEASONS) {
@@ -23,5 +25,5 @@ for (const L of LEAGUES) for (const S of SEASONS) {
     }
   } catch (e) { failed++; console.error('skip', L, S, e.message); }
 }
-fs.writeFileSync('data/results.json', JSON.stringify(RES));
+fs.writeFileSync('data/results.json', JSON.stringify(RES)); fs.writeFileSync(META, JSON.stringify({ t: Date.now() }));
 console.log(`Results feed: ${files} league files read, ${added} new results, ${Object.keys(RES).length} stored, ${failed} failed`);
