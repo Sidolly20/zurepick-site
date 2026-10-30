@@ -78,98 +78,151 @@
         header nav a:hover, header nav a[aria-current="page"] {
             color: #2ecc71;
         }
-        .hero-section {
-            padding: 24px 0 32px 0;
+        .hero-compact {
+            padding: 16px 0 20px 0;
         }
         .hero-title {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 800;
             line-height: 1.25;
             color: #ffffff;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         .hero-title span {
             color: #2ecc71;
         }
         .hero-desc {
-            font-size: 15px;
-            line-height: 1.6;
+            font-size: 13px;
+            line-height: 1.5;
             color: #a0aec0;
-            margin-bottom: 24px;
-            font-weight: 400;
+            margin-bottom: 16px;
         }
-        .hero-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-        @media(min-width: 640px) {
-            .hero-actions {
-                flex-direction: row;
-            }
-        }
-        .btn-primary-green {
-            background: #2ecc71;
-            color: #0b140e;
-            padding: 14px 24px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 15px;
-            text-align: center;
-            text-decoration: none;
-            box-shadow: 0 4px 14px rgba(46, 204, 113, 0.3);
-            transition: background 0.2s, transform 0.1s;
-        }
-        .btn-primary-green:hover {
-            background: #27ae60;
-            transform: translateY(-1px);
-        }
-        .btn-secondary-dark {
-            background: #18221b;
-            color: #ffffff;
-            padding: 14px 24px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 15px;
-            text-align: center;
-            text-decoration: none;
-            border: 1px solid #28382c;
-            transition: background 0.2s;
-        }
-        .btn-secondary-dark:hover {
-            background: #202e23;
-        }
-        .stats-grid {
+        /* Compact Stats Grid */
+        .stats-grid-compact {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 16px;
         }
         @media(max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .stats-grid-compact {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
-        .stat-card {
+        .stat-card-sm {
             background: #141c17;
             border: 1px solid #1f2c22;
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 8px;
+            padding: 10px 12px;
             text-align: left;
         }
-        .stat-card .num {
-            font-size: 22px;
+        .stat-card-sm .num {
+            font-size: 16px;
             font-weight: 800;
             color: #fff;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
-        .stat-card .label {
-            font-size: 12px;
+        .stat-card-sm .label {
+            font-size: 10px;
             color: #8c9b90;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em;
             font-weight: 600;
+        }
+        /* Day Selector & Market Filters */
+        .filter-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .day-tabs, .market-filters {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 4px;
+        }
+        .day-tabs::-webkit-scrollbar, .market-filters::-webkit-scrollbar {
+            display: none;
+        }
+        .pill-tab {
+            background: #18221b;
+            border: 1px solid #28382c;
+            color: #b0c4de;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .pill-tab.active, .pill-tab:hover {
+            background: #2ecc71;
+            color: #0b140e;
+            border-color: #2ecc71;
+        }
+        .market-chip {
+            background: #121814;
+            border: 1px solid #1f2c22;
+            color: #a0aec0;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .market-chip:hover, .market-chip.active {
+            background: #1c2820;
+            color: #2ecc71;
+            border-color: #28382c;
+        }
+        /* Match Card Simulation */
+        .match-card {
+            background: #121814;
+            border: 1px solid #1f2c22;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #8c9b90;
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .match-teams {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .match-prediction {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #18221b;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .match-prediction .tip {
+            color: #2ecc71;
+            font-weight: 700;
+        }
+        .match-prediction .odds {
+            background: #145a2c;
+            color: #2ecc71;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -194,39 +247,78 @@
 </header>
 
 <main class="w">
-    <div class="hero-section">
+    <div class="hero-compact">
         <h1 class="hero-title">Expert football predictions &amp; betting tips <span>today</span></h1>
-        <p class="hero-desc">Your ultimate destination for high-accuracy football tips and professional data analysis. Access hand-picked 2 odds, 3 odds, and 5 odds banker slips, 1X2 outcomes, double chance, over/under 1.5 &amp; 2.5 goals, and BTTS predictions covering over 50 daily matches across 34 top leagues. Every fixture includes precise odds, win probability metrics, live scores, and fully transparent historical tracking.</p>
+        <p class="hero-desc">Access high-accuracy 2 odds, 3 odds, and 5 odds banker slips, live scores, and expert tips across 34 top leagues.</p>
         
-        <div class="hero-actions">
-            <a href="ai-betting-assistant.html" class="btn-primary-green">🎯 Get Today's 2, 3 &amp; 5 Odds Slips</a>
-            <a href="track-record.html" class="btn-secondary-dark">📊 View Verified Track Record</a>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
+        <!-- Compact Stats Grid -->
+        <div class="stats-grid-compact">
+            <div class="stat-card-sm">
                 <div class="num">11</div>
                 <div class="label">Picks Today</div>
             </div>
-            <div class="stat-card">
-                <div class="num">3</div>
-                <div class="label">Played · 27%</div>
-            </div>
-            <div class="stat-card">
+            <div class="stat-card-sm">
                 <div class="num">1</div>
                 <div class="label" style="color: #2ecc71;">● Live Now</div>
             </div>
-            <div class="stat-card">
-                <div class="num">1</div>
-                <div class="label">Awaiting Score</div>
-            </div>
-            <div class="stat-card">
-                <div class="num">6</div>
-                <div class="label">Not Started · 55%</div>
-            </div>
-            <div class="stat-card">
+            <div class="stat-card-sm">
                 <div class="num">81%</div>
-                <div class="label">Won 79 of 97 · 30 Days</div>
+                <div class="label">30-Day Win</div>
+            </div>
+        </div>
+
+        <!-- Day Selector & Market Filters -->
+        <div class="filter-section">
+            <div class="day-tabs">
+                <a href="index.html" class="pill-tab active">Today</a>
+                <a href="football-predictions-tomorrow.html" class="pill-tab">Tomorrow</a>
+                <a href="football-predictions-tomorrow.html" class="pill-tab">Sunday</a>
+            </div>
+            <div class="market-filters">
+                <a href="1x2-predictions.html" class="market-chip">1X2</a>
+                <a href="btts-predictions.html" class="market-chip">Double Chance</a>
+                <a href="over-2-5-goals-predictions.html" class="market-chip">Over 1.5</a>
+                <a href="over-2-5-goals-predictions.html" class="market-chip">Over 2.5</a>
+                <a href="btts-predictions.html" class="market-chip">BTTS</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Match Fixtures Feed -->
+    <div class="matches-feed">
+        <div class="match-card">
+            <div class="match-header">
+                <span>Premier League · 16:00</span>
+                <span style="color: #2ecc71;">● Live 68'</span>
+            </div>
+            <div class="match-teams">Arsenal vs Chelsea</div>
+            <div class="match-prediction">
+                <span>Prediction: Over 1.5 Goals</span>
+                <span class="odds">1.34</span>
+            </div>
+        </div>
+
+        <div class="match-card">
+            <div class="match-header">
+                <span>La Liga · 18:30</span>
+                <span>Starts in 45m</span>
+            </div>
+            <div class="match-teams">Real Madrid vs Valencia</div>
+            <div class="match-prediction">
+                <span>Prediction: Home Win (1X2)</span>
+                <span class="odds">1.45</span>
+            </div>
+        </div>
+
+        <div class="match-card">
+            <div class="match-header">
+                <span>Serie A · 20:45</span>
+                <span>Tonight</span>
+            </div>
+            <div class="match-teams">AC Milan vs Inter Milan</div>
+            <div class="match-prediction">
+                <span>Prediction: Both Teams to Score (BTTS)</span>
+                <span class="odds">1.82</span>
             </div>
         </div>
     </div>
