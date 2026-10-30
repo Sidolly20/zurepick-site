@@ -1,1 +1,1 @@
-{ "name": "zurepick-site", "private": true, "type": "module" }
+{ "name": "zurepick-site", "private": true, "type": "module", "scripts": { "build": "node build-pages.mjs", "collect": "node collect-bsd.mjs && node collect-results.mjs" } }
