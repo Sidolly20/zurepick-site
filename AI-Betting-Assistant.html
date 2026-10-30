@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <title>AI Betting Assistant &amp; Football Predictor | ZurePicks</title>
+    <meta name="description" content="Use ZurePicks AI Betting Assistant to instantly generate data-backed 2 odds and 3 odds multi-market football predictions. Free AI bet analyzer with 1X2, Over/Under, and BTTS tips.">
+    <meta name="keywords" content="AI bet assistance, AI football predictor, AI betting tips, 2 odds banker, 3 odds banker, football prediction bot, smart football accumulator">
+    <link rel="canonical" href="https://sidolly20.github.io/zurepick-site/ai-betting-assistant.html">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="stylesheet" href="zp.css">
+    <style>
+        header .w {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+            gap: 12px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .ai-banker-btn {
+            background: #145a2c;
+            color: #2ecc71;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid #1f8b4c;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        header nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        header nav::-webkit-scrollbar {
+            display: none;
+        }
+        .ai-page-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #161616;
+            border: 1px solid #222;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            color: #fff;
+        }
+        .ai-chat-box {
+            background: #111;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+        .humanized-prose h2 {
+            color: #2ecc71;
+            margin-top: 24px;
+            font-size: 1.4rem;
+        }
+        .humanized-prose p {
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 16px;
+        }
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            border: none;
+            cursor: pointer;
+        }
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="w">
+        <div class="header-left">
+            <a class="logo" href="index.html"><i>Z</i>ZurePicks</a>
+            <a href="ai-betting-assistant.html" class="ai-banker-btn" aria-current="page">🤖 AI Banker</a>
+        </div>
+        <nav aria-label="Main">
+            <a href="index.html">Today</a>
+            <a href="football-predictions-tomorrow.html">Tomorrow</a>
+            <a href="1x2-predictions.html">1X2</a>
+            <a href="over-2-5-goals-predictions.html">Goals</a>
+            <a href="btts-predictions.html">BTTS</a>
+            <a href="leagues.html">Leagues</a>
+            <a href="track-record.html">Track record</a>
+        </nav>
+        <span class="age" style="flex-shrink: 0;">18+</span>
+    </div>
+</header>
+
+<main class="w">
+    <p class="crumbs"><a href="index.html">Home</a> › AI Betting Assistant</p>
+    
+    <div class="ai-page-container">
+        <h1 style="font-size: 2rem; margin-bottom: 12px; color: #fff;">AI Betting Assistant &amp; Smart Football Predictor</h1>
+        <p style="color: #aaa; font-size: 1.05rem; margin-bottom: 24px;">Generate data-backed 2 odds and 3 odds slips instantly using market-implied probabilities across multiple leagues and betting markets.</p>
+
+        <!-- Interactive AI Banker Tool Section -->
+        <div class="ai-chat-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <b style="font-size: 16px; color: #2ecc71;">🤖 ZurePicks Assistant Banker Engine</b>
+                <span style="font-size: 11px; background: #145a2c; color: #2ecc71; padding: 3px 8px; border-radius: 4px; font-weight: bold;">Live API Connected</span>
+            </div>
+
+            <div class="tab-bar">
+                <button onclick="setDayMode('today')" id="tab-today" class="tab-btn" style="background: #27ae60; color: white;">📅 Today's Games</button>
+                <button onclick="setDayMode('tomorrow')" id="tab-tomorrow" class="tab-btn" style="background: #2a2a2a; color: #aaa;">🔮 Tomorrow's Games</button>
+            </div>
+
+            <div id="chat-messages" style="background: #0d0d0d; border: 1px solid #222; border-radius: 8px; padding: 14px; height: 260px; overflow-y: auto; font-size: 13px; line-height: 1.5; margin-bottom: 16px;">
+                <div style="margin-bottom: 8px;"><b>AI Assistant:</b> Welcome! Select whether you want predictions for <b>Today</b> or <b>Tomorrow</b>, then tap an odds target below to build your multi-market slip. 🚀</div>
+            </div>
+
+            <div class="action-btns">
+                <button onclick="requestOdds(2)" style="background: #27ae60; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; flex: 1; font-weight: bold; font-size: 13px;">
+                    🔥 Generate 2 Odds Banker
+                </button>
+                <button onclick="requestOdds(3)" style="background: #2980b9; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; flex: 1; font-weight: bold; font-size: 13px;">
+                    🚀 Generate 3 Odds Banker
+                </button>
+            </div>
+        </div>
+
+        <!-- Humanized SEO Content Section -->
+        <div class="humanized-prose" style="margin-top: 36px; border-top: 1px solid #222; padding-top: 24px;">
+            <h2>Why Use an AI Betting Assistant for Football Accumulators?</h2>
+            <p>Let's be honest—building winning accumulators day in and day out is exhausting. Sifting through dozens of leagues, checking injury reports, comparing bookmaker margins, and guessing whether an over 1.5 goals pick or a home win is safer can take hours. That is exactly why we built the <strong>ZurePicks AI Betting Assistant</strong>.</p>
+            <p>Unlike black-box prediction bots that make empty promises, our AI tool analyzes live market-implied probabilities with bookmaker margins stripped out. It scans active fixtures across Europe, South America, and beyond to handpick high-probability selections for 1X2, Over/Under 2.5, Double Chance, and Both Teams to Score (BTTS).</p>
+
+            <h2>How the 2 Odds and 3 Odds Banker Generator Works</h2>
+            <p>Consistency beats luck in sports betting. Instead of risking huge accumulators with 10 or 15 legs, professional bettors often rely on focused <strong>2+ odds</strong> and <strong>3+ odds</strong> bankers. Here is how our algorithm constructs your slips:</p>
+            <p>• <strong>Smart Filtering:</strong> The AI filters out low-confidence fixtures, focusing exclusively on matches where market confidence exceeds 75–90%.</p>
+            <p>• <strong>Multi-Market Diversity:</strong> Rather than forcing risky match-winner bets, the engine blends reliable markets—such as early over 1.5 goals, home win insurance, and double chance combos—to achieve clean, stable odds ranges.</p>
+            <p>• <strong>Zero Guesswork:</strong> Every generated slip displays individual match odds, win percentages, and total combined odds instantly so you can review before placing your stake.</p>
+
+            <h2>Responsible Betting with AI Insights</h2>
+            <p>Even with advanced AI analysis, football remains unpredictable. A red card in the 10th minute or a last-minute penalty can always shift the outcome. Always treat AI betting assistance as a helpful analytical guide rather than a guaranteed win. Stake responsibly, manage your bankroll wisely, and only play with funds you can comfortably afford to lose.</p>
+        </div>
+    </div>
+</main>
+
+<footer><div class="fg" style="max-width: 800px; margin: 40px auto 20px; padding: 0 20px;">
+    <div><b>Predictions</b><a href="index.html">Predictions today</a><a href="ai-betting-assistant.html">AI Betting Assistant</a><a href="track-record.html">Track record</a></div>
+    <div><b>About</b><a href="about.html">About ZurePicks</a><a href="responsible-gambling.html">Responsible gambling</a></div>
+</div>
+<p style="text-align: center; color: #777; font-size: 12px;">© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p></footer>
+
+<script>
+let currentDayMode = 'today';
+
+function setDayMode(mode) {
+    currentDayMode = mode;
+    const btnToday = document.getElementById('tab-today');
+    const btnTomorrow = document.getElementById('tab-tomorrow');
+    const chatMessages = document.getElementById('chat-messages');
+
+    if (mode === 'today') {
+        btnToday.style.background = '#27ae60';
+        btnToday.style.color = 'white';
+        btnTomorrow.style.background = '#2a2a2a';
+        btnTomorrow.style.color = '#aaa';
+        chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #f39c12;"><b>AI:</b> Switched to <b>Today's</b> fixture pool. 📅</div>`;
+    } else {
+        btnTomorrow.style.background = '#2980b9';
+        btnTomorrow.style.color = 'white';
+        btnToday.style.background = '#2a2a2a';
+        btnToday.style.color = '#aaa';
+        chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #3498db;"><b>AI:</b> Switched to <b>Tomorrow's</b> fixture pool. 🔮</div>`;
+    }
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+async function requestOdds(targetType) {
+    const chatMessages = document.getElementById('chat-messages');
+    
+    chatMessages.innerHTML += `<div style="margin-bottom: 8px; text-align: right;"><span style="background: #2c3e50; padding: 6px 10px; border-radius: 8px; display: inline-block;">Give me ${currentDayMode}'s ${targetType} odds multi-market banker.</span></div>`;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    const loadingId = "load_" + Date.now();
+    chatMessages.innerHTML += `<div id="${loadingId}" style="margin-bottom: 8px; color: #f1c40f;"><b>AI:</b> Compiling multi-market predictions... ⏳</div>`;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    try {
+        const endpoint = targetType === 2 
+            ? `https://zurepicks-backend-api.onrender.com/api/ai-chat/get-2-odds?day=${currentDayMode}`
+            : `https://zurepicks-backend-api.onrender.com/api/ai-chat/get-3-odds?day=${currentDayMode}`;
+            
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        
+        const loader = document.getElementById(loadingId);
+        if (loader) loader.remove();
+
+        let slipHTML = `<div style="margin-bottom: 10px; background: #1a2f22; padding: 10px; border-radius: 8px; border-left: 4px solid ${targetType === 2 ? '#27ae60' : '#2980b9'};">`;
+        slipHTML += `<b>🎯 ${data.oddsRange}:</b><br>`;
+        
+        if (data.legs && data.legs.length > 0) {
+            data.legs.forEach(leg => {
+                slipHTML += `<div style="margin-top: 4px; border-bottom: 1px solid #224d33; padding-bottom: 3px;">• ${leg.home} vs ${leg.away} <small>(${leg.league})</small><br><small style="color: #a3e4d7;">Market: <b>${leg.market}</b> | Odds: <b>${leg.odds}</b> | Win: ${leg.winChance}%</small></div>`;
+            });
+        } else {
+            slipHTML += `No matches found for this date range right now.<br>`;
+        }
+        
+        slipHTML += `<div style="margin-top: 6px; text-align: right; font-size: 14px; color: #2ecc71;"><b>Total Odds: ${data.totalOdds}</b> 🚀</div>`;
+        slipHTML += `</div>`;
+        
+        chatMessages.innerHTML += slipHTML;
+    } catch (error) {
+        const loader = document.getElementById(loadingId);
+        if (loader) loader.remove();
+        chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #e74c3c;"><b>AI:</b> Failed to reach backend server. Make sure Render is awake!</div>`;
+    }
+    
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+</script>
+</body>
+</html>
