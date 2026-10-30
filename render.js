@@ -27,7 +27,7 @@ export function pick(m, k) {
 export const MIN = { o: 60, dc: 75, ou: 60, o15: 75, bt: 60 };
 export function visible(ms, k, o = {}) {
   const min = o.min === undefined || o.min === '' || o.min === null ? MIN[k] : +o.min; // min 0 = show every pick
-  let L = ms.filter((m) => { const p = pick(m, k); return p && p.c >= min && (!o.lg || m.li == o.lg); });
+  let L = ms.filter((m) => { const p = pick(m, k); return p && p.c >= min && (!o.lg || m.li == o.lg) && (!o.match || o.match(m)); });
   if (o.q) { const q = o.q.toLowerCase(); L = L.filter((m) => (m.h + ' ' + m.a + ' ' + m.lg + ' ' + m.cn).toLowerCase().includes(q)); }
   return L;
 }
@@ -47,17 +47,18 @@ export function stats(ms, now = Date.now()) {
   let done = 0, live = 0, wait = 0; for (const m of ms) { const k = state(m, now).k; if (k == 'fin') done++; else if (k == 'live') live++; else if (k == 'ko') wait++; }
   const n = ms.length; return { n, done, live, wait, left: n - done - live - wait, pct: n ? Math.round((done / n) * 100) : 0 };
 }
-export function statsHtml(ms, hit) {
+export function statsHtml(ms, hit, label = 'Picks today') {
   const s = stats(ms), p = (x) => (s.n ? Math.round((x / s.n) * 100) : 0);
-  return `<div><b>${s.n || '–'}</b><span>Picks today</span></div><div><b>${s.done}</b><span>Played · ${s.pct}%</span></div><div class="lv"><b>${s.live}</b><span>Live now</span></div>${s.wait ? `<div><b>${s.wait}</b><span>Awaiting score</span></div>` : ''}<div><b>${s.left}</b><span>Not started · ${p(s.left)}%</span></div>${hit && hit.n ? `<div><b>${hit.r}%</b><span>Won ${hit.w} of ${hit.n} · 30 days</span></div>` : ''}`;
+  return `<div><b>${s.n || '–'}</b><span>${label}</span></div><div><b>${s.done}</b><span>Played · ${s.pct}%</span></div><div class="lv"><b>${s.live}</b><span>Live now</span></div>${s.wait ? `<div><b>${s.wait}</b><span>Awaiting score</span></div>` : ''}<div><b>${s.left}</b><span>Not started · ${p(s.left)}%</span></div>${hit && hit.n ? `<div><b>${hit.r}%</b><span>Won ${hit.w} of ${hit.n} · 30 days</span></div>` : ''}`;
 }
-export function row(m, k) {
-  const pk = pick(m, k), M = MK[k], od = m[k] || [], st = state(m);
+export function row(m, k, o = {}) {
+  let pk = pick(m, k); if (o.bar && pk && pk.c < (MIN[k] ?? 60)) pk = null; // league pages list every game but only show picks that clear the quality bar
+  const M = MK[k], od = m[k] || [], st = state(m);
   const w = st.k == 'fin' && pk ? (won(m, k, pk) ? ' win' : ' loss') : '';
   const cells = (od.length ? od : M.s.map(() => null)).map((x, i) => x
     ? `<button type="button" class="oc${pk && pk.i == i ? ' pick' : ''}" data-id="${m.id}" data-i="${i}" data-od="${x}" aria-label="${esc(M.n[i])} at ${x}"><small>${M.s[i]}</small>${Number(x).toFixed(2)}</button>`
     : `<span class="oc nil"><small>${M.s[i]}</small>–</span>`).join('');
-  const pkh = pk ? `<span>${esc(M.n[pk.i])}</span><i style="--w:${pk.c}%"></i><em>${pk.c}% · ${pk.model ? 'team-record model' : 'from odds'}</em>` : '<span class="mut">No pick</span><i style="--w:0%"></i><em>Below quality bar</em>';
+  const pkh = pk ? `<span>${esc(M.n[pk.i])}</span><i style="--w:${pk.c}%"></i><em>${pk.c}% · ${pk.model ? 'team-record model' : 'from odds'}</em>` : `<span class="mut">${od.length ? 'No strong pick' : st.k == 'ns' ? 'Odds not out yet' : 'Not tipped'}</span><i style="--w:0%"></i><em>${od.length ? 'Below our quality bar' : st.k == 'ns' ? 'Check back closer to kick-off' : 'No odds were published'}</em>`;
   return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time><div class="tm"><b>${esc(m.h)}</b><b>${esc(m.a)}</b></div><div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
 }
 export function board(ms, k, o = {}) {
@@ -132,4 +133,30 @@ export function comboHtml(ms, now = Date.now()) {
   return combos(ms, now).map((c) => !c.legs.length
     ? `<div class="cbx empty"><div class="ch"><span>${c.target} odds</span><b>–</b></div><p>Today’s slips are being prepared. They appear as soon as games and odds are published.</p></div>`
     : `<div class="cbx"><div class="ch"><span>${c.short ? 'Best available' : c.target + '+ odds'}</span><b>${c.od.toFixed(2)}</b></div><div class="cm">${c.legs.length} games · ${c.chance}% combined chance${c.minC < 65 ? ' · includes picks from ' + c.minC + '%' : ''}</div>${c.legs.map((x) => `<div class="cl"><time>${tag(x.m) ? `<small>${tag(x.m)}</small>` : ''}${hm(x.m.d)}</time><div><b>${esc(x.m.h)} v ${esc(x.m.a)}</b><small>${esc(x.m.lg)}</small></div><span class="tag">${esc(MK[x.k].n[x.i])}</span><span class="mono">${x.od.toFixed(2)}</span></div>`).join('')}<button type="button" class="cb" data-t="${c.target}">Add ${c.legs.length} games to slip</button></div>`).join('');
+}
+
+// ---- League pages: all fixtures of one league for the next days, grouped by day (with or without a pick) ----
+export const normName = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+export function leagueTest(spec) {
+  const names = (spec.names || []).map(normName), cs = (spec.countries || []).map(normName);
+  return (m) => m.li == spec.id || (names.includes(normName(m.lg)) && (!cs.length || cs.some((c) => normName(m.cn).includes(c))));
+}
+export function fixturesByDay(ms, k, match, o = {}) {
+  const now = o.now || Date.now(), day = (t) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(t), today = day(now), tomorrow = day(now + 864e5);
+  let L = ms.filter(match); if (o.q) { const q = o.q.toLowerCase(); L = L.filter((m) => (m.h + ' ' + m.a).toLowerCase().includes(q)); }
+  const seen = new Set(); L = L.filter((m) => !seen.has(m.id) && seen.add(m.id)).sort((a, b) => Date.parse(a.d) - Date.parse(b.d));
+  if (!L.length) return `<div class="empty">${esc(o.empty || 'No fixtures in the next three days. This usually means an international break or a gap between rounds.')}</div>`;
+  const G = {}; for (const m of L) (G[day(Date.parse(m.d))] ??= []).push(m);
+  const keys = Object.keys(G).sort(), ahead = keys.filter((d) => d >= today), past = keys.filter((d) => d < today).reverse(); // coming games first, then recent results
+  const yesterday = day(now - 864e5);
+  return [...ahead, ...past].map((d) => {
+    const nice = new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(d + 'T12:00:00Z'));
+    const lead = d == today ? 'Today' : d == tomorrow ? 'Tomorrow' : d == yesterday ? 'Yesterday · results' : d < today ? 'Results' : nice.split(' ')[0];
+    return `<section class="lg"><h3><span>${esc(lead)} · ${esc(nice)}</span><em>${G[d].length}</em></h3>${G[d].map((m) => row(m, k, { bar: true })).join('')}</section>`;
+  }).join('');
+}
+export function standingsHtml(t, name) {
+  if (!t || !t.rows || !t.rows.length) return '';
+  const when = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(t.updated));
+  return `<div class="prose"><h2>${esc(name)} table${t.season ? ' ' + esc(t.season) : ''}</h2><div class="sc"><table class="st"><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>${t.rows.map((x) => `<tr><td>${x.pos}</td><td>${esc(x.team)}</td><td>${x.p}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf}</td><td>${x.ga}</td><td>${x.gd > 0 ? '+' : ''}${x.gd}</td><td><b>${x.pts}</b></td></tr>`).join('')}</tbody></table></div><p class="mut">Table updated ${when} WAT · Source: football-data.org</p></div>`;
 }

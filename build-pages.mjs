@@ -1,7 +1,7 @@
 // Builds the whole ZurePicks website from data/*.json: history, every page (SEO pre-rendered), sitemap and robots.
 // Run after generate.mjs. Set SITE_URL when you move to your own domain.
 import fs from 'node:fs';
-import { MK, TZ, MIN, pick, won, settled, esc, board, comboHtml, statsHtml, visible } from './render.js';
+import { MK, TZ, MIN, pick, won, settled, esc, board, comboHtml, statsHtml, visible, fixturesByDay, standingsHtml, leagueTest } from './render.js';
 import { teamKey } from './teams.js';
 const SITE = (process.env.SITE_URL || 'https://sidolly20.github.io/zurepick-site').replace(/\/$/, '');
 const dstr = (o) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date(Date.now() + o * 864e5));
@@ -58,9 +58,23 @@ const MKT = {
   o15: ['over-1-5-goals-predictions.html', 'Over 1.5 Goals Predictions', 'Over/Under 1.5 goals', 'Over 1.5 goals needs at least two goals in the match. It is a lower-risk goals market with shorter odds than Over 2.5, which is why it is a popular accumulator leg.'],
   bt: ['btts-predictions.html', 'Both Teams to Score Predictions', 'Both teams to score (BTTS)', 'Both teams to score (BTTS or GG) wins when each side scores at least once, whatever the final result. A 1-1 draw and a 4-3 win both count.'],
 };
-const LG = [[39, 'premier-league', 'Premier League', 'England'], [140, 'la-liga', 'La Liga', 'Spain'], [135, 'serie-a', 'Serie A', 'Italy'], [78, 'bundesliga', 'Bundesliga', 'Germany'], [61, 'ligue-1', 'Ligue 1', 'France'], [2, 'champions-league', 'UEFA Champions League', 'Europe'], [3, 'europa-league', 'UEFA Europa League', 'Europe']];
+const LG = [
+  { id: 39, slug: 'premier-league', name: 'Premier League', cn: 'England', names: ['Premier League'], countries: ['england'], intro: 'The Premier League is the top division of English football: 20 clubs, each playing 38 matches.' },
+  { id: 140, slug: 'la-liga', name: 'La Liga', cn: 'Spain', names: ['La Liga', 'LaLiga', 'Primera Division'], countries: ['spain'], intro: 'La Liga is the top division of Spanish football: 20 clubs, each playing 38 matches.' },
+  { id: 135, slug: 'serie-a', name: 'Serie A', cn: 'Italy', names: ['Serie A'], countries: ['italy'], intro: 'Serie A is the top division of Italian football: 20 clubs, each playing 38 matches.' },
+  { id: 78, slug: 'bundesliga', name: 'Bundesliga', cn: 'Germany', names: ['Bundesliga'], countries: ['germany'], intro: 'The Bundesliga is the top division of German football: 18 clubs, each playing 34 matches.' },
+  { id: 61, slug: 'ligue-1', name: 'Ligue 1', cn: 'France', names: ['Ligue 1'], countries: ['france'], intro: 'Ligue 1 is the top division of French football: 18 clubs, each playing 34 matches.' },
+  { id: 2, slug: 'champions-league', name: 'UEFA Champions League', cn: 'Europe', names: ['UEFA Champions League', 'Champions League'], countries: [], intro: 'The UEFA Champions League is Europe’s top club competition, played as a league phase followed by knockout rounds.', cup: true },
+  { id: 3, slug: 'europa-league', name: 'UEFA Europa League', cn: 'Europe', names: ['UEFA Europa League', 'Europa League'], countries: [], intro: 'The UEFA Europa League is UEFA’s second club competition, played as a league phase followed by knockout rounds.', cup: true },
+  { id: 848, slug: 'conference-league', name: 'UEFA Conference League', cn: 'Europe', names: ['UEFA Europa Conference League', 'UEFA Conference League', 'Conference League', 'Europa Conference League'], countries: [], intro: 'The UEFA Conference League is UEFA’s third club competition, played as a league phase followed by knockout rounds.', cup: true },
+  { id: 40, slug: 'championship', name: 'Championship', cn: 'England', names: ['Championship', 'EFL Championship'], countries: ['england'], intro: 'The EFL Championship is the second tier of English football: 24 clubs, each playing 46 matches.' },
+  { id: 88, slug: 'eredivisie', name: 'Eredivisie', cn: 'Netherlands', names: ['Eredivisie'], countries: ['netherlands'], intro: 'The Eredivisie is the top division of Dutch football: 18 clubs, each playing 34 matches.' },
+  { id: 94, slug: 'primeira-liga', name: 'Primeira Liga', cn: 'Portugal', names: ['Primeira Liga', 'Liga Portugal'], countries: ['portugal'], intro: 'The Primeira Liga is the top division of Portuguese football: 18 clubs, each playing 34 matches.' },
+  { id: 179, slug: 'scottish-premiership', name: 'Scottish Premiership', cn: 'Scotland', names: ['Premiership', 'Scottish Premiership'], countries: ['scotland'], intro: 'The Scottish Premiership is the top division of Scottish football: 12 clubs, who split into a top and a bottom six after 33 games each.' },
+];
+let TABLES = {}; try { TABLES = JSON.parse(fs.readFileSync('data/tables.json', 'utf8')).tables || {}; } catch {}
 const NAV = [['index.html', 'Today'], ['football-predictions-tomorrow.html', 'Tomorrow'], ['1x2-predictions.html', '1X2'], ['over-2-5-goals-predictions.html', 'Goals'], ['btts-predictions.html', 'BTTS'], ['leagues.html', 'Leagues'], ['track-record.html', 'Track record']];
-const FOOT = [['Predictions', [['index.html', 'Predictions today'], ['football-predictions-tomorrow.html', 'Predictions tomorrow'], ['football-predictions-yesterday.html', 'Yesterday’s results']]], ['Markets', Object.values(MKT).map((x) => [x[0], x[1]])], ['Leagues', LG.map((l) => [l[1] + '-predictions.html', l[2]])], ['About', [['about.html', 'About ZurePicks'], ['track-record.html', 'Track record'], ['how-it-works.html', 'How it works'], ['tools.html', 'Odds tools'], ['responsible-gambling.html', 'Responsible gambling']]]];
+const FOOT = [['Predictions', [['index.html', 'Predictions today'], ['football-predictions-tomorrow.html', 'Predictions tomorrow'], ['football-predictions-yesterday.html', 'Yesterday’s results']]], ['Markets', Object.values(MKT).map((x) => [x[0], x[1]])], ['Leagues', LG.map((l) => [l.slug + '-predictions.html', l.name])], ['About', [['about.html', 'About ZurePicks'], ['track-record.html', 'Track record'], ['how-it-works.html', 'How it works'], ['tools.html', 'Odds tools'], ['responsible-gambling.html', 'Responsible gambling']]]];
 const FAV = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b8a52'/%3E%3Cpath d='M9 10h14l-10 12h10' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
 
 // Hero banner: uses assets/hero.(webp|png|jpg) if you add one (e.g. made in Flow AI); otherwise a built-in illustration.
@@ -79,6 +93,11 @@ const banner = (n, hit) => heroImg ? `<div class="bn photo"><img src="${heroImg}
 <g font-family="ui-sans-serif,Arial" font-weight="800"><rect x="20" y="40" width="108" height="56" rx="16" fill="#fff"/><text x="74" y="66" font-size="11" text-anchor="middle" fill="#556459">PICKS TODAY</text><text id="bn-n" x="74" y="88" font-size="22" text-anchor="middle" fill="#0b8a52">${n}</text>
 <rect x="392" y="262" width="112" height="56" rx="16" fill="#fff"/><text x="448" y="288" font-size="11" text-anchor="middle" fill="#556459">WON · 30 DAYS</text><text id="bn-h" x="448" y="310" font-size="22" text-anchor="middle" fill="#6d4aff">${hit == null ? '–' : hit + '%'}</text>
 <rect x="12" y="270" width="88" height="48" rx="24" fill="#0b8a52"/><text x="56" y="301" font-size="17" text-anchor="middle" fill="#fff">✓ WON</text></g></svg></div>`;
+const leagueBoardHtml = (b) => `<div class="bar"><div class="scr" id="mkts" aria-label="Choose a market"></div></div>
+<div class="tools"><input type="search" id="q" placeholder="Search a team" aria-label="Search a team"></div>
+<p id="status" role="status">Recent results and the next three days of fixtures</p>
+<div id="board" data-mode="league" data-mk="${b.k}" data-lgspec="${esc(JSON.stringify(b.spec))}">${fixturesByDay(b.ms, b.k, leagueTest(b.spec), { empty: b.spec.name + ' has no games in the last or next three days in our data. This usually means an international break.' })}</div>
+<div id="slip" hidden><span><b id="slipn"></b> · <b id="slipo"></b></span><button type="button" id="slipx">Copy slip</button><button type="button" id="slipc">Clear</button></div>`;
 const PAGES = [], ldj = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
 const faqHtml = (q) => `<div class="prose"><h2>Frequently asked questions</h2>${q.map(([a, b]) => `<details><summary>${esc(a)}</summary><p>${esc(b)}</p></details>`).join('')}</div>`;
 
@@ -88,7 +107,7 @@ function page(file, o) {
   const ld = [{ '@context': 'https://schema.org', '@type': 'WebSite', name: 'ZurePicks', url: SITE + '/' }, { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c[0], item: c[1] })) }];
   if (o.faq) ld.push({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: o.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
   const b = o.board;
-  const boardHtml = !b ? '' : `<div class="bar"><div class="scr" id="days" aria-label="Choose a day"></div><div class="scr" id="mkts" aria-label="Choose a market"></div></div>
+  const boardHtml = !b ? '' : b.mode == 'league' ? leagueBoardHtml(b) : `<div class="bar"><div class="scr" id="days" aria-label="Choose a day"></div><div class="scr" id="mkts" aria-label="Choose a market"></div></div>
 <div class="tools"><input type="search" id="q" placeholder="Search team or league" aria-label="Search team or league"><select id="min" aria-label="Pick quality"><option value="">Published picks</option><option value="70">Strong only (70%+)</option><option value="80">Very strong (80%+)</option><option value="0">Show all picks</option></select></div>
 <p id="status" role="status">Loaded from the latest data snapshot.</p>
 <div id="board" data-mk="${b.k}" data-off="${b.off}" data-lg="${b.lg || ''}" data-hit="${HIT(b.k) ? [HIT(b.k).r, HIT(b.k).w, HIT(b.k).n].join('|') : ''}">${board(b.ms, b.k, { lg: b.lg, max: 100 })}</div>
@@ -97,7 +116,7 @@ function page(file, o) {
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${esc(o.title)}</title><meta name="description" content="${esc(o.desc)}"><link rel="canonical" href="${canon}"><meta name="robots" content="index,follow,max-image-preview:large"><meta property="og:title" content="${esc(o.title)}"><meta property="og:description" content="${esc(o.desc)}"><meta property="og:type" content="website"><meta property="og:url" content="${canon}"><meta property="og:site_name" content="ZurePicks"><meta name="twitter:card" content="summary"><meta name="theme-color" content="#0b8a52"><link rel="icon" href="${FAV}"><link rel="stylesheet" href="zp.css">${ld.map(ldj).join('')}</head><body>
 <header><div class="w"><a class="logo" href="index.html"><i>Z</i>ZurePicks</a><nav aria-label="Main">${NAV.map(([h, t]) => `<a href="${h}"${h == file ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav><span class="age">18+</span></div></header>
 <main class="w"><p class="crumbs">${crumbs.map((c, i) => i < crumbs.length - 1 ? `<a href="${c[1]}">${esc(c[0])}</a> › ` : esc(c[0])).join('')}</p>
-<section class="hero${o.art ? ' art' : ''}"><div class="ht">${o.eyebrow ? `<p class="eyebrow">${o.eyebrow}</p>` : ''}<h1>${o.h1}</h1><p class="lead">${o.lead}</p>${o.cta ? '<div class="cta"><a class="btn" href="#top">Get today’s 2, 3 &amp; 5 odds</a><a class="btn alt" href="#board">Browse all predictions</a></div>' : ''}${b ? `<div class="kp" id="kp">${statsHtml(visible(b.ms, b.k, { lg: b.lg }), HIT(b.k))}</div>` : o.kp ? `<div class="kp">${o.kp.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>` : ''}</div>${o.art ? banner(visible(b.ms, b.k, { lg: b.lg }).length, HIT(b.k)?.r ?? null) : ''}</section>
+<section class="hero${o.art ? ' art' : ''}"><div class="ht">${o.eyebrow ? `<p class="eyebrow">${o.eyebrow}</p>` : ''}<h1>${o.h1}</h1><p class="lead">${o.lead}</p>${o.cta ? '<div class="cta"><a class="btn" href="#top">Get today’s 2, 3 &amp; 5 odds</a><a class="btn alt" href="#board">Browse all predictions</a></div>' : ''}${b ? `<div class="kp" id="kp">${b.mode == 'league' ? statsHtml(b.ms.filter(leagueTest(b.spec)), null, 'Games listed') : statsHtml(visible(b.ms, b.k, { lg: b.lg }), HIT(b.k))}</div>` : o.kp ? `<div class="kp">${o.kp.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>` : ''}</div>${o.art ? banner(visible(b.ms, b.k, { lg: b.lg }).length, HIT(b.k)?.r ?? null) : ''}</section>
 ${topHtml}${boardHtml}${o.body || ''}${o.faq ? faqHtml(o.faq) : ''}
 <footer><div class="fg">${FOOT.map(([t, l]) => `<div><b>${t}</b>${l.map(([h, x]) => `<a href="${h}">${x}</a>`).join('')}</div>`).join('')}</div><p><b>18+ only.</b> Percentages are estimates worked out from bookmaker odds, not guarantees, and no pick is a “sure” win. Only stake what you can afford to lose and check that betting is legal where you live. <a href="responsible-gambling.html">Get help</a>.</p><p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p></footer></main>
 ${b ? '<script src="api-config.js"></script><script type="module" src="app.js"></script>' : ''}</body></html>`;
@@ -129,12 +148,34 @@ for (const k in MKT) {
     faq: [[`What is ${short_.toLowerCase()}?`, text], ...faqCommon.slice(1), [`How often does the ${short_.toLowerCase()} favourite win?`, r.r == null ? 'The record fills in as matches finish; see the track record page.' : `Over the last 30 days the favourite won ${r.w} of ${r.n} tracked matches (${r.r}%). That is a hit rate of the market favourite, not a promise for future games.`]] });
 }
 // Leagues
-for (const [id, slug, name, cn] of LG) {
-  const ms = snapFor(0).filter((m) => m.li == id);
-  page(slug + '-predictions.html', { title: `${name} Predictions Today | Free Tips, Odds & Results – ZurePicks`, desc: `${name} predictions with 1X2, goals and BTTS tips, odds and implied chance for every fixture, plus tracked results.`, h1: `${name} predictions <em>today</em>`, lead: `Every ${name} (${cn}) fixture on the board with odds, implied chance and results. Fixtures appear when bookmakers publish prices, so a quiet matchday can show nothing yet.`, crumb: name, kp: [[ms.length || '–', 'Fixtures today'], [ms.filter((m) => m.o).length || '–', 'With odds']], board: { k: 'o', off: 0, lg: id, ms: snapFor(0) }, top: false, faq: faqCommon });
+// League board: today and the coming days, plus the 12 latest results from any earlier day we still hold (so quiet weeks never leave a page empty)
+const POOL = (match) => { const ahead = [0, 1, 2, 3].flatMap((o) => snapFor(o)).filter(match), t0 = dstr(0);
+  const past = Object.keys(snaps).filter((d) => d < t0).sort().reverse().flatMap((d) => snaps[d]).filter(match).filter(settled).slice(0, 12); return [...ahead, ...past]; };
+const NEXT3 = () => [0, 1, 2].flatMap((o) => snapFor(o));
+function leagueWriteup(L, t, fx) {
+  const p = [`<p>${L.intro} ZurePicks lists every ${L.name} fixture for the next three days with the bookmaker odds, the win chance for each result and a pick wherever the numbers are strong enough. Every result is tracked, so you can see how the picks perform.</p>`];
+  const r = t?.rows || [];
+  if (r.length >= 2) {
+    const [a, c, d] = r, gap = a.pts - c.pts, atk = [...r].sort((x, y) => y.gf - x.gf)[0], def = [...r].sort((x, y) => x.ga - y.ga)[0];
+    p.push(`<p>${esc(a.team)} lead the ${esc(L.name)}${L.cup ? ' league phase' : ''} on ${a.pts} points from ${a.p} games${gap > 0 ? `, ${gap} point${gap == 1 ? '' : 's'} ahead of ${esc(c.team)}` : `, level on points with ${esc(c.team)}`} (${c.pts} points).${d ? ` ${esc(d.team)} are third on ${d.pts}.` : ''} ${esc(atk.team)} have scored the most goals (${atk.gf}) and ${esc(def.team)} have conceded the fewest (${def.ga}).</p>`);
+  }
+  const up = fx.filter((m) => Date.parse(m.d) > Date.now()).sort((x, y) => Date.parse(x.d) - Date.parse(y.d)), tips = fx.filter((m) => Object.keys(MK).some((k) => { const q = pick(m, k); return q && !q.model && q.c >= MIN[k]; })).length;
+  if (fx.length) p.push(`<p>There ${fx.length == 1 ? 'is 1' : 'are ' + fx.length} ${esc(L.name)} game${fx.length == 1 ? '' : 's'} in the next three days${up.length ? `, starting with ${up.slice(0, 2).map((m) => esc(m.h) + ' v ' + esc(m.a)).join(' and ')}` : ''}.${tips ? ` ${tips} of them ${tips == 1 ? 'has' : 'have'} a published tip.` : ''}</p>`);
+  p.push(`<p>Looking for ${esc(L.name)} predictions today? Switch between 1X2, double chance, over 1.5, over 2.5 and both teams to score (BTTS) above to compare the odds and win chance for each match, and tap any odds to build your slip.</p>`);
+  return `<div class="prose"><h2>${esc(L.name)} predictions and betting tips</h2>${p.join('')}</div>`;
+}
+for (const L of LG) {
+  const t = TABLES[L.slug], fx = NEXT3().filter(leagueTest(L)), r = t?.rows || [];
+  const faq = [[`Where can I find free ${L.name} predictions today?`, `Right here. ZurePicks lists the next three days of ${L.name} fixtures with odds, win chance and picks. It is free and needs no sign-up.`],
+    ...(r.length ? [[`Who is top of the ${L.name}?`, `${r[0].team} lead the ${L.name} on ${r[0].pts} points after ${r[0].p} games, according to the table above.`]] : []),
+    [`How does the ${L.name} work?`, L.intro], ...faqCommon.slice(1, 3)];
+  page(L.slug + '-predictions.html', { title: `${L.name} Predictions Today – Tips, ${r.length ? 'Odds & Table' : 'Fixtures & Odds'} | ZurePicks`, desc: `${L.name} predictions today: free tips, odds and win chance for the next 3 days of fixtures${r.length ? ', plus the current league table' : ''}. Results tracked.`,
+    h1: `${L.name} predictions &amp; tips <em>today</em>`, lead: `Free ${L.name} predictions for the next three days: 1X2, double chance, over 1.5, over 2.5 and BTTS, with odds, win chance and live scores.${r.length ? ' Includes the current league table.' : ''}`,
+    crumb: L.name, board: { k: 'o', off: 0, ms: POOL(leagueTest(L)), mode: 'league', spec: { id: L.id, name: L.name, names: L.names, countries: L.countries } }, top: false,
+    body: standingsHtml(t, L.name) + leagueWriteup(L, t, fx), faq });
 }
 // Leagues hub
-page('leagues.html', { title: 'Football Leagues – Predictions by League | ZurePicks', desc: 'Pick a league: Premier League, La Liga, Serie A, Bundesliga, Ligue 1 and European cup predictions.', h1: 'Predictions by <em>league</em>', lead: 'Choose a competition to see only its fixtures, odds and results.', body: `<div class="grid">${LG.map(([, s, n, c]) => `<a href="${s}-predictions.html">${n}<small>${c}</small></a>`).join('')}</div>` });
+page('leagues.html', { title: 'Football Leagues – Predictions by League | ZurePicks', desc: 'Pick a league: Premier League, La Liga, Serie A, Bundesliga, Ligue 1 and European cup predictions.', h1: 'Predictions by <em>league</em>', lead: 'Choose a competition to see its fixtures for the next three days, plus odds, tips and the league table.', body: `<div class="grid">${LG.map((l) => `<a href="${l.slug}-predictions.html">${l.name}<small>${l.cn}</small></a>`).join('')}</div>` });
 // Track record
 const bands = [[0, 50, 'Under 50%'], [50, 60, '50–59%'], [60, 70, '60–69%'], [70, 80, '70–79%'], [80, 101, '80%+']];
 const rows = Object.keys(MK).map((k) => { const r = rate(k, 30); return `<tr><td>${MK[k].l}</td><td>${r.n}</td><td>${r.w}</td><td><b>${r.r == null ? '–' : r.r + '%'}</b></td></tr>`; }).join('');
