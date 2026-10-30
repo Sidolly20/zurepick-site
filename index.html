@@ -9,7 +9,6 @@
     <meta name="robots" content="index,follow,max-image-preview:large">
     <link rel="stylesheet" href="zp.css">
     <style>
-        /* Perfectly Aligned Header & Nav Styles */
         header .w {
             display: flex;
             align-items: center;
@@ -51,38 +50,6 @@
         header nav::-webkit-scrollbar {
             display: none;
         }
-
-        /* Responsive AI Banker Modal / Widget Styles */
-        #zure-chat-widget {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 340px;
-            background: #121212;
-            color: #fff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
-            font-family: sans-serif;
-            z-index: 9999;
-            border: 1px solid #1f8b4c;
-        }
-        #zure-chat-widget.active {
-            display: block !important;
-        }
-        @media (max-width: 768px) {
-            #zure-chat-widget {
-                left: 10px !important;
-                right: 10px !important;
-                width: auto !important;
-                bottom: 10px !important;
-                top: 60px !important;
-            }
-            #zure-chat-widget.expanded {
-                height: calc(100vh - 80px) !important;
-            }
-        }
     </style>
 </head>
 <body>
@@ -90,7 +57,7 @@
     <div class="w">
         <div class="header-left">
             <a class="logo" href="index.html"><i>Z</i>ZurePicks</a>
-            <button type="button" class="ai-banker-btn" onclick="toggleAIBanker(event)">🤖 AI Banker</button>
+            <a href="ai-betting-assistant.html" class="ai-banker-btn">🤖 AI Banker</a>
         </div>
         <nav aria-label="Main">
             <a href="index.html" aria-current="page">Today</a>
@@ -125,13 +92,78 @@
                 <div><b>81%</b><span>Won 79 of 97 · 30 days</span></div>
             </div>
         </div>
+        <div class="bn" aria-hidden="true">
+            <svg viewBox="0 0 520 380" role="img">
+                <defs>
+                    <linearGradient id="gb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12c26f"/><stop offset="1" stop-color="#6d4aff"/></linearGradient>
+                    <linearGradient id="gk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b8a52"/><stop offset="1" stop-color="#075c37"/></linearGradient>
+                </defs>
+                <circle cx="270" cy="190" r="170" fill="url(#gb)" opacity=".92"/>
+                <circle cx="270" cy="190" r="128" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/>
+                <path d="M270 20v340M100 190h340" stroke="#fff" stroke-opacity=".18" stroke-width="3"/>
+                <ellipse cx="270" cy="352" rx="190" ry="16" fill="#000" opacity=".18"/>
+                <g transform="translate(150 0)">
+                    <path d="M70 150c-22 6-34 26-32 54l14 4c2-20 10-32 24-36z" fill="#8d5524"/>
+                    <circle cx="104" cy="92" r="26" fill="#8d5524"/>
+                    <path d="M78 88c2-24 20-34 38-30 14 3 22 14 22 30-10-14-22-18-34-16-10 2-20 6-26 16z" fill="#1b1410"/>
+                    <path d="M72 128h64l14 96h-92z" fill="url(#gk)"/>
+                    <path d="M72 150h64v14H72z" fill="#fff" opacity=".9"/>
+                    <text x="104" y="205" font-family="ui-sans-serif,Arial" font-weight="800" font-size="30" text-anchor="middle" fill="#fff">9</text>
+                    <path d="M58 224h92l8 50h-38l-6-24-6 24H50z" fill="#fff"/>
+                    <path d="M62 274h30l-2 56H66z" fill="#8d5524"/>
+                    <path d="M118 274h30l4 56h-26z" fill="#8d5524"/>
+                    <path d="M64 310h28l-2 26H62zM120 310h28l4 26h-28z" fill="#0b8a52"/>
+                    <path d="M54 336h42l-4 14H50zM118 336h42l4 14h-42z" fill="#111"/>
+                    <path d="M136 134c16 10 24 30 20 56l-14-4c2-16-2-28-10-36z" fill="#8d5524"/>
+                    <circle cx="154" cy="206" r="24" fill="#fff"/>
+                    <path d="M154 192l12 9-5 14h-14l-5-14z" fill="#111"/>
+                </g>
+                <g font-family="ui-sans-serif,Arial" font-weight="800">
+                    <rect x="20" y="40" width="108" height="56" rx="16" fill="#fff"/>
+                    <text x="74" y="66" font-size="11" text-anchor="middle" fill="#556459">PICKS TODAY</text>
+                    <text id="bn-n" x="74" y="88" font-size="22" text-anchor="middle" fill="#0b8a52">12</text>
+                    <rect x="392" y="262" width="112" height="56" rx="16" fill="#fff"/>
+                    <text x="448" y="288" font-size="11" text-anchor="middle" fill="#556459">WON · 30 DAYS</text>
+                    <text id="bn-h" x="448" y="310" font-size="22" text-anchor="middle" fill="#6d4aff">81%</text>
+                    <rect x="12" y="270" width="88" height="48" rx="24" fill="#0b8a52"/>
+                    <text x="56" y="301" font-size="17" text-anchor="middle" fill="#fff">✓ WON</text>
+                </g>
+            </svg>
+        </div>
     </section>
 
     <h2 id="combos">2 odds, 3 odds &amp; 5 odds tips today</h2>
     <p class="mut cn">Ready-made slips built from today’s and tomorrow’s strongest picks. Tap once to add a whole slip to your bet slip, then change it however you like.</p>
     
     <div class="combos" id="top">
-        <!-- Combos content -->
+        <div class="cbx">
+            <div class="ch"><span>2+ odds</span><b>2.00</b></div>
+            <div class="cm">3 games · 43% combined chance</div>
+            <div class="cl"><time>19:00</time><div><b>Bodø/Glimt v Viking FK</b><small>Eliteserien</small></div><span class="tag">Over 2.5</span><span class="mono">1.31</span></div>
+            <div class="cl"><time><small>Tmrw</small>14:00</time><div><b>Levante UD v Atlético Madrid</b><small>La Liga</small></div><span class="tag">Over 1.5</span><span class="mono">1.15</span></div>
+            <div class="cl"><time><small>Tmrw</small>19:00</time><div><b>FC Cincinnati v Philadelphia Union</b><small>MLS</small></div><span class="tag">Over 2.5</span><span class="mono">1.33</span></div>
+            <button type="button" class="cb" data-t="2">Add 3 games to slip</button>
+        </div>
+        <div class="cbx">
+            <div class="ch"><span>3+ odds</span><b>3.01</b></div>
+            <div class="cm">4 games · 27% combined chance</div>
+            <div class="cl"><time><small>Tmrw</small>00:00</time><div><b>Corinthians v Mirassol</b><small>Brasileirão Serie A</small></div><span class="tag">Over 1.5</span><span class="mono">1.32</span></div>
+            <div class="cl"><time><small>Tmrw</small>06:00</time><div><b>Kyoto Sanga FC v Shimizu S-Pulse</b><small>J1 League</small></div><span class="tag">Over 1.5</span><span class="mono">1.31</span></div>
+            <div class="cl"><time><small>Tmrw</small>11:30</time><div><b>Erzurumspor FK v Çorum FK</b><small>Trendyol Super Lig</small></div><span class="tag">Over 1.5</span><span class="mono">1.31</span></div>
+            <div class="cl"><time><small>Tmrw</small>18:30</time><div><b>Real Betis v Málaga CF</b><small>La Liga</small></div><span class="tag">Home win</span><span class="mono">1.33</span></div>
+            <button type="button" class="cb" data-t="3">Add 4 games to slip</button>
+        </div>
+        <div class="cbx">
+            <div class="ch"><span>5+ odds</span><b>5.01</b></div>
+            <div class="cm">6 games · 14% combined chance</div>
+            <div class="cl"><time>20:00</time><div><b>Stade Lavallois v US Boulogne Côte-d'Opale</b><small>Ligue 2</small></div><span class="tag">Over 1.5</span><span class="mono">1.33</span></div>
+            <div class="cl"><time><small>Tmrw</small>16:30</time><div><b>Feyenoord v Fortuna Sittard</b><small>Eredivisie</small></div><span class="tag">Home win</span><span class="mono">1.16</span></div>
+            <div class="cl"><time><small>Tmrw</small>17:00</time><div><b>Fenerbahçe v Göztepe</b><small>Trendyol Super Lig</small></div><span class="tag">Home win</span><span class="mono">1.33</span></div>
+            <div class="cl"><time><small>Tmrw</small>18:00</time><div><b>Grasshopper Club Zürich v FC Vaduz</b><small>Super League</small></div><span class="tag">Both score</span><span class="mono">1.34</span></div>
+            <div class="cl"><time><small>Tmrw</small>18:45</time><div><b>SC Heerenveen v NEC Nijmegen</b><small>Eredivisie</small></div><span class="tag">Both score</span><span class="mono">1.34</span></div>
+            <div class="cl"><time><small>Tmrw</small>19:30</time><div><b>LASK v WSG Tirol</b><small>Austrian Bundesliga</small></div><span class="tag">Over 2.5</span><span class="mono">1.36</span></div>
+            <button type="button" class="cb" data-t="5">Add 6 games to slip</button>
+        </div>
     </div>
 
     <div class="bar">
@@ -152,7 +184,20 @@
     <p id="status" role="status">Loaded from the latest data snapshot.</p>
     
     <div id="board" data-mk="o" data-off="0" data-lg="" data-hit="81|79|97">
-        <!-- Match board content -->
+        <section class="lg">
+            <h3><span>Spain · La Liga</span><em>1</em></h3>
+            <article class="row ns" data-id="bsd:213629">
+                <time>21:00</time>
+                <div class="tm"><b>Villarreal</b><b>Espanyol</b></div>
+                <div class="ods c3">
+                    <button type="button" class="oc pick" data-id="bsd:213629" data-i="0" data-od="1.41"><small>1</small>1.41</button>
+                    <button type="button" class="oc" data-id="bsd:213629" data-i="1" data-od="4.95"><small>X</small>4.95</button>
+                    <button type="button" class="oc" data-id="bsd:213629" data-i="2" data-od="6.7"><small>2</small>6.70</button>
+                </div>
+                <div class="pk"><span>Home win</span><i style="--w:67%"></i><em>67% · from odds</em></div>
+                <div class="sb"><strong>–</strong><small>Not started</small></div>
+            </article>
+        </section>
     </div>
 
     <div id="slip" hidden>
@@ -161,144 +206,24 @@
         <button type="button" id="slipc">Clear</button>
     </div>
 
+    <div class="prose">
+        <h2>Free football predictions today, built for the way you bet</h2>
+        <p>ZurePicks lists today’s football predictions in one place: 1X2 match results, double chance, over 1.5 and over 2.5 goals, and both teams to score (BTTS). Each tip shows the bookmaker odds and the win chance worked out from them, so you can compare matches at a glance.</p>
+        <p>Short on time? The ready-made 2 odds, 3 odds and 5 odds slips pick the strongest games for you. Add a whole slip in one tap, or build your own from the full list.</p>
+        <p>Scores update live while games are on, finished games turn green for a winning pick and red for a losing one, and the <a href="track-record.html">track record</a> keeps every result in the open.</p>
+    </div>
+
     <footer>
+        <div class="fg">
+            <div><b>Predictions</b><a href="index.html">Predictions today</a><a href="ai-betting-assistant.html">AI Betting Assistant</a><a href="football-predictions-tomorrow.html">Predictions tomorrow</a></div>
+            <div><b>Markets</b><a href="1x2-predictions.html">1X2 Predictions</a><a href="btts-predictions.html">Both Teams to Score Predictions</a></div>
+            <div><b>About</b><a href="about.html">About ZurePicks</a><a href="track-record.html">Track record</a><a href="responsible-gambling.html">Responsible gambling</a></div>
+        </div>
         <p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p>
     </footer>
 </main>
 
 <script src="api-config.js"></script>
 <script type="module" src="app.js"></script>
-
-<!-- ========================================== -->
-<!-- ZUREPICKS AI ASSISTANT BANKER WIDGET       -->
-<!-- ========================================== -->
-<div id="zure-chat-widget">
-    <!-- Widget Header with Expand and Close Buttons -->
-    <div style="background: #1f8b4c; padding: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
-        <span>AI Assistant Banker 🤖</span>
-        <div style="display: flex; gap: 8px; align-items: center;">
-            <span style="font-size: 11px; background: #145a2c; padding: 2px 6px; border-radius: 4px;">Live Mode</span>
-            <button id="toggle-expand-btn" onclick="toggleWidgetSize()" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 14px; font-weight: bold;" title="Expand/Collapse">⤢</button>
-            <button onclick="toggleAIBanker(event)" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 14px; font-weight: bold;" title="Close">✕</button>
-        </div>
-    </div>
-    
-    <!-- Day Selector Tabs (Today vs Tomorrow) -->
-    <div style="background: #181818; padding: 6px 10px; display: flex; gap: 6px; border-bottom: 1px solid #333;">
-        <button onclick="setDayMode('today')" id="tab-today" style="background: #27ae60; color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; flex: 1; font-weight: bold;">📅 Today's Games</button>
-        <button onclick="setDayMode('tomorrow')" id="tab-tomorrow" style="background: #2a2a2a; color: #aaa; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; flex: 1; font-weight: bold;">🔮 Tomorrow's Games</button>
-    </div>
-
-    <!-- Chat Messages Box -->
-    <div id="chat-messages" style="padding: 12px; height: 200px; overflow-y: auto; font-size: 13px; line-height: 1.4; transition: height 0.3s ease;">
-        <div style="margin-bottom: 8px;"><b>AI:</b> Hello! Choose Today or Tomorrow, then click an odds target for multi-market slips (1X2, Over/Under, BTTS). 🚀</div>
-    </div>
-    
-    <!-- Action Button Area -->
-    <div style="padding: 10px; background: #1e1e1e; border-top: 1px solid #333; display: flex; gap: 8px;">
-        <button onclick="requestOdds(2)" style="background: #27ae60; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: bold; font-size: 12px;">
-            🔥 2 Odds Banker
-        </button>
-        <button onclick="requestOdds(3)" style="background: #2980b9; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: bold; font-size: 12px;">
-            🚀 3 Odds Banker
-        </button>
-    </div>
-</div>
-
-<script>
-let currentDayMode = 'today';
-let isExpanded = false;
-
-function toggleAIBanker(e) {
-    if (e) e.preventDefault();
-    const widget = document.getElementById('zure-chat-widget');
-    if (widget) {
-        widget.classList.toggle('active');
-    }
-}
-
-function setDayMode(mode) {
-    currentDayMode = mode;
-    const btnToday = document.getElementById('tab-today');
-    const btnTomorrow = document.getElementById('tab-tomorrow');
-    const chatMessages = document.getElementById('chat-messages');
-
-    if (mode === 'today') {
-        if (btnToday) { btnToday.style.background = '#27ae60'; btnToday.style.color = 'white'; }
-        if (btnTomorrow) { btnTomorrow.style.background = '#2a2a2a'; btnTomorrow.style.color = '#aaa'; }
-        if (chatMessages) chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #f39c12;"><b>AI:</b> Switched to <b>Today's</b> diverse pool. 📅</div>`;
-    } else {
-        if (btnTomorrow) { btnTomorrow.style.background = '#2980b9'; btnTomorrow.style.color = 'white'; }
-        if (btnToday) { btnToday.style.background = '#2a2a2a'; btnToday.style.color = '#aaa'; }
-        if (chatMessages) chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #3498db;"><b>AI:</b> Switched to <b>Tomorrow's</b> diverse pool. 🔮</div>`;
-    }
-    if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-function toggleWidgetSize() {
-    isExpanded = !isExpanded;
-    const chatMessages = document.getElementById('chat-messages');
-    const widget = document.getElementById('zure-chat-widget');
-    const expandBtn = document.getElementById('toggle-expand-btn');
-
-    if (isExpanded) {
-        if (widget) widget.classList.add('expanded');
-        if (chatMessages) chatMessages.style.height = '65vh';
-        if (widget) widget.style.width = 'calc(100vw - 20px)';
-        if (expandBtn) expandBtn.innerText = '🗕';
-    } else {
-        if (widget) widget.classList.remove('expanded');
-        if (chatMessages) chatMessages.style.height = '200px';
-        if (widget) widget.style.width = '340px';
-        if (expandBtn) expandBtn.innerText = '⤢';
-    }
-}
-
-async function requestOdds(targetType) {
-    const chatMessages = document.getElementById('chat-messages');
-    if (!chatMessages) return;
-    
-    chatMessages.innerHTML += `<div style="margin-bottom: 8px; text-align: right;"><span style="background: #2c3e50; padding: 6px 10px; border-radius: 8px; display: inline-block;">Give me ${currentDayMode}'s ${targetType} odds multi-market banker.</span></div>`;
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-
-    const loadingId = "load_" + Date.now();
-    chatMessages.innerHTML += `<div id="${loadingId}" style="margin-bottom: 8px; color: #f1c40f;"><b>AI:</b> Compiling multi-market predictions... ⏳</div>`;
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    
-    try {
-        const endpoint = targetType === 2 
-            ? `https://zurepicks-backend-api.onrender.com/api/ai-chat/get-2-odds?day=${currentDayMode}`
-            : `https://zurepicks-backend-api.onrender.com/api/ai-chat/get-3-odds?day=${currentDayMode}`;
-            
-        const response = await fetch(endpoint);
-        const data = await response.json();
-        
-        const loader = document.getElementById(loadingId);
-        if (loader) loader.remove();
-
-        let slipHTML = `<div style="margin-bottom: 10px; background: #1a2f22; padding: 10px; border-radius: 8px; border-left: 4px solid ${targetType === 2 ? '#27ae60' : '#2980b9'};">`;
-        slipHTML += `<b>🎯 ${data.oddsRange}:</b><br>`;
-        
-        if (data.legs && data.legs.length > 0) {
-            data.legs.forEach(leg => {
-                slipHTML += `<div style="margin-top: 4px; border-bottom: 1px solid #224d33; padding-bottom: 3px;">• ${leg.home} vs ${leg.away} <small>(${leg.league})</small><br><small style="color: #a3e4d7;">Market: <b>${leg.market}</b> | Odds: <b>${leg.odds}</b> | Win: ${leg.winChance}%</small></div>`;
-            });
-        } else {
-            slipHTML += `No matches found for this date range right now.<br>`;
-        }
-        
-        slipHTML += `<div style="margin-top: 6px; text-align: right; font-size: 14px; color: #2ecc71;"><b>Total Odds: ${data.totalOdds}</b> 🚀</div>`;
-        slipHTML += `</div>`;
-        
-        chatMessages.innerHTML += slipHTML;
-    } catch (error) {
-        const loader = document.getElementById(loadingId);
-        if (loader) loader.remove();
-        chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #e74c3c;"><b>AI:</b> Failed to reach backend server. Make sure Render is awake!</div>`;
-    }
-    
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-</script>
 </body>
 </html>
