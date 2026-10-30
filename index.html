@@ -89,4 +89,79 @@ async function requestSafeOdds() {
     
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
+</script><!-- ========================================== -->
+<!-- ZUREPICKS AI ASSISTANT BANKER WIDGET       -->
+<!-- ========================================== -->
+<div id="zure-chat-widget" style="position: fixed; bottom: 20px; right: 20px; width: 340px; background: #121212; color: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.6); font-family: sans-serif; z-index: 9999;">
+    
+    <!-- Widget Header -->
+    <div style="background: #1f8b4c; padding: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+        <span>AI Assistant Banker 🤖</span>
+        <span style="font-size: 11px; background: #145a2c; padding: 2px 6px; border-radius: 4px;">Live Mode</span>
+    </div>
+    
+    <!-- Chat Messages Box -->
+    <div id="chat-messages" style="padding: 12px; height: 220px; overflow-y: auto; font-size: 13px; line-height: 1.4;">
+        <div style="margin-bottom: 8px;"><b>AI:</b> Hello! Select an option below to generate your accumulator slip. Let's win! 🚀</div>
+    </div>
+    
+    <!-- Action Button Area (Two separate buttons) -->
+    <div style="padding: 10px; background: #1e1e1e; border-top: 1px solid #333; display: flex; gap: 8px;">
+        <button onclick="requestOdds(2)" style="background: #27ae60; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: bold; font-size: 12px; transition: background 0.2s;">
+            🔥 2 Odds Banker
+        </button>
+        <button onclick="requestOdds(3)" style="background: #2980b9; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: bold; font-size: 12px; transition: background 0.2s;">
+            🚀 3 Odds Banker
+        </button>
+    </div>
+</div>
+
+<script>
+async function requestOdds(targetType) {
+    const chatMessages = document.getElementById('chat-messages');
+    
+    // 1. Show user message in chat bubble
+    chatMessages.innerHTML += `<div style="margin-bottom: 8px; text-align: right;"><span style="background: #2c3e50; padding: 6px 10px; border-radius: 8px; display: inline-block;">Give me today's ${targetType} odds banker.</span></div>`;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // 2. Show loading status
+    const loadingId = "load_" + Date.now();
+    chatMessages.innerHTML += `<div id="${loadingId}" style="margin-bottom: 8px; color: #f1c40f;"><b>AI:</b> Calculating ${targetType}-odds banker slip... ⏳</div>`;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    try {
+        // 3. Fetch from the specific endpoint based on user choice
+        const endpoint = targetType === 2 
+            ? 'https://zurepicks-backend-api.onrender.com/api/ai-chat/get-2-odds'
+            : 'https://zurepicks-backend-api.onrender.com/api/ai-chat/get-3-odds';
+            
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        
+        // Remove loading message
+        document.getElementById(loadingId).remove();
+
+        // 4. Format and display the returned slip
+        let slipHTML = `<div style="margin-bottom: 10px; background: #1a2f22; padding: 10px; border-radius: 8px; border-left: 4px solid ${targetType === 2 ? '#27ae60' : '#2980b9'};">`;
+        slipHTML += `<b>🎯 ${data.oddsRange}:</b><br>`;
+        
+        if (data.legs && data.legs.length > 0) {
+            data.legs.forEach(leg => {
+                slipHTML += `<div style="margin-top: 4px; border-bottom: 1px solid #224d33; padding-bottom: 3px;">• ${leg.home} vs ${leg.away}<br><small style="color: #a3e4d7;">Market: ${leg.market} | Odds: <b>${leg.odds}</b></small></div>`;
+            });
+        } else {
+            slipHTML += `No matching fixtures found for this range right now.<br>`;
+        }
+        
+        slipHTML += `<div style="margin-top: 6px; text-align: right; font-size: 14px; color: #2ecc71;"><b>Total Odds: ${data.totalOdds}</b> 🚀</div>`;
+        slipHTML += `</div>`;
+        
+        chatMessages.innerHTML += slipHTML;
+    } catch (error) {
+        document.getElementById(loadingId).remove();
+        chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #e74c3c;"><b>AI:</b> Failed to reach backend server. Make sure Render is awake!</div>`;
+    }
+    
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
 </script></body></html>
