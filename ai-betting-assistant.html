@@ -4,19 +4,32 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <title>AI Betting Assistant &amp; Banker Predictions – ZurePicks</title>
-    <meta name="description" content="Chat with the ZurePicks AI Betting Assistant. Get personalized football predictions, expert banker tips, 2, 3, and 5 odds slips tailored instantly.">
+    <meta name="description" content="Chat with the ZurePicks AI Betting Assistant. Get personalized football predictions, expert banker tips, 2 odds, and 3 odds slips tailored instantly.">
     <link rel="canonical" href="https://sidolly20.github.io/zurepick-site/ai-betting-assistant.html">
     <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="zp.css">
     <style>
+        :root {
+            --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        body, input, button, select, textarea {
+            font-family: var(--font-family) !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family) !important;
+            letter-spacing: -0.02em;
+        }
         header .w {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: nowrap;
             gap: 12px;
-            padding-top: 10px;
-            padding-bottom: 10px;
+            padding-top: 12px;
+            padding-bottom: 12px;
         }
         .header-left {
             display: flex;
@@ -27,14 +40,14 @@
         .ai-banker-btn {
             background: #145a2c;
             color: #2ecc71;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
             text-decoration: none;
             font-size: 12px;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             border: 1px solid #1f8b4c;
             cursor: pointer;
             white-space: nowrap;
@@ -42,13 +55,23 @@
         header nav {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             overflow-x: auto;
             white-space: nowrap;
             scrollbar-width: none;
         }
         header nav::-webkit-scrollbar {
             display: none;
+        }
+        header nav a {
+            font-weight: 500;
+            font-size: 14px;
+            color: #b0c4de;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        header nav a:hover, header nav a[aria-current="page"] {
+            color: #2ecc71;
         }
         .ai-container {
             max-width: 800px;
@@ -159,134 +182,3 @@
             border: 1px solid #28382c;
             color: #2ecc71;
             padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: background 0.2s;
-        }
-        .qp-chip:hover {
-            background: #24382a;
-        }
-    </style>
-</head>
-<body>
-<header>
-    <div class="w">
-        <div class="header-left">
-            <a class="logo" href="index.html"><i>Z</i>ZurePicks</a>
-            <a href="ai-betting-assistant.html" class="ai-banker-btn" aria-current="page">🤖 AI Banker</a>
-        </div>
-        <nav aria-label="Main">
-            <a href="index.html">Today</a>
-            <a href="football-predictions-tomorrow.html">Tomorrow</a>
-            <a href="1x2-predictions.html">1X2</a>
-            <a href="over-2-5-goals-predictions.html">Goals</a>
-            <a href="btts-predictions.html">BTTS</a>
-            <a href="leagues.html">Leagues</a>
-            <a href="track-record.html">Track record</a>
-        </nav>
-        <span class="age" style="flex-shrink: 0;">18+</span>
-    </div>
-</header>
-
-<main class="w">
-    <p class="crumbs"><a href="index.html">Home</a> › AI Betting Assistant</p>
-    
-    <div style="text-align: center; margin-bottom: 20px;">
-        <h1>ZurePicks AI Betting Assistant</h1>
-        <p class="mut">Ask for banker tips, custom odds slips, or match breakdowns powered by live data.</p>
-    </div>
-
-    <div class="ai-container">
-        <div class="ai-chat-header">
-            <h2><span>🤖</span> AI Banker Assistant</h2>
-            <span class="mut" style="font-size: 12px;">Online &amp; Ready</span>
-        </div>
-        
-        <div class="ai-messages" id="ai-messages">
-            <div class="msg assistant">
-                Hello! I'm your ZurePicks AI Banker. Want a solid 2 odds slip, a 5 odds accumulator, or specific match analysis for today's games? Just ask or tap a quick prompt below!
-            </div>
-        </div>
-
-        <div class="quick-prompts">
-            <button type="button" class="qp-chip" onclick="sendPrompt('Give me a solid 2 odds slip for today')">🎯 2 Odds Slip</button>
-            <button type="button" class="qp-chip" onclick="sendPrompt('Give me a 3 odds accumulator')">🔥 3 Odds Slip</button>
-            <button type="button" class="qp-chip" onclick="sendPrompt('Give me a high-value 5 odds slip')">⚡ 5 Odds Slip</button>
-            <button type="button" class="qp-chip" onclick="sendPrompt('What are the best BTTS picks today?')">⚽ Best BTTS Tips</button>
-        </div>
-
-        <form class="ai-input-area" id="ai-form" onsubmit="handleChatSubmit(event)">
-            <input type="text" id="ai-input" placeholder="Ask for predictions, odds, or strategy..." autocomplete="off">
-            <button type="submit">Send</button>
-        </form>
-    </div>
-
-    <footer>
-        <div class="fg">
-            <div><b>Predictions</b><a href="index.html">Predictions today</a><a href="ai-betting-assistant.html">AI Betting Assistant</a><a href="football-predictions-tomorrow.html">Predictions tomorrow</a></div>
-            <div><b>Markets</b><a href="1x2-predictions.html">1X2 Predictions</a><a href="btts-predictions.html">Both Teams to Score Predictions</a></div>
-            <div><b>About</b><a href="about.html">About ZurePicks</a><a href="track-record.html">Track record</a><a href="responsible-gambling.html">Responsible gambling</a></div>
-        </div>
-        <p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p>
-    </footer>
-</main>
-
-<script src="api-config.js"></script>
-<script>
-    function appendMessage(text, sender) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `msg ${sender}`;
-        msgDiv.textContent = text;
-        const messagesContainer = document.getElementById('ai-messages');
-        messagesContainer.appendChild(msgDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    async function sendPrompt(text) {
-        const input = document.getElementById('ai-input');
-        input.value = text;
-        await handleChatSubmit(new Event('submit'));
-    }
-
-    async function handleChatSubmit(e) {
-        e.preventDefault();
-        const input = document.getElementById('ai-input');
-        const query = input.value.trim();
-        if (!query) return;
-
-        appendMessage(query, 'user');
-        input.value = '';
-
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'msg assistant';
-        loadingDiv.textContent = 'Analyzing matches & calculating odds...';
-        const messagesContainer = document.getElementById('ai-messages');
-        messagesContainer.appendChild(loadingDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-        try {
-            const endpoint = (typeof API_BASE !== 'undefined' ? API_BASE : 'https://zurepicks-backend-api.onrender.com') + '/api/chat';
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: query })
-            });
-
-            messagesContainer.removeChild(loadingDiv);
-
-            if (response.ok) {
-                const data = await response.json();
-                appendMessage(data.reply || data.response || "Here are your top picks based on today's fixtures.", 'assistant');
-            } else {
-                appendMessage("Here is your banker slip: Check out our curated 2 odds and 3 odds slips on the home page for today's highest win-rate matches!", 'assistant');
-            }
-        } catch (err) {
-            messagesContainer.removeChild(loadingDiv);
-            appendMessage("Based on today's fixtures across 34 leagues, our top banker recommendation is focusing on Over 1.5 and Home Win markets with 75%+ confidence ratings. Check the main board for live selections!", 'assistant');
-        }
-    }
-</script>
-</body>
-</html>
