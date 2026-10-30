@@ -26,6 +26,7 @@ if (B) {
       if (same) a.forEach((r, i) => { if (r.outerHTML !== b[i].outerHTML) r.replaceWith(b[i]); }); else B.innerHTML = html;
     }
     paintTop();
+    const bn = $('#bn-n'); if (bn && S.off == 0) bn.textContent = visible(S.data, S.k, { lg: S.lg }).length; const bh = $('#bn-h'); if (bh && S.hit) bh.textContent = S.hit.r + '%';
     const st = $('#status'); if (st && status && st.textContent !== status) st.textContent = status;
     const kp = $('#kp'); if (kp) { const h = statsHtml(visible(S.data, S.k, { lg: S.lg, q: S.q, min: S.min }), S.hit); if (h !== S.lastKp) { S.lastKp = h; kp.innerHTML = h; } }
     mark();
