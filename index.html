@@ -8,181 +8,238 @@
     <link rel="canonical" href="https://sidolly20.github.io/zurepick-site/">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <link rel="stylesheet" href="zp.css">
+    <style>
+        /* Responsive AI Banker Widget Tweaks for Mobile */
+        @media (max-width: 768px) {
+            #zure-chat-widget {
+                left: 10px !important;
+                right: 10px !important;
+                width: auto !important;
+                bottom: 10px !important;
+            }
+            #zure-chat-widget.expanded {
+                height: 85vh !important;
+                top: 60px !important;
+                bottom: 10px !important;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <div class="w">
-            <a class="logo" href="index.html"><i>Z</i>ZurePicks</a>
-            <nav aria-label="Main">
-                <a href="index.html" aria-current="page">Today</a>
-                <a href="football-predictions-tomorrow.html">Tomorrow</a>
-                <a href="1x2-predictions.html">1X2</a>
-                <a href="over-2-5-goals-predictions.html">Goals</a>
-                <a href="btts-predictions.html">BTTS</a>
-                <a href="leagues.html">Leagues</a>
-                <a href="track-record.html">Track record</a>
-            </nav>
-            <span class="age">18+</span>
-        </div>
-    </header>
+<header>
+    <div class="w">
+        <a class="logo" href="index.html"><i>Z</i>ZurePicks</a>
+        <nav aria-label="Main">
+            <a href="index.html" aria-current="page">Today</a>
+            <a href="football-predictions-tomorrow.html">Tomorrow</a>
+            <a href="1x2-predictions.html">1X2</a>
+            <a href="over-2-5-goals-predictions.html">Goals</a>
+            <a href="btts-predictions.html">BTTS</a>
+            <a href="leagues.html">Leagues</a>
+            <a href="track-record.html">Track record</a>
+            <a href="#zure-chat-widget" onclick="focusAIBanker()" style="background: #145a2c; padding: 4px 8px; border-radius: 6px; color: #2ecc71; font-weight: bold;">🤖 AI Banker</a>
+        </nav>
+        <span class="age">18+</span>
+    </div>
+</header>
 
-    <main class="w">
-        <p class="crumbs">Home</p>
-        
-        <section class="hero art">
-            <div class="ht">
-                <p class="eyebrow">Daily betting tips · Live scores · Every result tracked</p>
-                <h1>Football predictions &amp; betting tips <em>today</em></h1>
-                <p class="lead">Your daily home for free football betting tips. Get ready-made 2, 3 and 5 odds slips, plus 1X2, double chance, over 2.5, over 1.5 and BTTS picks.</p>
+<main class="w">
+    <p class="crumbs">Home</p>
+    
+    <section class="hero art">
+        <div class="ht">
+            <p class="eyebrow">Daily betting tips · Live scores · Every result tracked</p>
+            <h1>Football predictions &amp; betting tips <em>today</em></h1>
+            <p class="lead">Your daily home for free football betting tips. Get ready-made 2, 3 and 5 odds slips, plus 1X2, double chance, over 2.5, over 1.5 and BTTS picks for 55 games across 34 leagues. Every tip shows the odds and win chance, scores go live as games are played, and every result is tracked. Pick your slip, tap once, done.</p>
+            <div class="cta">
+                <a class="btn" href="#top">Get today’s 2, 3 &amp; 5 odds</a>
+                <a class="btn alt" href="#board">Browse all predictions</a>
             </div>
-        </section>
-
-        <h2 id="combos">2 odds, 3 odds &amp; 5 odds tips today</h2>
-        <p class="mut cn">Ready-made slips built from today’s and tomorrow’s strongest picks.</p>
-        
-        <div class="combos" id="top">
-            <!-- Combos content -->
-        </div>
-
-        <div class="tools">
-            <input type="search" id="q" placeholder="Search team or league" aria-label="Search team or league">
-        </div>
-
-        <div id="board">
-            <!-- Match board content -->
-        </div>
-
-        <footer>
-            <p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p>
-        </footer>
-    </main>
-
-    <script src="api-config.js"></script>
-    <script type="module" src="app.js"></script>
-
-    <!-- ========================================== -->
-    <!-- ZUREPICKS AI ASSISTANT BANKER WIDGET       -->
-    <!-- ========================================== -->
-    <div id="zure-chat-widget" style="position: fixed; bottom: 20px; right: 20px; width: 340px; background: #121212; color: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.6); font-family: sans-serif; z-index: 9999; transition: all 0.3s ease;">
-        
-        <!-- Widget Header with Expand Button -->
-        <div style="background: #1f8b4c; padding: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
-            <span>AI Assistant Banker 🤖</span>
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <span style="font-size: 11px; background: #145a2c; padding: 2px 6px; border-radius: 4px;">Live Mode</span>
-                <button id="toggle-expand-btn" onclick="toggleWidgetSize()" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 14px; font-weight: bold;" title="Expand/Collapse">⤢</button>
+            <div class="kp" id="kp">
+                <div><b>12</b><span>Picks today</span></div>
+                <div><b>2</b><span>Played · 17%</span></div>
+                <div class="lv"><b>0</b><span>Live now</span></div>
+                <div><b>10</b><span>Not started · 83%</span></div>
+                <div><b>81%</b><span>Won 79 of 97 · 30 days</span></div>
             </div>
         </div>
-        
-        <!-- Day Selector Tabs (Today vs Tomorrow) -->
-        <div style="background: #181818; padding: 6px 10px; display: flex; gap: 6px; border-bottom: 1px solid #333;">
-            <button onclick="setDayMode('today')" id="tab-today" style="background: #27ae60; color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; flex: 1; font-weight: bold;">📅 Today's Games</button>
-            <button onclick="setDayMode('tomorrow')" id="tab-tomorrow" style="background: #2a2a2a; color: #aaa; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; flex: 1; font-weight: bold;">🔮 Tomorrow's Games</button>
-        </div>
+    </section>
 
-        <!-- Chat Messages Box -->
-        <div id="chat-messages" style="padding: 12px; height: 200px; overflow-y: auto; font-size: 13px; line-height: 1.4; transition: height 0.3s ease;">
-            <div style="margin-bottom: 8px;"><b>AI:</b> Hello! Choose Today or Tomorrow, then click an odds target for multi-market slips (1X2, Over/Under, BTTS). 🚀</div>
-        </div>
-        
-        <!-- Action Button Area -->
-        <div style="padding: 10px; background: #1e1e1e; border-top: 1px solid #333; display: flex; gap: 8px;">
-            <button onclick="requestOdds(2)" style="background: #27ae60; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: bold; font-size: 12px;">
-                🔥 2 Odds Banker
-            </button>
-            <button onclick="requestOdds(3)" style="background: #2980b9; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: bold; font-size: 12px;">
-                🚀 3 Odds Banker
-            </button>
-        </div>
+    <h2 id="combos">2 odds, 3 odds &amp; 5 odds tips today</h2>
+    <p class="mut cn">Ready-made slips built from today’s and tomorrow’s strongest picks. Tap once to add a whole slip to your bet slip, then change it however you like.</p>
+    
+    <div class="combos" id="top">
+        <!-- Combos content -->
     </div>
 
-    <script>
-    let currentDayMode = 'today';
-    let isExpanded = false;
+    <div class="bar">
+        <div class="scr" id="days" aria-label="Choose a day"></div>
+        <div class="scr" id="mkts" aria-label="Choose a market"></div>
+    </div>
+    
+    <div class="tools">
+        <input type="search" id="q" placeholder="Search team or league" aria-label="Search team or league">
+        <select id="min" aria-label="Pick quality">
+            <option value="">Published picks</option>
+            <option value="70">Strong only (70%+)</option>
+            <option value="80">Very strong (80%+)</option>
+            <option value="0">Show all picks</option>
+        </select>
+    </div>
+    
+    <p id="status" role="status">Loaded from the latest data snapshot.</p>
+    
+    <div id="board" data-mk="o" data-off="0" data-lg="" data-hit="81|79|97">
+        <!-- Match board content -->
+    </div>
 
-    function setDayMode(mode) {
-        currentDayMode = mode;
-        const btnToday = document.getElementById('tab-today');
-        const btnTomorrow = document.getElementById('tab-tomorrow');
-        const chatMessages = document.getElementById('chat-messages');
+    <div id="slip" hidden>
+        <span><b id="slipn"></b> · <b id="slipo"></b></span>
+        <button type="button" id="slipx">Copy slip</button>
+        <button type="button" id="slipc">Clear</button>
+    </div>
 
-        if (mode === 'today') {
-            btnToday.style.background = '#27ae60';
-            btnToday.style.color = 'white';
-            btnTomorrow.style.background = '#2a2a2a';
-            btnTomorrow.style.color = '#aaa';
-            chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #f39c12;"><b>AI:</b> Switched to <b>Today's</b> diverse pool. 📅</div>`;
+    <footer>
+        <p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p>
+    </footer>
+</main>
+
+<script src="api-config.js"></script>
+<script type="module" src="app.js"></script>
+
+<!-- ========================================== -->
+<!-- ZUREPICKS AI ASSISTANT BANKER WIDGET       -->
+<!-- ========================================== -->
+<div id="zure-chat-widget" style="position: fixed; bottom: 20px; right: 20px; width: 340px; background: #121212; color: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.6); font-family: sans-serif; z-index: 9999; transition: all 0.3s ease;">
+    
+    <!-- Widget Header with Expand Button -->
+    <div style="background: #1f8b4c; padding: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+        <span>AI Assistant Banker 🤖</span>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <span style="font-size: 11px; background: #145a2c; padding: 2px 6px; border-radius: 4px;">Live Mode</span>
+            <button id="toggle-expand-btn" onclick="toggleWidgetSize()" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 14px; font-weight: bold;" title="Expand/Collapse">⤢</button>
+        </div>
+    </div>
+    
+    <!-- Day Selector Tabs (Today vs Tomorrow) -->
+    <div style="background: #181818; padding: 6px 10px; display: flex; gap: 6px; border-bottom: 1px solid #333;">
+        <button onclick="setDayMode('today')" id="tab-today" style="background: #27ae60; color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; flex: 1; font-weight: bold;">📅 Today's Games</button>
+        <button onclick="setDayMode('tomorrow')" id="tab-tomorrow" style="background: #2a2a2a; color: #aaa; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; flex: 1; font-weight: bold;">🔮 Tomorrow's Games</button>
+    </div>
+
+    <!-- Chat Messages Box -->
+    <div id="chat-messages" style="padding: 12px; height: 200px; overflow-y: auto; font-size: 13px; line-height: 1.4; transition: height 0.3s ease;">
+        <div style="margin-bottom: 8px;"><b>AI:</b> Hello! Choose Today or Tomorrow, then click an odds target for multi-market slips (1X2, Over/Under, BTTS). 🚀</div>
+    </div>
+    
+    <!-- Action Button Area -->
+    <div style="padding: 10px; background: #1e1e1e; border-top: 1px solid #333; display: flex; gap: 8px;">
+        <button onclick="requestOdds(2)" style="background: #27ae60; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: bold; font-size: 12px;">
+            🔥 2 Odds Banker
+        </button>
+        <button onclick="requestOdds(3)" style="background: #2980b9; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: bold; font-size: 12px;">
+            🚀 3 Odds Banker
+        </button>
+    </div>
+</div>
+
+<script>
+let currentDayMode = 'today';
+let isExpanded = false;
+
+function focusAIBanker() {
+    const widget = document.getElementById('zure-chat-widget');
+    if (!isExpanded) {
+        toggleWidgetSize();
+    }
+    widget.scrollIntoView({ behavior: 'smooth' });
+}
+
+function setDayMode(mode) {
+    currentDayMode = mode;
+    const btnToday = document.getElementById('tab-today');
+    const btnTomorrow = document.getElementById('tab-tomorrow');
+    const chatMessages = document.getElementById('chat-messages');
+
+    if (mode === 'today') {
+        btnToday.style.background = '#27ae60';
+        btnToday.style.color = 'white';
+        btnTomorrow.style.background = '#2a2a2a';
+        btnTomorrow.style.color = '#aaa';
+        chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #f39c12;"><b>AI:</b> Switched to <b>Today's</b> diverse pool. 📅</div>`;
+    } else {
+        btnTomorrow.style.background = '#2980b9';
+        btnTomorrow.style.color = 'white';
+        btnToday.style.background = '#2a2a2a';
+        btnToday.style.color = '#aaa';
+        chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #3498db;"><b>AI:</b> Switched to <b>Tomorrow's</b> diverse pool. 🔮</div>`;
+    }
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function toggleWidgetSize() {
+    isExpanded = !isExpanded;
+    const chatMessages = document.getElementById('chat-messages');
+    const widget = document.getElementById('zure-chat-widget');
+    const expandBtn = document.getElementById('toggle-expand-btn');
+
+    if (isExpanded) {
+        widget.classList.add('expanded');
+        chatMessages.style.height = '65vh';
+        widget.style.width = 'calc(100vw - 20px)';
+        expandBtn.innerText = '🗕';
+    } else {
+        widget.classList.remove('expanded');
+        chatMessages.style.height = '200px';
+        widget.style.width = '340px';
+        expandBtn.innerText = '⤢';
+    }
+}
+
+async function requestOdds(targetType) {
+    const chatMessages = document.getElementById('chat-messages');
+    
+    chatMessages.innerHTML += `<div style="margin-bottom: 8px; text-align: right;"><span style="background: #2c3e50; padding: 6px 10px; border-radius: 8px; display: inline-block;">Give me ${currentDayMode}'s ${targetType} odds multi-market banker.</span></div>`;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    const loadingId = "load_" + Date.now();
+    chatMessages.innerHTML += `<div id="${loadingId}" style="margin-bottom: 8px; color: #f1c40f;"><b>AI:</b> Compiling multi-market predictions... ⏳</div>`;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    try {
+        const endpoint = targetType === 2 
+            ? `https://zurepicks-backend-api.onrender.com/api/ai-chat/get-2-odds?day=${currentDayMode}`
+            : `https://zurepicks-backend-api.onrender.com/api/ai-chat/get-3-odds?day=${currentDayMode}`;
+            
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        
+        const loader = document.getElementById(loadingId);
+        if (loader) loader.remove();
+
+        let slipHTML = `<div style="margin-bottom: 10px; background: #1a2f22; padding: 10px; border-radius: 8px; border-left: 4px solid ${targetType === 2 ? '#27ae60' : '#2980b9'};">`;
+        slipHTML += `<b>🎯 ${data.oddsRange}:</b><br>`;
+        
+        if (data.legs && data.legs.length > 0) {
+            data.legs.forEach(leg => {
+                slipHTML += `<div style="margin-top: 4px; border-bottom: 1px solid #224d33; padding-bottom: 3px;">• ${leg.home} vs ${leg.away} <small>(${leg.league})</small><br><small style="color: #a3e4d7;">Market: <b>${leg.market}</b> | Odds: <b>${leg.odds}</b> | Win: ${leg.winChance}%</small></div>`;
+            });
         } else {
-            btnTomorrow.style.background = '#2980b9';
-            btnTomorrow.style.color = 'white';
-            btnToday.style.background = '#2a2a2a';
-            btnToday.style.color = '#aaa';
-            chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #3498db;"><b>AI:</b> Switched to <b>Tomorrow's</b> diverse pool. 🔮</div>`;
-        }
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    function toggleWidgetSize() {
-        isExpanded = !isExpanded;
-        const chatMessages = document.getElementById('chat-messages');
-        const widget = document.getElementById('zure-chat-widget');
-        const expandBtn = document.getElementById('toggle-expand-btn');
-
-        if (isExpanded) {
-            chatMessages.style.height = '380px';
-            widget.style.width = '380px';
-            expandBtn.innerText = '🗕';
-        } else {
-            chatMessages.style.height = '200px';
-            widget.style.width = '340px';
-            expandBtn.innerText = '⤢';
-        }
-    }
-
-    async function requestOdds(targetType) {
-        const chatMessages = document.getElementById('chat-messages');
-        
-        chatMessages.innerHTML += `<div style="margin-bottom: 8px; text-align: right;"><span style="background: #2c3e50; padding: 6px 10px; border-radius: 8px; display: inline-block;">Give me ${currentDayMode}'s ${targetType} odds multi-market banker.</span></div>`;
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        const loadingId = "load_" + Date.now();
-        chatMessages.innerHTML += `<div id="${loadingId}" style="margin-bottom: 8px; color: #f1c40f;"><b>AI:</b> Compiling multi-market predictions... ⏳</div>`;
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        
-        try {
-            const endpoint = targetType === 2 
-                ? `https://zurepicks-backend-api.onrender.com/api/ai-chat/get-2-odds?day=${currentDayMode}`
-                : `https://zurepicks-backend-api.onrender.com/api/ai-chat/get-3-odds?day=${currentDayMode}`;
-                
-            const response = await fetch(endpoint);
-            const data = await response.json();
-            
-            const loader = document.getElementById(loadingId);
-            if (loader) loader.remove();
-
-            let slipHTML = `<div style="margin-bottom: 10px; background: #1a2f22; padding: 10px; border-radius: 8px; border-left: 4px solid ${targetType === 2 ? '#27ae60' : '#2980b9'};">`;
-            slipHTML += `<b>🎯 ${data.oddsRange}:</b><br>`;
-            
-            if (data.legs && data.legs.length > 0) {
-                data.legs.forEach(leg => {
-                    slipHTML += `<div style="margin-top: 4px; border-bottom: 1px solid #224d33; padding-bottom: 3px;">• ${leg.home} vs ${leg.away} <small>(${leg.league})</small><br><small style="color: #a3e4d7;">Market: <b>${leg.market}</b> | Odds: <b>${leg.odds}</b> | Win: ${leg.winChance}%</small></div>`;
-                });
-            } else {
-                slipHTML += `No matches found for this date range right now.<br>`;
-            }
-            
-            slipHTML += `<div style="margin-top: 6px; text-align: right; font-size: 14px; color: #2ecc71;"><b>Total Odds: ${data.totalOdds}</b> 🚀</div>`;
-            slipHTML += `</div>`;
-            
-            chatMessages.innerHTML += slipHTML;
-        } catch (error) {
-            const loader = document.getElementById(loadingId);
-            if (loader) loader.remove();
-            chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #e74c3c;"><b>AI:</b> Failed to reach backend server. Make sure Render is awake!</div>`;
+            slipHTML += `No matches found for this date range right now.<br>`;
         }
         
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        slipHTML += `<div style="margin-top: 6px; text-align: right; font-size: 14px; color: #2ecc71;"><b>Total Odds: ${data.totalOdds}</b> 🚀</div>`;
+        slipHTML += `</div>`;
+        
+        chatMessages.innerHTML += slipHTML;
+    } catch (error) {
+        const loader = document.getElementById(loadingId);
+        if (loader) loader.remove();
+        chatMessages.innerHTML += `<div style="margin-bottom: 8px; color: #e74c3c;"><b>AI:</b> Failed to reach backend server. Make sure Render is awake!</div>`;
     }
-    </script>
+    
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+</script>
 </body>
 </html>
