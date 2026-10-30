@@ -29,6 +29,8 @@ jobs:
         continue-on-error: true
         env:
           SITE_URL: https://sidolly20.github.io/zurepick-site
+      # One-time cleanup of old duplicate files (safe to leave in; does nothing once they are gone).
+      - run: rm -f "app (1).js" "app. Js" update.yml 2026-10-2?.json form.json history.json
       - run: |
           git config user.name "match-bot"
           git config user.email "bot@users.noreply.github.com"
