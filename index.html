@@ -3,20 +3,33 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-    <title>Football Predictions Today – Free Betting Tips &amp; 2, 3, 5 Odds</title>
-    <meta name="description" content="Free football predictions for today: 2, 3 and 5 odds slips, 1X2, over 2.5, BTTS and double chance tips with live scores and tracked results. No sign-up.">
+    <title>ZurePicks – Free Expert Football Predictions, 2 Odds, 3 Odds &amp; 5 Odds Banker Tips Today</title>
+    <meta name="description" content="Get expert-backed football predictions, daily banker tips, curated 2 odds, 3 odds, and 5 odds accumulators, 1X2, Over/Under 2.5, and BTTS betting tips with live tracking.">
     <link rel="canonical" href="https://sidolly20.github.io/zurepick-site/">
     <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="zp.css">
     <style>
+        :root {
+            --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        body, input, button, select, textarea {
+            font-family: var(--font-family) !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family) !important;
+            letter-spacing: -0.02em;
+        }
         header .w {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: nowrap;
             gap: 12px;
-            padding-top: 10px;
-            padding-bottom: 10px;
+            padding-top: 12px;
+            padding-bottom: 12px;
         }
         .header-left {
             display: flex;
@@ -27,22 +40,27 @@
         .ai-banker-btn {
             background: #145a2c;
             color: #2ecc71;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
             text-decoration: none;
             font-size: 12px;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             border: 1px solid #1f8b4c;
             cursor: pointer;
             white-space: nowrap;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .ai-banker-btn:hover {
+            background: #196f33;
+            transform: translateY(-1px);
         }
         header nav {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             overflow-x: auto;
             white-space: nowrap;
             scrollbar-width: none;
@@ -50,13 +68,116 @@
         header nav::-webkit-scrollbar {
             display: none;
         }
+        header nav a {
+            font-weight: 500;
+            font-size: 14px;
+            color: #b0c4de;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        header nav a:hover, header nav a[aria-current="page"] {
+            color: #2ecc71;
+        }
+        .hero-section {
+            padding: 24px 0 32px 0;
+        }
+        .hero-title {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.25;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+        .hero-title span {
+            color: #2ecc71;
+        }
+        .hero-desc {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #a0aec0;
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+        .hero-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        @media(min-width: 640px) {
+            .hero-actions {
+                flex-direction: row;
+            }
+        }
+        .btn-primary-green {
+            background: #2ecc71;
+            color: #0b140e;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(46, 204, 113, 0.3);
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-primary-green:hover {
+            background: #27ae60;
+            transform: translateY(-1px);
+        }
+        .btn-secondary-dark {
+            background: #18221b;
+            color: #ffffff;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            text-align: center;
+            text-decoration: none;
+            border: 1px solid #28382c;
+            transition: background 0.2s;
+        }
+        .btn-secondary-dark:hover {
+            background: #202e23;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        @media(max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .stat-card {
+            background: #141c17;
+            border: 1px solid #1f2c22;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: left;
+        }
+        .stat-card .num {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .stat-card .label {
+            font-size: 12px;
+            color: #8c9b90;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
 <header>
     <div class="w">
         <div class="header-left">
-            <a class="logo" href="index.html"><i>Z</i>ZurePicks</a>
+            <a class="logo" href="index.html" style="font-weight: 800; letter-spacing: -0.03em;"><i>Z</i>ZurePicks</a>
             <a href="ai-betting-assistant.html" class="ai-banker-btn">🤖 AI Banker</a>
         </div>
         <nav aria-label="Main">
@@ -68,149 +189,46 @@
             <a href="leagues.html">Leagues</a>
             <a href="track-record.html">Track record</a>
         </nav>
-        <span class="age" style="flex-shrink: 0;">18+</span>
+        <span class="age" style="flex-shrink: 0; font-weight: 700; background: #1c2820; padding: 4px 8px; border-radius: 6px; font-size: 12px; color: #2ecc71;">18+</span>
     </div>
 </header>
 
 <main class="w">
-    <p class="crumbs">Home</p>
-    
-    <section class="hero art">
-        <div class="ht">
-            <p class="eyebrow">Daily betting tips · Live scores · Every result tracked</p>
-            <h1>Football predictions &amp; betting tips <em>today</em></h1>
-            <p class="lead">Your daily home for free football betting tips. Get ready-made 2, 3 and 5 odds slips, plus 1X2, double chance, over 2.5, over 1.5 and BTTS picks for 55 games across 34 leagues. Every tip shows the odds and win chance, scores go live as games are played, and every result is tracked. Pick your slip, tap once, done.</p>
-            <div class="cta">
-                <a class="btn" href="#top">Get today’s 2, 3 &amp; 5 odds</a>
-                <a class="btn alt" href="#board">Browse all predictions</a>
+    <div class="hero-section">
+        <h1 class="hero-title">Expert football predictions &amp; betting tips <span>today</span></h1>
+        <p class="hero-desc">Your ultimate destination for high-accuracy football tips and professional data analysis. Access hand-picked 2 odds, 3 odds, and 5 odds banker slips, 1X2 outcomes, double chance, over/under 1.5 &amp; 2.5 goals, and BTTS predictions covering over 50 daily matches across 34 top leagues. Every fixture includes precise odds, win probability metrics, live scores, and fully transparent historical tracking.</p>
+        
+        <div class="hero-actions">
+            <a href="ai-betting-assistant.html" class="btn-primary-green">🎯 Get Today's 2, 3 &amp; 5 Odds Slips</a>
+            <a href="track-record.html" class="btn-secondary-dark">📊 View Verified Track Record</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="num">11</div>
+                <div class="label">Picks Today</div>
             </div>
-            <div class="kp" id="kp">
-                <div><b>12</b><span>Picks today</span></div>
-                <div><b>2</b><span>Played · 17%</span></div>
-                <div class="lv"><b>0</b><span>Live now</span></div>
-                <div><b>10</b><span>Not started · 83%</span></div>
-                <div><b>81%</b><span>Won 79 of 97 · 30 days</span></div>
+            <div class="stat-card">
+                <div class="num">3</div>
+                <div class="label">Played · 27%</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">1</div>
+                <div class="label" style="color: #2ecc71;">● Live Now</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">1</div>
+                <div class="label">Awaiting Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">6</div>
+                <div class="label">Not Started · 55%</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">81%</div>
+                <div class="label">Won 79 of 97 · 30 Days</div>
             </div>
         </div>
-        <div class="bn" aria-hidden="true">
-            <svg viewBox="0 0 520 380" role="img">
-                <defs>
-                    <linearGradient id="gb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12c26f"/><stop offset="1" stop-color="#6d4aff"/></linearGradient>
-                    <linearGradient id="gk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b8a52"/><stop offset="1" stop-color="#075c37"/></linearGradient>
-                </defs>
-                <circle cx="270" cy="190" r="170" fill="url(#gb)" opacity=".92"/>
-                <circle cx="270" cy="190" r="128" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/>
-                <path d="M270 20v340M100 190h340" stroke="#fff" stroke-opacity=".18" stroke-width="3"/>
-                <ellipse cx="270" cy="352" rx="190" ry="16" fill="#000" opacity=".18"/>
-                <g transform="translate(150 0)">
-                    <path d="M70 150c-22 6-34 26-32 54l14 4c2-20 10-32 24-36z" fill="#8d5524"/>
-                    <circle cx="104" cy="92" r="26" fill="#8d5524"/>
-                    <path d="M78 88c2-24 20-34 38-30 14 3 22 14 22 30-10-14-22-18-34-16-10 2-20 6-26 16z" fill="#1b1410"/>
-                    <path d="M72 128h64l14 96h-92z" fill="url(#gk)"/>
-                    <path d="M72 150h64v14H72z" fill="#fff" opacity=".9"/>
-                    <text x="104" y="205" font-family="ui-sans-serif,Arial" font-weight="800" font-size="30" text-anchor="middle" fill="#fff">9</text>
-                    <path d="M58 224h92l8 50h-38l-6-24-6 24H50z" fill="#fff"/>
-                    <path d="M62 274h30l-2 56H66z" fill="#8d5524"/>
-                    <path d="M118 274h30l4 56h-26z" fill="#8d5524"/>
-                    <path d="M64 310h28l-2 26H62zM120 310h28l4 26h-28z" fill="#0b8a52"/>
-                    <path d="M54 336h42l-4 14H50zM118 336h42l4 14h-42z" fill="#111"/>
-                    <path d="M136 134c16 10 24 30 20 56l-14-4c2-16-2-28-10-36z" fill="#8d5524"/>
-                    <circle cx="154" cy="206" r="24" fill="#fff"/>
-                    <path d="M154 192l12 9-5 14h-14l-5-14z" fill="#111"/>
-                </g>
-                <g font-family="ui-sans-serif,Arial" font-weight="800">
-                    <rect x="20" y="40" width="108" height="56" rx="16" fill="#fff"/>
-                    <text x="74" y="66" font-size="11" text-anchor="middle" fill="#556459">PICKS TODAY</text>
-                    <text id="bn-n" x="74" y="88" font-size="22" text-anchor="middle" fill="#0b8a52">12</text>
-                    <rect x="392" y="262" width="112" height="56" rx="16" fill="#fff"/>
-                    <text x="448" y="288" font-size="11" text-anchor="middle" fill="#556459">WON · 30 DAYS</text>
-                    <text id="bn-h" x="448" y="310" font-size="22" text-anchor="middle" fill="#6d4aff">81%</text>
-                    <rect x="12" y="270" width="88" height="48" rx="24" fill="#0b8a52"/>
-                    <text x="56" y="301" font-size="17" text-anchor="middle" fill="#fff">✓ WON</text>
-                </g>
-            </svg>
-        </div>
-    </section>
-
-    <h2 id="combos">2 odds, 3 odds &amp; 5 odds tips today</h2>
-    <p class="mut cn">Ready-made slips built from today’s and tomorrow’s strongest picks. Tap once to add a whole slip to your bet slip, then change it however you like.</p>
-    
-    <div class="combos" id="top">
-        <div class="cbx">
-            <div class="ch"><span>2+ odds</span><b>2.00</b></div>
-            <div class="cm">3 games · 43% combined chance</div>
-            <div class="cl"><time>19:00</time><div><b>Bodø/Glimt v Viking FK</b><small>Eliteserien</small></div><span class="tag">Over 2.5</span><span class="mono">1.31</span></div>
-            <div class="cl"><time><small>Tmrw</small>14:00</time><div><b>Levante UD v Atlético Madrid</b><small>La Liga</small></div><span class="tag">Over 1.5</span><span class="mono">1.15</span></div>
-            <div class="cl"><time><small>Tmrw</small>19:00</time><div><b>FC Cincinnati v Philadelphia Union</b><small>MLS</small></div><span class="tag">Over 2.5</span><span class="mono">1.33</span></div>
-            <button type="button" class="cb" data-t="2">Add 3 games to slip</button>
-        </div>
-        <div class="cbx">
-            <div class="ch"><span>3+ odds</span><b>3.01</b></div>
-            <div class="cm">4 games · 27% combined chance</div>
-            <div class="cl"><time><small>Tmrw</small>00:00</time><div><b>Corinthians v Mirassol</b><small>Brasileirão Serie A</small></div><span class="tag">Over 1.5</span><span class="mono">1.32</span></div>
-            <div class="cl"><time><small>Tmrw</small>06:00</time><div><b>Kyoto Sanga FC v Shimizu S-Pulse</b><small>J1 League</small></div><span class="tag">Over 1.5</span><span class="mono">1.31</span></div>
-            <div class="cl"><time><small>Tmrw</small>11:30</time><div><b>Erzurumspor FK v Çorum FK</b><small>Trendyol Super Lig</small></div><span class="tag">Over 1.5</span><span class="mono">1.31</span></div>
-            <div class="cl"><time><small>Tmrw</small>18:30</time><div><b>Real Betis v Málaga CF</b><small>La Liga</small></div><span class="tag">Home win</span><span class="mono">1.33</span></div>
-            <button type="button" class="cb" data-t="3">Add 4 games to slip</button>
-        </div>
-        <div class="cbx">
-            <div class="ch"><span>5+ odds</span><b>5.01</b></div>
-            <div class="cm">6 games · 14% combined chance</div>
-            <div class="cl"><time>20:00</time><div><b>Stade Lavallois v US Boulogne Côte-d'Opale</b><small>Ligue 2</small></div><span class="tag">Over 1.5</span><span class="mono">1.33</span></div>
-            <div class="cl"><time><small>Tmrw</small>16:30</time><div><b>Feyenoord v Fortuna Sittard</b><small>Eredivisie</small></div><span class="tag">Home win</span><span class="mono">1.16</span></div>
-            <div class="cl"><time><small>Tmrw</small>17:00</time><div><b>Fenerbahçe v Göztepe</b><small>Trendyol Super Lig</small></div><span class="tag">Home win</span><span class="mono">1.33</span></div>
-            <div class="cl"><time><small>Tmrw</small>18:00</time><div><b>Grasshopper Club Zürich v FC Vaduz</b><small>Super League</small></div><span class="tag">Both score</span><span class="mono">1.34</span></div>
-            <div class="cl"><time><small>Tmrw</small>18:45</time><div><b>SC Heerenveen v NEC Nijmegen</b><small>Eredivisie</small></div><span class="tag">Both score</span><span class="mono">1.34</span></div>
-            <div class="cl"><time><small>Tmrw</small>19:30</time><div><b>LASK v WSG Tirol</b><small>Austrian Bundesliga</small></div><span class="tag">Over 2.5</span><span class="mono">1.36</span></div>
-            <button type="button" class="cb" data-t="5">Add 6 games to slip</button>
-        </div>
-    </div>
-
-    <div class="bar">
-        <div class="scr" id="days" aria-label="Choose a day"></div>
-        <div class="scr" id="mkts" aria-label="Choose a market"></div>
-    </div>
-    
-    <div class="tools">
-        <input type="search" id="q" placeholder="Search team or league" aria-label="Search team or league">
-        <select id="min" aria-label="Pick quality">
-            <option value="">Published picks</option>
-            <option value="70">Strong only (70%+)</option>
-            <option value="80">Very strong (80%+)</option>
-            <option value="0">Show all picks</option>
-        </select>
-    </div>
-    
-    <p id="status" role="status">Loaded from the latest data snapshot.</p>
-    
-    <div id="board" data-mk="o" data-off="0" data-lg="" data-hit="81|79|97">
-        <section class="lg">
-            <h3><span>Spain · La Liga</span><em>1</em></h3>
-            <article class="row ns" data-id="bsd:213629">
-                <time>21:00</time>
-                <div class="tm"><b>Villarreal</b><b>Espanyol</b></div>
-                <div class="ods c3">
-                    <button type="button" class="oc pick" data-id="bsd:213629" data-i="0" data-od="1.41"><small>1</small>1.41</button>
-                    <button type="button" class="oc" data-id="bsd:213629" data-i="1" data-od="4.95"><small>X</small>4.95</button>
-                    <button type="button" class="oc" data-id="bsd:213629" data-i="2" data-od="6.7"><small>2</small>6.70</button>
-                </div>
-                <div class="pk"><span>Home win</span><i style="--w:67%"></i><em>67% · from odds</em></div>
-                <div class="sb"><strong>–</strong><small>Not started</small></div>
-            </article>
-        </section>
-    </div>
-
-    <div id="slip" hidden>
-        <span><b id="slipn"></b> · <b id="slipo"></b></span>
-        <button type="button" id="slipx">Copy slip</button>
-        <button type="button" id="slipc">Clear</button>
-    </div>
-
-    <div class="prose">
-        <h2>Free football predictions today, built for the way you bet</h2>
-        <p>ZurePicks lists today’s football predictions in one place: 1X2 match results, double chance, over 1.5 and over 2.5 goals, and both teams to score (BTTS). Each tip shows the bookmaker odds and the win chance worked out from them, so you can compare matches at a glance.</p>
-        <p>Short on time? The ready-made 2 odds, 3 odds and 5 odds slips pick the strongest games for you. Add a whole slip in one tap, or build your own from the full list.</p>
-        <p>Scores update live while games are on, finished games turn green for a winning pick and red for a losing one, and the <a href="track-record.html">track record</a> keeps every result in the open.</p>
     </div>
 
     <footer>
@@ -222,8 +240,5 @@
         <p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p>
     </footer>
 </main>
-
-<script src="api-config.js"></script>
-<script type="module" src="app.js"></script>
 </body>
 </html>
