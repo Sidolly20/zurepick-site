@@ -74,7 +74,7 @@ function advance(m, e) { // never moves a match backwards
   return JSON.stringify([m.st, m.el, m.sc]) !== was;
 }
 
-export async function collect({ dataDir = path.resolve(env('DATA_DIR', path.join(ROOT, 'data'))), ahead = +env('BSD_DAYS_AHEAD', 3), maxOdds = +env('BSD_ODDS_PER_RUN', 120), now = Date.now() } = {}) {
+export async function collect({ dataDir = path.resolve(env('DATA_DIR', path.join(ROOT, 'data'))), ahead = +env('BSD_DAYS_AHEAD', 5), maxOdds = +env('BSD_ODDS_PER_RUN', 250), now = Date.now() } = {}) {
   if (!env('BZZOIRO_KEY')) return console.log('BSD: no BZZOIRO_KEY set, skipped');
   fs.mkdirSync(dataDir, { recursive: true });
   const st = { calls: 0 }, utc = (o) => new Date(now + o * 864e5).toISOString().slice(0, 10), L = await leagues(dataDir, st), seen = new Map(), raw = {};
@@ -91,8 +91,8 @@ export async function collect({ dataDir = path.resolve(env('DATA_DIR', path.join
     if (m) { m.bid = e.id; if (advance(m, e)) moved++; } else { day.matches.push(toMatch(e, L)); fresh++; }
   }
   // Odds: one call per game, soonest kick-offs first. Far-away games have no prices yet, so they are retried every 4 hours (every 30 minutes close to kick-off).
-  const cand = Object.values(days).flatMap((d) => d.matches).filter((m) => m.bid && !FINAL.includes(m.st) && Date.parse(m.d) > now - 3 * 36e5 && Date.parse(m.d) < now + 36 * 36e5 && (!m.oa || now - m.oa > (Date.parse(m.d) - now < 3 * 36e5 ? 30 * 6e4 : 4 * 36e5)))
-    .sort((a, b) => Date.parse(a.d) - Date.parse(b.d)).slice(0, maxOdds);
+  const cand = Object.values(days).flatMap((d) => d.matches).filter((m) => m.bid && !FINAL.includes(m.st) && Date.parse(m.d) > now - 3 * 36e5 && Date.parse(m.d) < now + 72 * 36e5 && (!m.oa || now - m.oa > (Date.parse(m.d) - now < 3 * 36e5 ? 30 * 6e4 : 4 * 36e5)))
+    .sort((a, b) => (a.li >= 100000) - (b.li >= 100000) || Date.parse(a.d) - Date.parse(b.d)).slice(0, maxOdds); // big leagues first, then soonest
   let filled = 0;
   for (const m of cand) {
     try { const add = mapOdds((await bsdGet(`/events/${m.bid}/odds/`, st)).odds); Object.assign(m, add); m.oa = now; if (Object.keys(add).length) filled++; } catch (e) { console.error('BSD odds failed for', m.bid, e.message); }
