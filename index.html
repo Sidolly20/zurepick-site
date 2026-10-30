@@ -78,78 +78,27 @@
         header nav a:hover, header nav a[aria-current="page"] {
             color: #2ecc71;
         }
-        .hero-compact {
-            padding: 16px 0 20px 0;
-        }
-        .hero-title {
-            font-size: 22px;
-            font-weight: 800;
-            line-height: 1.25;
-            color: #ffffff;
-            margin-bottom: 8px;
-        }
-        .hero-title span {
-            color: #2ecc71;
-        }
-        .hero-desc {
-            font-size: 13px;
-            line-height: 1.5;
-            color: #a0aec0;
-            margin-bottom: 16px;
-        }
-        /* Full Compact Stats Grid */
-        .stats-grid-compact {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        @media(max-width: 480px) {
-            .stats-grid-compact {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        .stat-card-sm {
-            background: #141c17;
-            border: 1px solid #1f2c22;
-            border-radius: 8px;
-            padding: 10px 12px;
-            text-align: left;
-        }
-        .stat-card-sm .num {
-            font-size: 16px;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 2px;
-        }
-        .stat-card-sm .label {
-            font-size: 10px;
-            color: #8c9b90;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            font-weight: 600;
-        }
-        .filter-section {
+        .controls-section {
+            padding: 12px 0 16px 0;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-bottom: 20px;
         }
-        .day-tabs, .market-filters {
+        .date-tabs, .market-chips {
             display: flex;
             gap: 8px;
             overflow-x: auto;
             scrollbar-width: none;
-            padding-bottom: 4px;
+            padding-bottom: 2px;
         }
-        .day-tabs::-webkit-scrollbar, .market-filters::-webkit-scrollbar {
+        .date-tabs::-webkit-scrollbar, .market-chips::-webkit-scrollbar {
             display: none;
         }
-        .pill-tab {
+        .date-pill {
             background: #18221b;
             border: 1px solid #28382c;
             color: #b0c4de;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
@@ -157,77 +106,170 @@
             white-space: nowrap;
             transition: all 0.2s;
         }
-        .pill-tab.active, .pill-tab:hover {
+        .date-pill.active, .date-pill:hover {
             background: #2ecc71;
             color: #0b140e;
             border-color: #2ecc71;
         }
         .market-chip {
-            background: #121814;
+            background: #141c17;
             border: 1px solid #1f2c22;
             color: #a0aec0;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 7px 14px;
+            border-radius: 8px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             text-decoration: none;
             white-space: nowrap;
             transition: all 0.2s;
         }
-        .market-chip:hover, .market-chip.active {
-            background: #1c2820;
+        .market-chip.active, .market-chip:hover {
+            background: #145a2c;
             color: #2ecc71;
-            border-color: #28382c;
+            border-color: #1f8b4c;
         }
-        .match-card {
+        .search-filter-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .search-input {
+            flex: 1;
             background: #121814;
             border: 1px solid #1f2c22;
-            border-radius: 10px;
-            padding: 14px;
-            margin-bottom: 12px;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
         }
-        .match-header {
-            display: flex;
-            justify-content: space-between;
+        .search-input:focus {
+            border-color: #2ecc71;
+        }
+        .filter-select {
+            background: #121814;
+            border: 1px solid #1f2c22;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #b0c4de;
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+        }
+        .snapshot-text {
             font-size: 11px;
             color: #8c9b90;
-            margin-bottom: 8px;
-            font-weight: 600;
-            text-transform: uppercase;
+            margin-bottom: 14px;
         }
-        .match-teams {
+        .league-group {
+            background: #121814;
+            border: 1px solid #1f2c22;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .league-header {
+            padding: 12px 16px;
+            background: #18221b;
+            border-bottom: 1px solid #1f2c22;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .league-match-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid #19221b;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .league-match-item:last-child {
+            border-bottom: none;
+        }
+        .match-row-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .match-teams-info {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .match-time {
+            font-size: 12px;
+            color: #8c9b90;
+            font-weight: 600;
+            width: 45px;
+        }
+        .teams-name {
             font-size: 14px;
             font-weight: 700;
             color: #fff;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            line-height: 1.4;
         }
-        .live-score {
-            background: #1f2c22;
-            color: #2ecc71;
-            padding: 2px 8px;
-            border-radius: 4px;
+        .match-status-badge {
+            background: #18221b;
+            border: 1px solid #28382c;
+            color: #b0c4de;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .odds-buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .odd-btn {
+            background: #18221b;
+            border: 1px solid #28382c;
+            border-radius: 8px;
+            padding: 8px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .odd-btn.selected {
+            background: #145a2c;
+            border-color: #2ecc71;
+        }
+        .odd-btn .odd-num {
             font-size: 13px;
             font-weight: 800;
-        }
-        .match-prediction {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #18221b;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-        .match-prediction .odds {
-            background: #145a2c;
             color: #2ecc71;
-            padding: 2px 8px;
-            border-radius: 4px;
+        }
+        .odd-btn .odd-label {
+            font-size: 10px;
+            color: #8c9b90;
+            font-weight: 600;
+        }
+        .prob-bar-container {
+            margin-top: 4px;
+        }
+        .prob-bar-label {
+            font-size: 11px;
+            color: #2ecc71;
             font-weight: 700;
-            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        .prob-track {
+            height: 4px;
+            background: #1c2820;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .prob-fill {
+            height: 100%;
+            background: #2ecc71;
+            width: 68%;
         }
     </style>
 </head>
@@ -252,98 +294,107 @@
 </header>
 
 <main class="w">
-    <div class="hero-compact">
-        <h1 class="hero-title">Expert football predictions &amp; betting tips <span>today</span></h1>
-        <p class="hero-desc">Access high-accuracy 2 odds, 3 odds, and 5 odds banker slips, live scores, and expert tips across 34 top leagues.</p>
-        
-        <!-- Live Synchronized Stats Cards -->
-        <div class="stats-grid-compact" id="stats-counter-container">
-            <div class="stat-card-sm">
-                <div class="num" id="stat-total">11</div>
-                <div class="label">Picks Today</div>
-            </div>
-            <div class="stat-card-sm">
-                <div class="num" id="stat-played">3 · 27%</div>
-                <div class="label">Played</div>
-            </div>
-            <div class="stat-card-sm">
-                <div class="num" id="stat-live" style="color: #2ecc71;">1</div>
-                <div class="label">● Live Now</div>
-            </div>
-            <div class="stat-card-sm">
-                <div class="num" id="stat-awaiting">1</div>
-                <div class="label">Awaiting Score</div>
-            </div>
-            <div class="stat-card-sm">
-                <div class="num" id="stat-upcoming">6</div>
-                <div class="label">Not Started</div>
-            </div>
-            <div class="stat-card-sm">
-                <div class="num">81%</div>
-                <div class="label">30-Day Win</div>
-            </div>
+    <div class="controls-section">
+        <div class="date-tabs">
+            <a href="index.html" class="date-pill">Wed 28 Oct</a>
+            <a href="index.html" class="date-pill">Yesterday</a>
+            <a href="index.html" class="date-pill active">Today</a>
+            <a href="football-predictions-tomorrow.html" class="date-pill">Tomorrow</a>
         </div>
 
-        <div class="filter-section">
-            <div class="day-tabs">
-                <a href="index.html" class="pill-tab active">Today's Matches</a>
-                <a href="football-predictions-tomorrow.html" class="pill-tab">Tomorrow</a>
-                <a href="football-predictions-tomorrow.html" class="pill-tab">Sunday</a>
+        <div class="market-chips">
+            <a href="1x2-predictions.html" class="market-chip active">1X2</a>
+            <a href="btts-predictions.html" class="market-chip">Double chance</a>
+            <a href="over-2-5-goals-predictions.html" class="market-chip">Over/Under 2.5</a>
+            <a href="btts-predictions.html" class="market-chip">BTTS</a>
+        </div>
+
+        <div class="search-filter-row">
+            <input type="text" class="search-input" placeholder="Search team or league" autocomplete="off">
+            <select class="filter-select">
+                <option>Published picks</option>
+                <option>All picks</option>
+                <option>High confidence</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="snapshot-text">Snapshot · updated 30 Oct, 17:49 WAT</div>
+
+    <div class="league-group">
+        <div class="league-header">
+            <span>Spain · La Liga</span>
+            <span style="font-size: 12px; color: #8c9b90;">1</span>
+        </div>
+        <div class="league-match-item">
+            <div class="match-row-top">
+                <div class="match-teams-info">
+                    <span class="match-time">21:00</span>
+                    <div class="teams-name">Villarreal<br>Espanyol</div>
+                </div>
+                <div class="match-status-badge" style="background: #141c17; border-color: #1f2c22; color: #8c9b90;">
+                    - <br>Not Started
+                </div>
             </div>
-            <div class="market-filters">
-                <a href="1x2-predictions.html" class="market-chip">1X2</a>
-                <a href="btts-predictions.html" class="market-chip">Double Chance</a>
-                <a href="over-2-5-goals-predictions.html" class="market-chip">Over 1.5</a>
-                <a href="over-2-5-goals-predictions.html" class="market-chip">Over 2.5</a>
-                <a href="btts-predictions.html" class="market-chip">BTTS</a>
+            <div class="odds-buttons-grid">
+                <div class="odd-btn selected">
+                    <div class="odd-num">1.40</div>
+                    <div class="odd-label">1</div>
+                </div>
+                <div class="odd-btn">
+                    <div class="odd-num">5.15</div>
+                    <div class="odd-label">X</div>
+                </div>
+                <div class="odd-btn">
+                    <div class="odd-num">6.83</div>
+                    <div class="odd-label">2</div>
+                </div>
+            </div>
+            <div class="prob-bar-container">
+                <div class="prob-bar-label">Home win</div>
+                <div class="prob-track">
+                    <div class="prob-fill" style="width: 68%;"></div>
+                </div>
+                <div style="font-size: 10px; color: #8c9b90; margin-top: 3px;">68% · from odds</div>
             </div>
         </div>
     </div>
 
-    <!-- Live Match Feed with Dynamic Score Updates -->
-    <div class="matches-feed" id="matches-container">
-        <div class="match-card">
-            <div class="match-header">
-                <span>Premier League · 16:00</span>
-                <span style="color: #2ecc71;">● Live 68'</span>
-            </div>
-            <div class="match-teams">
-                <span>Arsenal vs Chelsea</span>
-                <span class="live-score">2 - 1</span>
-            </div>
-            <div class="match-prediction">
-                <span>Prediction: Over 1.5 Goals</span>
-                <span class="odds" style="background:#145a2c; color:#2ecc71; padding:2px 8px; border-radius:4px; font-weight:700;">Won ✓</span>
-            </div>
+    <div class="league-group">
+        <div class="league-header">
+            <span>France · Ligue 1</span>
+            <span style="font-size: 12px; color: #8c9b90;">1</span>
         </div>
-
-        <div class="match-card">
-            <div class="match-header">
-                <span>La Liga · 18:30</span>
-                <span style="color: #8c9b90;">Full Time</span>
+        <div class="league-match-item">
+            <div class="match-row-top">
+                <div class="match-teams-info">
+                    <span class="match-time">19:00</span>
+                    <div class="teams-name">Le Havre<br>Paris Saint-Germain</div>
+                </div>
+                <div class="match-status-badge">
+                    ?–?<br>Kicked Off
+                </div>
             </div>
-            <div class="match-teams">
-                <span>Real Madrid vs Valencia</span>
-                <span class="live-score" style="background:#1c2820; color:#b0c4de;">3 - 0</span>
+            <div class="odds-buttons-grid">
+                <div class="odd-btn">
+                    <div class="odd-num">7.50</div>
+                    <div class="odd-label">1</div>
+                </div>
+                <div class="odd-btn">
+                    <div class="odd-num">4.80</div>
+                    <div class="odd-label">X</div>
+                </div>
+                <div class="odd-btn selected">
+                    <div class="odd-num">1.42</div>
+                    <div class="odd-label">2</div>
+                </div>
             </div>
-            <div class="match-prediction">
-                <span>Prediction: Home Win (1X2)</span>
-                <span class="odds" style="background:#145a2c; color:#2ecc71; padding:2px 8px; border-radius:4px; font-weight:700;">Won ✓</span>
-            </div>
-        </div>
-
-        <div class="match-card">
-            <div class="match-header">
-                <span>Serie A · 20:45</span>
-                <span style="color: #f39c12;">Upcoming</span>
-            </div>
-            <div class="match-teams">
-                <span>AC Milan vs Inter Milan</span>
-                <span class="live-score" style="background:#1c2820; color:#8c9b90;">vs</span>
-            </div>
-            <div class="match-prediction">
-                <span>Prediction: Both Teams to Score (BTTS)</span>
-                <span class="odds">1.82</span>
+            <div class="prob-bar-container">
+                <div class="prob-bar-label" style="color: #2ecc71;">Away win</div>
+                <div class="prob-track">
+                    <div class="prob-fill" style="width: 71%; background: #2ecc71;"></div>
+                </div>
+                <div style="font-size: 10px; color: #8c9b90; margin-top: 3px;">71% · from odds</div>
             </div>
         </div>
     </div>
@@ -357,57 +408,5 @@
         <p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p>
     </footer>
 </main>
-
-<script src="api-config.js"></script>
-<script>
-    async function fetchLiveMatchesAndStats() {
-        try {
-            const endpoint = (typeof API_BASE !== 'undefined' ? API_BASE : 'https://zurepicks-backend-api.onrender.com') + '/api/matches/today';
-            const res = await fetch(endpoint);
-            if (!res.ok) return;
-            const data = await res.json();
-            const matches = data.matches || data.fixtures || data;
-            if (!Array.isArray(matches) || matches.length === 0) return;
-
-            let total = matches.length;
-            let liveCount = 0;
-            let playedCount = 0;
-            let upcomingCount = 0;
-
-            const container = document.getElementById('matches-container');
-            container.innerHTML = matches.map(m => {
-                const status = (m.status || '').toLowerCase();
-                if (status.includes('live')) liveCount++;
-                else if (status.includes('ft') || status.includes('played')) playedCount++;
-                else upcomingCount++;
-
-                return `
-                    <div class="match-card">
-                        <div class="match-header">
-                            <span>${m.league || 'League'} · ${m.time || '16:00'}</span>
-                            <span style="color: ${status.includes('live') ? '#2ecc71' : '#8c9b90'};">${m.status || 'Upcoming'}</span>
-                        </div>
-                        <div class="match-teams">
-                            <span>${m.homeTeam || m.home} vs ${m.awayTeam || m.away}</span>
-                            <span class="live-score">${m.score || 'vs'}</span>
-                        </div>
-                        <div class="match-prediction">
-                            <span>Prediction: ${m.prediction || '1X2'}</span>
-                            <span class="odds">${m.odds || '1.50'}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            document.getElementById('stat-total').textContent = total;
-            document.getElementById('stat-played').textContent = `${playedCount} · ${Math.round((playedCount/total)*100)}%`;
-            document.getElementById('stat-live').textContent = liveCount;
-            document.getElementById('stat-upcoming').textContent = upcomingCount;
-        } catch (e) {
-            // Fallback remains fully functional
-        }
-    }
-    fetchLiveMatchesAndStats();
-</script>
 </body>
 </html>
