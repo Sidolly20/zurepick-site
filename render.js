@@ -39,8 +39,8 @@ export function state(m, now = Date.now()) {
   const age = now - new Date(m.d).getTime(), sc = m.sc || [null, null];
   if (settled(m)) return { k: 'fin', big: sc[0] + '–' + sc[1], sm: m.st == 'FT' ? 'Full time' : m.st };
   if (END.includes(m.st)) return { k: 'pst', big: '–', sm: 'Postponed' };
-  if (LIVE.includes(m.st) && age < 4 * 36e5) return { k: 'live', big: (sc[0] ?? 0) + '–' + (sc[1] ?? 0), sm: m.st == 'HT' ? 'Half time' : m.el ? m.el + '′' : 'Live' };
-  if (age > 0) return { k: 'ko', big: sc[0] != null ? sc[0] + '–' + sc[1] : '?–?', sm: age > 3 * 36e5 ? 'Awaiting result' : 'Kicked off' };
+  if (LIVE.includes(m.st) && age < 175 * 6e4) { const behind = m.el && m.st != 'HT' && age / 6e4 - m.el > 38; if (behind) return { k: 'ko', big: (sc[0] ?? 0) + '–' + (sc[1] ?? 0), sm: 'Updating score' }; return { k: 'live', big: (sc[0] ?? 0) + '–' + (sc[1] ?? 0), sm: m.st == 'HT' ? 'Half time' : m.el ? m.el + '′' : 'Live' }; }
+  if (age > 0) return { k: 'ko', big: sc[0] != null ? sc[0] + '–' + sc[1] : '?–?', sm: age > 135 * 6e4 ? 'Awaiting result' : 'Kicked off' };
   return { k: 'ns', big: '–', sm: 'Not started' };
 }
 export function stats(ms, now = Date.now()) {

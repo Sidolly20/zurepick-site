@@ -68,14 +68,16 @@ if (B) {
     if (!quiet || !API) { // snapshot file (also the only source on the public site)
       let snap = null; try { const r = await fetch('data/' + date + '.json', { cache: 'no-store' }); if (r.ok) snap = await r.json(); } catch {}
       if (tok != S.tok) return;
-      if (snap || !quiet) { S.data = snap?.matches || []; paint(snap ? 'Snapshot · updated ' + fmt(snap.liveUpdated || snap.updated) : 'No data for this date yet'); }
+      if (snap || !quiet) { S.data = snap?.matches || []; S.at = snap ? Date.parse(snap.liveUpdated || snap.updated) || 0 : 0; paint(snap ? 'Snapshot · updated ' + fmt(snap.liveUpdated || snap.updated) : 'No data for this date yet'); }
     }
     if (!API) return;
+    let got = false;
     try {
       const c = new AbortController(), t = setTimeout(() => c.abort(), 9000);
       const r = await fetch(API + '/api/matches?date=' + date, { signal: c.signal, cache: 'no-store' }); clearTimeout(t);
-      if (r.ok) { const j = await r.json(); if (tok == S.tok && Array.isArray(j.matches) && j.matches.length) { const pm = new Map(S.data.filter((m) => m.pm).map((m) => [m.id, m.pm])); S.data = j.matches.map((m) => (!m.o && !m.pm && pm.has(m.id) ? { ...m, pm: pm.get(m.id) } : m)); paint('Live API · updated ' + fmt(j.liveUpdated || j.updated)); } }
+      if (r.ok) { const j = await r.json(); if (tok == S.tok && Array.isArray(j.matches) && j.matches.length) { got = true; S.at = Date.parse(j.liveUpdated || j.updated) || Date.now(); const pm = new Map(S.data.filter((m) => m.pm).map((m) => [m.id, m.pm])); S.data = j.matches.map((m) => (!m.o && !m.pm && pm.has(m.id) ? { ...m, pm: pm.get(m.id) } : m)); paint('Live API · updated ' + fmt(j.liveUpdated || j.updated)); } }
     } catch {}
+    if (!got && quiet) { let snap = null; try { const r = await fetch('data/' + date + '.json', { cache: 'no-store' }); if (r.ok) snap = await r.json(); } catch {} if (snap && tok == S.tok && Date.parse(snap.liveUpdated || snap.updated) > (S.at || 0)) { S.data = snap.matches || []; S.at = Date.parse(snap.liveUpdated || snap.updated); paint('Snapshot · updated ' + fmt(snap.liveUpdated || snap.updated)); } }
   }
   const strip = $('#days'); if (strip) strip.innerHTML = [-2, -1, 0, 1, 2, 3].map((o) => `<button type="button" class="chip" data-o="${o}" aria-pressed="${o == S.off}">${lab(o)}</button>`).join('');
   if (strip) strip.onclick = (e) => { const b = e.target.closest('[data-o]'); if (!b) return; S.off = +b.dataset.o; strip.querySelectorAll('.chip').forEach((x) => x.setAttribute('aria-pressed', x == b)); load(); };
@@ -104,7 +106,8 @@ if (B) {
   };
   // While games are live: with an API, refresh every minute; on the public site, re-read the data file every 3 minutes.
   let n = 0;
-  setInterval(() => { n++; if (LMODE || document.hidden || S.off != 0 || (!API && n % 3)) return; if (visible(S.data, S.k, { lg: S.lg }).some((m) => ['live', 'ko'].includes(state(m).k))) load(true); }, 60000);
+  setInterval(() => { n++; if (LMODE || document.hidden || S.off != 0 || (!API && n % 6)) return; if (visible(S.data, S.k, { lg: S.lg }).some((m) => ['live', 'ko'].includes(state(m).k))) load(true); }, 30000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && !LMODE && S.off == 0) load(true); });
   { const h = (B.dataset.hit || '').split('|'); S.hit = h.length == 3 ? { r: +h[0], w: +h[1], n: +h[2] } : null; }
   if (!LMODE) load(); loadPool(); setInterval(() => { if (!document.hidden) loadPool(); }, 300000);
 }
