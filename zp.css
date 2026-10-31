@@ -189,3 +189,14 @@ header nav{-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-i
 .kp>div:last-child:nth-child(3n+1){grid-column:span 3}.kp>div:last-child:nth-child(3n+2){grid-column:span 2}
 @media(max-width:720px){.hero .bn{display:none}}
 .eyebrow{white-space:normal}
+
+/* ===== round: stat grid, league logos in headers ===== */
+.kp{grid-template-columns:repeat(6,minmax(0,1fr))}.kp>div{grid-column:span 2}
+.kp>div:nth-last-child(2):nth-child(3n+1),.kp>div:last-child:nth-child(3n+2){grid-column:span 3}.kp>div:last-child:nth-child(3n+1){grid-column:span 6}
+.lg h3 img{background:#fff;padding:1px;border-radius:5px}
+
+/* contact */
+.ct{display:grid;gap:.7rem;margin:1rem 0}@media(min-width:720px){.ct{grid-template-columns:repeat(3,1fr)}}
+.ctc{display:flex;align-items:center;gap:.8rem;padding:.9rem 1rem;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;box-shadow:var(--sh);transition:transform .15s var(--ease),border-color .2s}.ctc:hover{border-color:var(--g);transform:translateY(-2px)}
+.ctc i{font-style:normal;display:grid;place-items:center;width:44px;height:44px;flex:none;border-radius:14px;font-size:1.3rem;background:linear-gradient(135deg,var(--g),#8b7bff)}
+.ctc b{display:block;font:800 1rem var(--fd);letter-spacing:-.02em}.ctc small{color:var(--mut);font-size:.8rem;overflow-wrap:anywhere}

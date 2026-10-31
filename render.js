@@ -64,6 +64,8 @@ export function row(m, k, o = {}) {
   const pkh = pk ? `<span>${esc(M.n[pk.i])}</span><i style="--w:${pk.c}%"></i><em>${pk.c}% · ${pk.model ? 'team-record model' : 'from odds'}</em>` : `<span class="mut">${od.length ? 'No strong pick' : st.k == 'ns' ? 'Odds not out yet' : 'Not tipped'}</span><i style="--w:0%"></i><em>${od.length ? 'Below our quality bar' : st.k == 'ns' ? 'Check back closer to kick-off' : 'No odds were published'}</em>`;
   return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time><div class="tm"><b>${badge(m, m.h)}<span>${esc(m.h)}</span></b><b>${badge(m, m.a)}<span>${esc(m.a)}</span></b></div><div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
 }
+const lgSrc = (m) => m.lo || CRESTS['lg:' + normName(m.cn) + ':' + normName(m.lg)] || CRESTS['lg::' + normName(m.lg)] || '';
+const lgLogo = (m) => { const s = lgSrc(m); return s ? `<img src="${esc(s)}" alt="" width="20" height="20" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''; };
 export function board(ms, k, o = {}) {
   let L = visible(ms, k, o);
   if (o.max) L = L.slice().sort((a, b) => (pick(b, k)?.c || 0) - (pick(a, k)?.c || 0)).slice(0, o.max);
@@ -72,7 +74,7 @@ export function board(ms, k, o = {}) {
   const rank = (g) => { const i = PRIO.indexOf(+g.split('|')[0]); return i < 0 ? 99 : i; };
   return Object.keys(G).sort((a, b) => rank(a) - rank(b) || G[b].length - G[a].length || a.localeCompare(b)).map((g) => {
     const [, cn, lg] = g.split('|'), x = G[g].sort((a, b) => a.d.localeCompare(b.d));
-    return `<section class="lg"><h3>${x[0].lo ? `<img src="${esc(x[0].lo)}" alt="" width="20" height="20" loading="lazy">` : ''}<span>${esc(cn)} · ${esc(lg)}</span><em>${x.length}</em></h3>${x.map((m) => row(m, k)).join('')}</section>`;
+    return `<section class="lg"><h3>${lgLogo(x[0])}<span>${esc(cn)} · ${esc(lg)}</span><em>${x.length}</em></h3>${x.map((m) => row(m, k)).join('')}</section>`;
   }).join('');
 }
 export function topCards(ms, n = 6) {

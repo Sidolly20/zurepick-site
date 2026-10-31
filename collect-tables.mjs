@@ -4,13 +4,21 @@ try { await import('./env.mjs'); } catch {}
 import fs from 'node:fs';
 const env = (k, d) => process.env[k] ?? d, BASE = () => env('FOOTBALL_DATA_BASE', 'https://api.football-data.org/v4');
 const COMPS = { 'premier-league': ['PL', 'Premier League'], 'la-liga': ['PD', 'La Liga'], 'serie-a': ['SA', 'Serie A'], bundesliga: ['BL1', 'Bundesliga'], 'ligue-1': ['FL1', 'Ligue 1'], 'champions-league': ['CL', 'UEFA Champions League'], championship: ['ELC', 'Championship'], eredivisie: ['DED', 'Eredivisie'], 'primeira-liga': ['PPL', 'Primeira Liga'] };
+const nn = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+const LGKEY = { 'premier-league': ['england', ['Premier League']], 'la-liga': ['spain', ['La Liga', 'LaLiga']], 'serie-a': ['italy', ['Serie A']], bundesliga: ['germany', ['Bundesliga']], 'ligue-1': ['france', ['Ligue 1']], 'champions-league': ['', ['UEFA Champions League', 'Champions League']], championship: ['england', ['Championship', 'EFL Championship']], eredivisie: ['netherlands', ['Eredivisie']], 'primeira-liga': ['portugal', ['Primeira Liga', 'Liga Portugal Betclic', 'Liga Portugal']] };
+function writeCrests(tables) {
+  const crests = {};
+  for (const t of Object.values(tables)) for (const r of t.rows || []) if (r.crest) { crests[teamKey(r.full || r.team)] = r.crest; crests[teamKey(r.team)] = r.crest; }
+  for (const [slug, [cn, names]] of Object.entries(LGKEY)) { const src = tables[slug]?.emblem || `https://crests.football-data.org/${COMPS[slug][0]}.png`; for (const n of names) crests[`lg:${nn(cn)}:${nn(n)}`] = src; }
+  fs.mkdirSync('data', { recursive: true }); fs.writeFileSync('data/crests.json', JSON.stringify(crests));
+}
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const F = 'data/tables.json';
 if (!env('FOOTBALL_DATA_KEY')) { console.log('Tables: no FOOTBALL_DATA_KEY, skipped'); process.exit(0); }
 let old = { t: 0, tables: {} }; try { old = JSON.parse(fs.readFileSync(F, 'utf8')); } catch {}
 const need = (slug) => { const t = old.tables[slug]; return !t || !t.emblem || !t.rows?.[0]?.crest || !t.rows?.[0]?.full || Date.now() - Date.parse(t.updated || 0) > 3 * 36e5; };
 const todo = Object.keys(COMPS).filter(need);
-if (!todo.length && !process.env.FORCE) { console.log('Tables: all fresh, skipped'); process.exit(0); }
+if (!todo.length && !process.env.FORCE) { writeCrests(old.tables); console.log('Tables: all fresh, skipped'); process.exit(0); }
 fs.mkdirSync('data', { recursive: true });
 const tables = { ...old.tables }; let ok = 0, failed = 0;
 for (const [slug, [code, name]] of Object.entries(COMPS)) {
@@ -29,6 +37,5 @@ for (const [slug, [code, name]] of Object.entries(COMPS)) {
   await sleep(+env('TABLES_PAUSE_MS', 6500)); // free plan: 10 calls per minute
 }
 fs.writeFileSync(F, JSON.stringify({ t: ok ? Date.now() : old.t, tables }));
-const crests = {}; for (const t of Object.values(tables)) for (const r of t.rows || []) if (r.crest) { crests[teamKey(r.full || r.team)] = r.crest; crests[teamKey(r.team)] = r.crest; }
-fs.writeFileSync('data/crests.json', JSON.stringify(crests));
+writeCrests(tables);
 console.log(`Tables: ${ok} updated, ${failed} failed`);

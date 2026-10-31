@@ -42,7 +42,8 @@ if (B) {
     mark();
   }
   // The combo slips use upcoming games from today, tomorrow and the day after, whichever day is selected below.
-  function paintTop() { const t = $('#top'); if (!t || !S.pool) return; const h = comboHtml(S.pool); if (h !== S.lastTop) { S.lastTop = h; t.innerHTML = h; } }
+  const dayK = (t) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(t), forDay = (p, off) => p.filter((m) => dayK(Date.parse(m.d)) === dayK(Date.now() + off * 864e5));
+  function paintTop() { const t = $('#top'); if (!t || !S.pool) return; const h = comboHtml(forDay(S.pool, +(t.dataset.off || 0))); if (h !== S.lastTop) { S.lastTop = h; t.innerHTML = h; } }
   async function loadPool() {
     let all = [];
     for (const d of (LMODE ? [-3, -2, -1, 0, 1, 2, 3] : [0, 1, 2]).map(day)) {
@@ -92,7 +93,7 @@ if (B) {
   };
   // "Add games to slip" on a combo: adds every game of that combo (one pick per game)
   const top = $('#top'); if (top) top.onclick = (e) => {
-    const b = e.target.closest('.cb'); if (!b) return; const c = combos(S.pool || S.data).find((x) => x.target == b.dataset.t); if (!c) return;
+    const b = e.target.closest('.cb'); if (!b) return; const c = combos(forDay(S.pool || S.data, +(($('#top') || {}).dataset?.off || 0))).find((x) => x.target == b.dataset.t); if (!c) return;
     for (const x of c.legs) { const at = slip.findIndex((s) => s.id == x.m.id); if (at >= 0) slip.splice(at, 1); slip.push({ id: x.m.id, h: x.m.h, a: x.m.a, k: x.k, i: x.i, od: x.od, n: MK[x.k].n[x.i] }); }
     save(); mark(); b.textContent = 'Added ✓'; setTimeout(() => paint(), 1200);
   };
