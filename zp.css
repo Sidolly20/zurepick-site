@@ -99,3 +99,17 @@ footer{border-top:1px solid var(--line);margin-top:2.5rem}
 :focus-visible{outline:2.5px solid var(--g);outline-offset:3px;border-radius:8px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media(max-width:640px){.hero::after{display:none}.cta .btn{flex:1 1 100%;text-align:center}}
+
+/* league tables, logos */
+.lgo{width:36px;height:36px;object-fit:contain;vertical-align:-9px;margin-right:.35rem;background:#fff;border-radius:10px;padding:3px}.lgo.big{width:48px;height:48px;vertical-align:-12px;border-radius:14px}.grid a .lgo{width:28px;height:28px;vertical-align:-8px}
+.tb .sc{border:1px solid var(--line);border-radius:20px;background:var(--card);box-shadow:var(--sh);overflow:auto}
+.st{font-variant-numeric:tabular-nums}.st thead th{background:var(--card);font-size:.7rem;text-transform:none;letter-spacing:0;color:var(--mut);padding:.7rem .5rem}
+.st td{padding:.55rem .5rem;border-bottom:1px solid var(--line)}.st tbody tr:last-child td{border-bottom:0}.st tbody tr{transition:background .15s}.st tbody tr:hover{background:var(--pk)}
+.st td:first-child{width:2.6rem;text-align:center;font-weight:800;color:var(--mut);box-shadow:inset 4px 0 0 transparent}
+.st tr.up td:first-child{box-shadow:inset 4px 0 0 var(--g);color:var(--g)}.st tr.po td:first-child{box-shadow:inset 4px 0 0 var(--pu);color:var(--pu)}.st tr.dn td:first-child{box-shadow:inset 4px 0 0 var(--no);color:var(--no)}
+.tm{display:flex;align-items:center;gap:.6rem;font-weight:700}.tm>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:15ch}
+.cr{width:24px;height:24px;object-fit:contain;flex:none;background:#fff;border-radius:7px;padding:2px}.cr.ph{display:grid;place-items:center;font:800 .56rem ui-sans-serif,system-ui;font-style:normal;color:#0e1a14}
+.st td:last-child b{display:inline-block;min-width:2rem;text-align:center;padding:.15rem .5rem;border-radius:999px;background:var(--pk);color:var(--g);font-size:.95rem}
+.gp{color:var(--g)}.gn{color:var(--no)}
+.zk{display:flex;flex-wrap:wrap;gap:.5rem 1rem;font-size:.78rem;color:var(--mut);margin:.7rem 0 .2rem}.z::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:.4rem;background:var(--g)}.z.po::before{background:var(--pu)}.z.dn::before{background:var(--no)}
+@media(max-width:560px){.st th:nth-child(7),.st td:nth-child(7),.st th:nth-child(8),.st td:nth-child(8){display:none}.tm>span{max-width:11ch}}

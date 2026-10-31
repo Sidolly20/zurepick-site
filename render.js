@@ -155,8 +155,13 @@ export function fixturesByDay(ms, k, match, o = {}) {
     return `<section class="lg"><h3><span>${esc(lead)} · ${esc(nice)}</span><em>${G[d].length}</em></h3>${G[d].map((m) => row(m, k, { bar: true })).join('')}</section>`;
   }).join('');
 }
-export function standingsHtml(t, name) {
+export function standingsHtml(t, name, cup = false) {
   if (!t || !t.rows || !t.rows.length) return '';
   const when = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(t.updated));
-  return `<div class="prose"><h2>${esc(name)} table${t.season ? ' ' + esc(t.season) : ''}</h2><div class="sc"><table class="st"><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>${t.rows.map((x) => `<tr><td>${x.pos}</td><td>${esc(x.team)}</td><td>${x.p}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf}</td><td>${x.ga}</td><td>${x.gd > 0 ? '+' : ''}${x.gd}</td><td><b>${x.pts}</b></td></tr>`).join('')}</tbody></table></div><p class="mut">Table updated ${when} WAT · Source: football-data.org</p></div>`;
+  const n = t.rows.length, down = cup ? 0 : n >= 20 ? 3 : n >= 14 ? 2 : 1;
+  const zone = (x) => (cup ? (x.pos <= 8 ? 'up' : x.pos <= 24 ? 'po' : '') : x.pos <= 4 ? 'up' : x.pos > n - down ? 'dn' : '');
+  const crest = (x) => (x.crest ? `<img class="cr" src="${esc(x.crest)}" alt="" width="24" height="24" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML='<i class=\\'cr ph\\'>${esc((x.tla || x.team).slice(0, 3))}</i>'">` : `<i class="cr ph">${esc((x.tla || x.team).slice(0, 3))}</i>`);
+  const logo = t.emblem ? `<img class="lgo" src="${esc(t.emblem)}" alt="${esc(name)} logo" width="36" height="36" referrerpolicy="no-referrer"> ` : '';
+  const key = cup ? '<span class="z up">Top 8: straight to the last 16</span><span class="z po">9th to 24th: knockout play-off</span>' : '<span class="z up">Top four</span>' + (down ? '<span class="z dn">Relegation zone</span>' : '');
+  return `<div class="prose tb"><h2>${logo}${esc(name)} table${t.season ? ' ' + esc(t.season) : ''}</h2><div class="sc"><table class="st"><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>${t.rows.map((x) => `<tr class="${zone(x)}"><td>${x.pos}</td><td><span class="tm">${crest(x)}<span>${esc(x.team)}</span></span></td><td>${x.p}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf}</td><td>${x.ga}</td><td class="${x.gd > 0 ? 'gp' : x.gd < 0 ? 'gn' : ''}">${x.gd > 0 ? '+' : ''}${x.gd}</td><td><b>${x.pts}</b></td></tr>`).join('')}</tbody></table></div><p class="zk">${key}</p><p class="mut">Updated ${when} WAT · Data and club badges from football-data.org; badges belong to their clubs.</p></div>`;
 }
