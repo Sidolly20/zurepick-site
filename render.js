@@ -51,6 +51,9 @@ export function statsHtml(ms, hit, label = 'Picks today') {
   const s = stats(ms), p = (x) => (s.n ? Math.round((x / s.n) * 100) : 0);
   return `<div><b>${s.n || '–'}</b><span>${label}</span></div><div><b>${s.done}</b><span>Played · ${s.pct}%</span></div><div class="lv"><b>${s.live}</b><span>Live now</span></div>${s.wait ? `<div><b>${s.wait}</b><span>Awaiting score</span></div>` : ''}<div><b>${s.left}</b><span>Not started · ${p(s.left)}%</span></div>${hit && hit.n ? `<div><b>${hit.r}%</b><span>Won ${hit.w} of ${hit.n} · 30 days</span></div>` : ''}`;
 }
+import { teamKey } from './teams.js';
+export let CRESTS = {}; export const setCrests = (c) => { CRESTS = c || {}; };
+const badge = (m, name) => { const ch = CRESTS[teamKey(m.h)], ca = CRESTS[teamKey(m.a)], c = CRESTS[teamKey(name)]; return !ch && !ca ? '' : c ? `<img class="bd" src="${esc(c)}" alt="" width="18" height="18" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">` : '<i class="bd"></i>'; };
 export function row(m, k, o = {}) {
   let pk = pick(m, k); if (o.bar && pk && pk.c < (MIN[k] ?? 60)) pk = null; // league pages list every game but only show picks that clear the quality bar
   const M = MK[k], od = m[k] || [], st = state(m);
@@ -59,7 +62,7 @@ export function row(m, k, o = {}) {
     ? `<button type="button" class="oc${pk && pk.i == i ? ' pick' : ''}" data-id="${m.id}" data-i="${i}" data-od="${x}" aria-label="${esc(M.n[i])} at ${x}"><small>${M.s[i]}</small>${Number(x).toFixed(2)}</button>`
     : `<span class="oc nil"><small>${M.s[i]}</small>–</span>`).join('');
   const pkh = pk ? `<span>${esc(M.n[pk.i])}</span><i style="--w:${pk.c}%"></i><em>${pk.c}% · ${pk.model ? 'team-record model' : 'from odds'}</em>` : `<span class="mut">${od.length ? 'No strong pick' : st.k == 'ns' ? 'Odds not out yet' : 'Not tipped'}</span><i style="--w:0%"></i><em>${od.length ? 'Below our quality bar' : st.k == 'ns' ? 'Check back closer to kick-off' : 'No odds were published'}</em>`;
-  return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time><div class="tm"><b>${esc(m.h)}</b><b>${esc(m.a)}</b></div><div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
+  return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time><div class="tm"><b>${badge(m, m.h)}<span>${esc(m.h)}</span></b><b>${badge(m, m.a)}<span>${esc(m.a)}</span></b></div><div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
 }
 export function board(ms, k, o = {}) {
   let L = visible(ms, k, o);
@@ -127,12 +130,12 @@ export function combos(ms, now = Date.now()) {
   }
   return out;
 }
-export function comboHtml(ms, now = Date.now()) {
+export function comboHtml(ms, now = Date.now(), opt = {}) {
   const day = (t) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(t), today = day(now), tomorrow = day(now + 864e5);
   const tag = (m) => { const d = day(Date.parse(m.d)); return d == today ? '' : d == tomorrow ? 'Tmrw' : new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'short', day: 'numeric' }).format(Date.parse(m.d)); };
-  return combos(ms, now).map((c) => !c.legs.length
-    ? `<div class="cbx empty"><div class="ch"><span>${c.target} odds</span><b>–</b></div><p>Today’s slips are being prepared. They appear as soon as games and odds are published.</p></div>`
-    : `<div class="cbx"><div class="ch"><span>${c.short ? 'Best available' : c.target + '+ odds'}</span><b>${c.od.toFixed(2)}</b></div><div class="cm">${c.legs.length} games · ${c.chance}% combined chance${c.minC < 65 ? ' · includes picks from ' + c.minC + '%' : ''}</div>${c.legs.map((x) => `<div class="cl"><time>${tag(x.m) ? `<small>${tag(x.m)}</small>` : ''}${hm(x.m.d)}</time><div><b>${esc(x.m.h)} v ${esc(x.m.a)}</b><small>${esc(x.m.lg)}</small></div><span class="tag">${esc(MK[x.k].n[x.i])}</span><span class="mono">${x.od.toFixed(2)}</span></div>`).join('')}<button type="button" class="cb" data-t="${c.target}">Add ${c.legs.length} games to slip</button></div>`).join('');
+  return combos(ms, now).filter((c) => !opt.only || c.target === opt.only).map((c) => !c.legs.length
+    ? `<div class="cbx empty"><div class="ch"><span>${c.target} odds</span><b>–</b></div><p>${opt.when || 'Today’s'} slip is still being prepared. It appears as soon as enough games and odds are published, so check back soon.</p></div>`
+    : `<div class="cbx"><div class="ch"><span>${c.short ? 'Best available' : c.target + '+ odds'}</span><b>${c.od.toFixed(2)}</b></div><div class="cm">${c.legs.length} games · ${c.chance}% combined chance${c.minC < 65 ? ' · includes picks from ' + c.minC + '%' : ''}</div>${c.legs.map((x) => `<div class="cl"><time>${tag(x.m) ? `<small>${tag(x.m)}</small>` : ''}${hm(x.m.d)}</time><div><b>${esc(x.m.h)} v ${esc(x.m.a)}</b><small>${esc(x.m.lg)}</small></div><span class="tag">${esc(MK[x.k].n[x.i])}</span><span class="mono">${x.od.toFixed(2)}</span></div>`).join('')}${opt.share ? `<a class="cb" href="https://wa.me/?text=${encodeURIComponent(c.target + ' odds slip (' + c.od.toFixed(2) + ')\n' + c.legs.map((x) => x.m.h + ' v ' + x.m.a + ' – ' + MK[x.k].n[x.i] + ' @' + x.od.toFixed(2)).join('\n') + '\nhttps://sidolly20.github.io/zurepick-site/')}" target="_blank" rel="noopener">Share this slip on WhatsApp</a>` : `<button type="button" class="cb" data-t="${c.target}">Add ${c.legs.length} games to slip</button>`}</div>`).join('');
 }
 
 // ---- League pages: all fixtures of one league for the next days, grouped by day (with or without a pick) ----
@@ -163,5 +166,5 @@ export function standingsHtml(t, name, cup = false) {
   const crest = (x) => (x.crest ? `<img class="cr" src="${esc(x.crest)}" alt="" width="24" height="24" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML='<i class=\\'cr ph\\'>${esc((x.tla || x.team).slice(0, 3))}</i>'">` : `<i class="cr ph">${esc((x.tla || x.team).slice(0, 3))}</i>`);
   const logo = t.emblem ? `<img class="lgo" src="${esc(t.emblem)}" alt="${esc(name)} logo" width="36" height="36" referrerpolicy="no-referrer"> ` : '';
   const key = cup ? '<span class="z up">Top 8: straight to the last 16</span><span class="z po">9th to 24th: knockout play-off</span>' : '<span class="z up">Top four</span>' + (down ? '<span class="z dn">Relegation zone</span>' : '');
-  return `<div class="prose tb"><h2>${logo}${esc(name)} table${t.season ? ' ' + esc(t.season) : ''}</h2><div class="sc"><table class="st"><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>${t.rows.map((x) => `<tr class="${zone(x)}"><td>${x.pos}</td><td><span class="tm">${crest(x)}<span>${esc(x.team)}</span></span></td><td>${x.p}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf}</td><td>${x.ga}</td><td class="${x.gd > 0 ? 'gp' : x.gd < 0 ? 'gn' : ''}">${x.gd > 0 ? '+' : ''}${x.gd}</td><td><b>${x.pts}</b></td></tr>`).join('')}</tbody></table></div><p class="zk">${key}</p><p class="mut">Updated ${when} WAT · Data and club badges from football-data.org; badges belong to their clubs.</p></div>`;
+  return `<div class="prose tb"><h2>${logo}${esc(name)} table${t.season ? ' ' + esc(t.season) : ''}</h2><div class="sc"><table class="st"><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>${t.rows.map((x) => `<tr class="${zone(x)}"><td>${x.pos}</td><td><span class="tt">${crest(x)}<span>${esc(x.team)}</span></span></td><td>${x.p}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf}</td><td>${x.ga}</td><td class="${x.gd > 0 ? 'gp' : x.gd < 0 ? 'gn' : ''}">${x.gd > 0 ? '+' : ''}${x.gd}</td><td><b>${x.pts}</b></td></tr>`).join('')}</tbody></table></div><p class="zk">${key}</p><p class="mut">Updated ${when} WAT · Data and club badges from football-data.org; badges belong to their clubs.</p></div>`;
 }

@@ -1,4 +1,5 @@
-import { MK, TZ, board, comboHtml, combos, statsHtml, state, visible, fixturesByDay, leagueTest } from './render.js';
+import { setCrests, MK, TZ, board, comboHtml, combos, statsHtml, state, visible, fixturesByDay, leagueTest } from './render.js';
+try { setCrests(await (await fetch('data/crests.json')).json()); } catch {}
 const $ = (s) => document.querySelector(s), B = $('#board');
 if (B) {
   const S = { k: B.dataset.mk || 'o', off: +(B.dataset.off || 0), lg: +(B.dataset.lg || 0), q: '', min: '', data: [], tok: 0, hit: null };
