@@ -177,3 +177,15 @@ header nav{-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-i
 .oc.pick small{color:var(--g);font-weight:800}
 .dots{display:inline-flex;gap:3px;margin-right:.4rem;vertical-align:middle}.dots i{width:6px;height:6px;border-radius:50%;background:var(--g);animation:zpBounce 1s infinite ease-in-out}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
 @keyframes zpBounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-4px);opacity:1}}
+
+/* ===== polish: logos by table, calmer AI glow, tidy stats, no pitch on phones ===== */
+.lgo.ph,.cr.ph{display:inline-grid;place-items:center;font:800 .62rem var(--fd);font-style:normal;color:#04120b;background:linear-gradient(135deg,var(--g),#8b7bff);border-radius:10px;letter-spacing:-.02em}
+.lgo.ph{width:36px;height:36px;vertical-align:-9px;margin-right:.35rem}.lgo.big.ph{width:48px;height:48px;font-size:.8rem;border-radius:14px;vertical-align:-12px}
+.th{display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;border-bottom:1px solid var(--line);background:linear-gradient(90deg,color-mix(in srgb,var(--g) 10%,transparent),transparent)}
+.th .lgo{margin:0;vertical-align:0;flex:none}.th b{font:800 1.05rem var(--fd);letter-spacing:-.02em;display:block}.th small{color:var(--mut);font-size:.78rem}
+.spark{animation:zpPop 2.4s ease-in-out infinite;box-shadow:0 0 16px color-mix(in srgb,var(--g) 45%,transparent)}
+@keyframes zpPop{50%{transform:scale(1.07)}}
+.kp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem}.kp>div{min-width:0}
+.kp>div:last-child:nth-child(3n+1){grid-column:span 3}.kp>div:last-child:nth-child(3n+2){grid-column:span 2}
+@media(max-width:720px){.hero .bn{display:none}}
+.eyebrow{white-space:normal}
