@@ -24,6 +24,11 @@ jobs:
       # Free results feed for the team-record model (refreshes itself at most every 12 hours).
       - run: node collect-results.mjs
         continue-on-error: true
+      # League tables (free football-data.org key; skipped quietly if the key is missing).
+      - run: node collect-tables.mjs
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
       # Pages are built separately so a problem here can never block the data update.
       - run: node build-pages.mjs
         continue-on-error: true
