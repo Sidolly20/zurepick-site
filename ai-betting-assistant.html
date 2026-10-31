@@ -1,343 +1,68 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-    <title>AI Betting Assistant &amp; Banker Predictions – ZurePicks</title>
-    <meta name="description" content="Chat with the ZurePicks AI Betting Assistant. Get personalized football predictions, expert banker tips, 2 odds, and 3 odds slips tailored instantly.">
-    <link rel="canonical" href="https://sidolly20.github.io/zurepick-site/ai-betting-assistant.html">
-    <meta name="robots" content="index,follow,max-image-preview:large">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="zp.css">
-    <style>
-        :root {
-            --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-        body, input, button, select, textarea {
-            font-family: var(--font-family) !important;
-        }
-        h1, h2, h3, h4, h5, h6 {
-            font-family: var(--font-family) !important;
-            letter-spacing: -0.02em;
-        }
-        header .w {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: nowrap;
-            gap: 12px;
-            padding-top: 12px;
-            padding-bottom: 12px;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-        .ai-banker-btn {
-            background: #145a2c;
-            color: #2ecc71;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            text-decoration: none;
-            font-size: 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid #1f8b4c;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        header nav {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            overflow-x: auto;
-            white-space: nowrap;
-            scrollbar-width: none;
-        }
-        header nav::-webkit-scrollbar {
-            display: none;
-        }
-        header nav a {
-            font-weight: 500;
-            font-size: 14px;
-            color: #b0c4de;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        header nav a:hover, header nav a[aria-current="page"] {
-            color: #2ecc71;
-        }
-        .ai-container {
-            max-width: 800px;
-            margin: 20px auto;
-            background: #121814;
-            border: 1px solid #1f2c22;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            height: 75vh;
-            min-height: 500px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-        }
-        .ai-chat-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid #1f2c22;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #18221b;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-        }
-        .ai-chat-header h2 {
-            font-size: 16px;
-            margin: 0;
-            color: #2ecc71;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .ai-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            scroll-behavior: smooth;
-        }
-        .msg {
-            max-width: 85%;
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-size: 14px;
-            line-height: 1.5;
-            white-space: pre-line;
-        }
-        .msg.user {
-            background: #145a2c;
-            color: #fff;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
-        .msg.assistant {
-            background: #1c2820;
-            color: #e0e0e0;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-            border: 1px solid #28382c;
-        }
-        .ai-input-area {
-            padding: 16px;
-            border-top: 1px solid #1f2c22;
-            background: #18221b;
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
-            display: flex;
-            gap: 10px;
-        }
-        .ai-input-area input {
-            flex: 1;
-            background: #0d1310;
-            border: 1px solid #28382c;
-            border-radius: 8px;
-            padding: 12px 16px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-        }
-        .ai-input-area input:focus {
-            border-color: #2ecc71;
-        }
-        .ai-input-area button {
-            background: #2ecc71;
-            color: #0b140e;
-            border: none;
-            border-radius: 8px;
-            padding: 0 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .ai-input-area button:hover {
-            background: #27ae60;
-        }
-        .quick-prompts {
-            display: flex;
-            gap: 8px;
-            padding: 0 20px 12px 20px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-        .quick-prompts::-webkit-scrollbar {
-            display: none;
-        }
-        .qp-chip {
-            background: #1c2820;
-            border: 1px solid #28382c;
-            color: #2ecc71;
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: background 0.2s;
-        }
-        .qp-chip:hover {
-            background: #24382a;
-        }
-    </style>
-</head>
-<body>
-<header>
-    <div class="w">
-        <div class="header-left">
-            <a class="logo" href="index.html" style="font-weight: 800; letter-spacing: -0.03em;"><i>Z</i>ZurePicks</a>
-            <a href="ai-betting-assistant.html" class="ai-banker-btn" aria-current="page">🤖 AI Banker</a>
-        </div>
-        <nav aria-label="Main">
-            <a href="index.html">Today</a>
-            <a href="football-predictions-tomorrow.html">Tomorrow</a>
-            <a href="1x2-predictions.html">1X2</a>
-            <a href="over-2-5-goals-predictions.html">Goals</a>
-            <a href="btts-predictions.html">BTTS</a>
-            <a href="leagues.html">Leagues</a>
-            <a href="track-record.html">Track record</a>
-        </nav>
-        <span class="age" style="flex-shrink: 0; font-weight: 700; background: #1c2820; padding: 4px 8px; border-radius: 6px; font-size: 12px; color: #2ecc71;">18+</span>
-    </div>
-</header>
-
-<main class="w">
-    <p class="crumbs" style="font-size: 13px; color: #8c9b90; margin: 12px 0;"><a href="index.html" style="color: #b0c4de; text-decoration: none;">Home</a> › AI Betting Assistant</p>
-    
-    <div style="text-align: center; margin-bottom: 20px;">
-        <h1 style="font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 6px;">ZurePicks AI Betting Assistant</h1>
-        <p class="mut" style="font-size: 13px; color: #a0aec0;">Ask for expert banker tips, custom odds slips, or match analysis powered by live data.</p>
-    </div>
-
-    <div class="ai-container">
-        <div class="ai-chat-header">
-            <h2><span>🤖</span> AI Banker Assistant</h2>
-            <span class="mut" style="font-size: 12px; color: #2ecc71;">Online &amp; Ready</span>
-        </div>
-        
-        <div class="ai-messages" id="ai-messages">
-            <div class="msg assistant">
-                Hello! I'm your ZurePicks AI Banker. Want a solid 2 odds slip, a 3 odds accumulator, or specific match analysis for today's games? Just ask or tap a quick prompt below!
-            </div>
-        </div>
-
-        <div class="quick-prompts">
-            <button type="button" class="qp-chip" onclick="sendPrompt('Give me a solid 2 odds slip for today')">🎯 2 Odds Slip</button>
-            <button type="button" class="qp-chip" onclick="sendPrompt('Give me a 3 odds accumulator')">🔥 3 Odds Slip</button>
-            <button type="button" class="qp-chip" onclick="sendPrompt('Give me the best BTTS picks today')">⚽ Best BTTS Tips</button>
-            <button type="button" class="qp-chip" onclick="sendPrompt('What are the safest Over 1.5 goals picks?')">⚡ Over 1.5 Tips</button>
-        </div>
-
-        <form class="ai-input-area" id="ai-form" onsubmit="handleChatSubmit(event)">
-            <input type="text" id="ai-input" placeholder="Ask for predictions, odds, or strategy..." autocomplete="off">
-            <button type="submit">Send</button>
-        </form>
-    </div>
-
-    <footer>
-        <div class="fg">
-            <div><b>Predictions</b><a href="index.html">Predictions today</a><a href="ai-betting-assistant.html">AI Betting Assistant</a><a href="football-predictions-tomorrow.html">Predictions tomorrow</a></div>
-            <div><b>Markets</b><a href="1x2-predictions.html">1X2 Predictions</a><a href="btts-predictions.html">Both Teams to Score Predictions</a></div>
-            <div><b>About</b><a href="about.html">About ZurePicks</a><a href="track-record.html">Track record</a><a href="responsible-gambling.html">Responsible gambling</a></div>
-        </div>
-        <p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p>
-    </footer>
-</main>
-
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AI Betting Assistant – Free AI Football Picks, 2 &amp; 3 Odds</title>
+<meta name="description" content="Free AI betting assistant that builds 2 odds and 3 odds football slips for today or tomorrow from live bookmaker odds. No sign-up. Shuffle for fresh picks.">
+<meta name="keywords" content="AI betting assistant, AI football predictions, AI betting tips today, automated football picks, AI accumulator generator, 2 odds today, 3 odds tomorrow, free AI sports picks">
+<link rel="canonical" href="https://sidolly20.github.io/zurepick-site/ai-betting-assistant.html"><meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:title" content="AI Betting Assistant – Free 2 &amp; 3 Odds Football Picks"><meta property="og:description" content="Tap once for an AI-built 2 odds or 3 odds slip for today or tomorrow. Free, no sign-up."><meta property="og:type" content="website"><meta property="og:url" content="https://sidolly20.github.io/zurepick-site/ai-betting-assistant.html"><meta property="og:site_name" content="ZurePicks"><meta name="twitter:card" content="summary"><meta name="theme-color" content="#0b8a52">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b8a52'/%3E%3Cpath d='M9 10h14l-10 12h10' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="zp.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"ZurePicks AI Betting Assistant","url":"https://sidolly20.github.io/zurepick-site/ai-betting-assistant.html","applicationCategory":"SportsApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Builds 2 odds and 3 odds football slips for today or tomorrow from live bookmaker odds."}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://sidolly20.github.io/zurepick-site/"},{"@type":"ListItem","position":2,"name":"AI Betting Assistant","item":"https://sidolly20.github.io/zurepick-site/ai-betting-assistant.html"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does the AI betting assistant pick games?","acceptedAnswer":{"@type":"Answer","text":"It reads live bookmaker odds, removes the bookmaker margin to get each outcome’s implied chance, keeps only strong picks, then tries many combinations to land on about 2 or 3 total odds with the highest combined chance."}},{"@type":"Question","name":"Is the AI football picker accurate?","acceptedAnswer":{"@type":"Answer","text":"No tipster can promise wins. The assistant only uses picks the market rates at 60% or more (75% for double chance and over 1.5), and every result is published on the track record page so you can judge for yourself."}},{"@type":"Question","name":"Will today’s slip include tomorrow’s games?","acceptedAnswer":{"@type":"Answer","text":"No. Pick Today or Tomorrow first and the assistant only uses games that kick off on that day and have not started."}},{"@type":"Question","name":"Is the AI betting assistant free?","acceptedAnswer":{"@type":"Answer","text":"Yes. It is free and needs no sign-up. Use the Shuffle button as often as you like for a different 2 odds or 3 odds slip."}}]}</script>
+<style>
+.aib{border:1px solid var(--line);border-radius:24px;background:var(--card);box-shadow:var(--sh);overflow:hidden}
+.aih{display:flex;align-items:center;gap:.6rem;padding:.8rem 1rem;border-bottom:1px solid var(--line);font-weight:800}.aih i{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--g),var(--pu));color:var(--gi);display:grid;place-items:center;font-style:normal;font-size:.9rem}.aih span{margin-left:auto;font-size:.76rem;font-weight:600;color:var(--g)}
+#msgs{display:flex;flex-direction:column;gap:.7rem;padding:1rem;min-height:230px;max-height:62vh;overflow-y:auto}
+.msg{max-width:92%;padding:.7rem .9rem;border-radius:18px;line-height:1.5;font-size:.93rem}.msg.a{background:var(--bg);border:1px solid var(--line);border-bottom-left-radius:6px;align-self:flex-start}.msg.u{background:var(--g);color:var(--gi);font-weight:600;border-bottom-right-radius:6px;align-self:flex-end}
+.slip{display:grid;gap:.5rem;margin-top:.5rem}.sh{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;font-weight:800}.sh b{font-size:1.7rem;letter-spacing:-.04em;color:var(--g)}
+.leg{display:grid;grid-template-columns:44px 1fr auto;gap:.6rem;align-items:center;padding:.5rem .6rem;border:1px solid var(--line);border-radius:14px;background:var(--card);font-size:.88rem}.leg time{font-variant-numeric:tabular-nums;color:var(--mut);font-size:.8rem}.leg small{display:block;color:var(--mut)}.leg strong{color:var(--g);font-variant-numeric:tabular-nums}.leg em{font-style:normal;font-weight:700}
+.sf{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;font-size:.8rem;color:var(--mut)}.sf button,.ctl button,.ask button{font:inherit;cursor:pointer}.sf button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:.35rem .8rem;font-weight:600}
+.ctl{padding:.9rem 1rem 1rem;border-top:1px solid var(--line);display:grid;gap:.7rem}.seg{display:grid;grid-template-columns:1fr 1fr;gap:.3rem;padding:.25rem;border-radius:999px;background:var(--bg);border:1px solid var(--line)}.seg button{border:0;background:transparent;color:var(--ink);border-radius:999px;padding:.55rem;font-weight:700}.seg button[aria-pressed=true]{background:var(--g);color:var(--gi)}.seg small{display:block;font-weight:500;font-size:.7rem;opacity:.8}
+.go{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}.go button{border:0;border-radius:18px;padding:.95rem .5rem;font-weight:900;font-size:1.15rem;color:var(--gi);background:var(--g);transition:transform .15s,box-shadow .2s;box-shadow:0 12px 26px -14px var(--g)}.go button:last-child{background:var(--pu);color:#fff;box-shadow:0 12px 26px -14px var(--pu)}.go button:active{transform:scale(.97)}.go small{display:block;font-weight:600;font-size:.72rem;opacity:.85}
+.ask{display:flex;gap:.5rem}.ask input{flex:1;font:inherit;padding:.6rem .9rem;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}.ask button{border:0;border-radius:999px;padding:.6rem 1.1rem;background:var(--ink);color:var(--bg);font-weight:700}
+</style></head><body>
+<header><div class="w"><a class="logo" href="index.html"><i>Z</i>ZurePicks</a><nav aria-label="Main"><a href="index.html">Today</a><a href="football-predictions-tomorrow.html">Tomorrow</a><a href="1x2-predictions.html">1X2</a><a href="over-2-5-goals-predictions.html">Goals</a><a href="btts-predictions.html">BTTS</a><a href="ai-betting-assistant.html" aria-current="page">AI Picker</a><a href="leagues.html">Leagues</a><a href="track-record.html">Track record</a></nav><span class="age">18+</span></div></header>
+<main class="w"><p class="crumbs"><a href="index.html">Home</a> › AI Betting Assistant</p>
+<section class="hero"><div class="ht"><p class="eyebrow">Free · No sign-up · Built from live bookmaker odds</p><h1>AI betting assistant: free football picks for 2 odds and 3 odds</h1><p class="lead">Choose today or tomorrow, tap 2 odds or 3 odds, and the AI builds a slip from that day’s games only. Not happy with it? Shuffle for a fresh combination.</p></div></section>
+<div class="aib" style="margin-top:1rem"><div class="aih"><i>AI</i>ZurePicks AI Picker<span>Online</span></div>
+<div id="msgs" role="log" aria-live="polite"><div class="msg a">Hi! Pick <b>Today</b> or <b>Tomorrow</b> below, then tap <b>2 odds</b> or <b>3 odds</b>. I only use games from the day you choose. You can also type something like “3 odds tomorrow”.</div></div>
+<div class="ctl"><div class="seg" role="group" aria-label="Choose a day"><button type="button" id="dT" aria-pressed="true">Today<small id="dTl"></small></button><button type="button" id="dM" aria-pressed="false">Tomorrow<small id="dMl"></small></button></div>
+<div class="go"><button type="button" id="g2">2 odds<small>safer slip</small></button><button type="button" id="g3">3 odds<small>bigger return</small></button></div>
+<form class="ask" id="f"><input id="q" type="text" placeholder="e.g. 2 odds tomorrow" autocomplete="off" aria-label="Ask the AI picker"><button type="submit">Send</button></form></div></div>
+<p class="mut" style="font-size:.8rem;margin:.6rem .2rem">Picks are chances worked out from bookmaker odds, not guarantees. 18+ only. <a href="responsible-gambling.html">Play responsibly</a>.</p>
+<div class="prose"><h2>How the AI football picker works</h2><p>The assistant reads live bookmaker odds for every game that has not kicked off, strips out the bookmaker’s margin and keeps only outcomes the market rates as strong: 60% or more for match result, over 2.5 and both teams to score, and 75% or more for double chance and over 1.5. It then tests thousands of combinations and returns the one that lands closest to 2 or 3 total odds with the best combined chance.</p><h2>AI betting tips today and tomorrow</h2><p>Today’s slips use only today’s games and tomorrow’s slips use only tomorrow’s. Nothing from another day is mixed in. Prices for games further ahead appear as bookmakers publish them, so tomorrow’s slips get stronger through the day. See the full lists on <a href="index.html">predictions today</a> and <a href="football-predictions-tomorrow.html">predictions tomorrow</a>, or check our <a href="track-record.html">track record</a>.</p></div>
+<div class="prose"><h2>AI betting assistant FAQ</h2><details><summary>How does the AI betting assistant pick games?</summary><p>It turns live odds into implied chances, keeps only strong picks, then searches combinations for about 2 or 3 total odds with the highest combined chance.</p></details><details><summary>Is the AI football picker accurate?</summary><p>No tipster can promise wins. A 70% pick still loses about three times in ten. Every result is published on the <a href="track-record.html">track record</a> page so you can judge for yourself.</p></details><details><summary>Will today’s slip include tomorrow’s games?</summary><p>No. Choose Today or Tomorrow first and the assistant only uses games that kick off that day and have not started.</p></details><details><summary>Is it free?</summary><p>Yes, free with no sign-up. Shuffle as often as you like for a different 2 odds or 3 odds slip.</p></details></div>
+<footer><div class="fg"><div><b>Predictions</b><a href="index.html">Predictions today</a><a href="ai-betting-assistant.html">AI Betting Assistant</a><a href="football-predictions-tomorrow.html">Predictions tomorrow</a><a href="football-predictions-yesterday.html">Yesterday’s results</a></div><div><b>Markets</b><a href="1x2-predictions.html">1X2 Predictions</a><a href="double-chance-predictions.html">Double Chance Predictions</a><a href="over-2-5-goals-predictions.html">Over 2.5 Goals Predictions</a><a href="over-1-5-goals-predictions.html">Over 1.5 Goals Predictions</a><a href="btts-predictions.html">Both Teams to Score Predictions</a></div><div><b>Leagues</b><a href="premier-league-predictions.html">Premier League</a><a href="la-liga-predictions.html">La Liga</a><a href="serie-a-predictions.html">Serie A</a><a href="bundesliga-predictions.html">Bundesliga</a><a href="ligue-1-predictions.html">Ligue 1</a><a href="champions-league-predictions.html">UEFA Champions League</a><a href="europa-league-predictions.html">UEFA Europa League</a><a href="conference-league-predictions.html">UEFA Conference League</a><a href="championship-predictions.html">Championship</a><a href="eredivisie-predictions.html">Eredivisie</a><a href="primeira-liga-predictions.html">Primeira Liga</a><a href="scottish-premiership-predictions.html">Scottish Premiership</a></div><div><b>About</b><a href="about.html">About ZurePicks</a><a href="track-record.html">Track record</a><a href="how-it-works.html">How it works</a><a href="tools.html">Odds tools</a><a href="responsible-gambling.html">Responsible gambling</a></div></div><p><b>18+ only.</b> Percentages are estimates worked out from bookmaker odds, not guarantees, and no pick is a “sure” win. Only stake what you can afford to lose and check that betting is legal where you live. <a href="responsible-gambling.html">Get help</a>.</p><p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p></footer></main>
 <script src="api-config.js"></script>
 <script>
-    function appendMessage(text, sender) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `msg ${sender}`;
-        msgDiv.textContent = text;
-        const messagesContainer = document.getElementById('ai-messages');
-        messagesContainer.appendChild(msgDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    async function sendPrompt(text) {
-        const input = document.getElementById('ai-input');
-        input.value = text;
-        await handleChatSubmit(new Event('submit'));
-    }
-
-    async function handleChatSubmit(e) {
-        e.preventDefault();
-        const input = document.getElementById('ai-input');
-        const query = input.value.trim();
-        if (!query) return;
-
-        appendMessage(query, 'user');
-        input.value = '';
-
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'msg assistant';
-        loadingDiv.textContent = 'Analyzing matches & calculating odds...';
-        const messagesContainer = document.getElementById('ai-messages');
-        messagesContainer.appendChild(loadingDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-        try {
-            const endpoint = (typeof API_BASE !== 'undefined' ? API_BASE : 'https://zurepicks-backend-api.onrender.com') + '/api/chat';
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 7000);
-
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: query }),
-                signal: controller.signal
-            });
-            clearTimeout(timeoutId);
-
-            messagesContainer.removeChild(loadingDiv);
-
-            if (response.ok) {
-                const data = await response.json();
-                const replyText = data.reply || data.response || data.message;
-                if (replyText) {
-                    appendMessage(replyText, 'assistant');
-                    return;
-                }
-            }
-            provideSmartAssistantReply(query);
-        } catch (err) {
-            if (loadingDiv.parentNode) {
-                messagesContainer.removeChild(loadingDiv);
-            }
-            provideSmartAssistantReply(query);
-        }
-    }
-
-    function provideSmartAssistantReply(query) {
-        const q = query.toLowerCase();
-        let reply = "Based on today's fixtures across 34 leagues, our top banker recommendation is focusing on Over 1.5 and Home Win markets with 75%+ confidence ratings. Check the main board for live selections!";
-        
-        if (q.includes('2 odds') || q.includes('two odds')) {
-            reply = "🎯 Today's Curated 2 Odds Banker Slip:\n1. Arsenal vs Chelsea — Over 1.5 Goals (Odd: 1.34)\n2. Real Madrid vs Valencia — Home Win (Odd: 1.45)\nTotal Combined Odds: ~1.94 (~2 Odds). High confidence banker selection!";
-        } else if (q.includes('3 odds') || q.includes('three odds')) {
-            reply = "🔥 Today's Curated 3 Odds Accumulator:\n1. Bayern Munich vs Dortmund — Over 2.5 Goals (Odd: 1.62)\n2. Inter Milan vs Lazio — 1X & Over 1.5 (Odd: 1.48)\n3. PSG vs Marseille — Both Teams to Score (Odd: 1.38)\nTotal Combined Odds: ~3.31 (~3 Odds).";
-        } else if (q.includes('btts') || q.includes('both teams')) {
-            reply = "⚽ Top BTTS (Both Teams to Score) Pick Today: AC Milan vs Inter Milan in Serie A. Both sides feature high-scoring attacks with 82% BTTS ratios over their last 5 head-to-head encounters. Estimated Odds: 1.82.";
-        } else if (q.includes('over 1.5') || q.includes('goals')) {
-            reply = "⚡ Safest Over 1.5 Goals Tip: Premier League fixture with an average of 3.2 goals per match this season. Backing Over 1.5 gives a very high probability win rate.";
-        }
-        
-        appendMessage(reply, 'assistant');
-    }
-</script>
-</body>
-</html>
+(()=>{const TZ='Africa/Lagos',API=window.ZUREPICKS_API_BASE||'',$=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dk=t=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ}).format(t),lab=t=>new Intl.DateTimeFormat('en-GB',{timeZone:TZ,weekday:'short',day:'numeric',month:'short'}).format(t),hm=i=>new Date(i).toLocaleTimeString('en-GB',{timeZone:TZ,hour:'2-digit',minute:'2-digit'});
+const D={today:dk(Date.now()),tomorrow:dk(Date.now()+864e5)};$('dTl').textContent=lab(Date.now());$('dMl').textContent=lab(Date.now()+864e5);
+let day='today';const cache={},seed={'2today':0,'2tomorrow':0,'3today':0,'3tomorrow':0},MIN={o:60,dc:75,ou:60,o15:75,bt:60};
+const L={o:['Home win','Draw','Away win'],dc:['Home or draw','Home or away','Draw or away'],ou:['Over 2.5 goals','Under 2.5 goals'],o15:['Over 1.5 goals','Under 1.5 goals'],bt:['Both teams to score','Not both to score']};
+const ok=a=>Array.isArray(a)&&a.length>1&&a.every(x=>x>1),nm=a=>{const s=a.reduce((t,x)=>t+1/x,0);return a.map(x=>1/x/s)};
+async function load(d){if(cache[d])return cache[d];let ms=[];try{const r=await fetch('data/'+d+'.json',{cache:'no-store'});if(r.ok)ms=(await r.json()).matches||[]}catch{}
+if(API){try{const c=new AbortController(),t=setTimeout(()=>c.abort(),9000);const r=await fetch(API+'/api/matches?date='+d,{signal:c.signal,cache:'no-store'});clearTimeout(t);if(r.ok){const j=await r.json();if(Array.isArray(j.matches)&&j.matches.length)ms=j.matches}}catch{}}
+return cache[d]=ms.filter(m=>m.d&&dk(Date.parse(m.d))===d&&(!m.st||m.st==='NS'||m.st==='TBD')&&Date.parse(m.d)>Date.now())}
+function legs(ms){const out=[];for(const m of ms){const add=(k,od,q)=>{const i=q.indexOf(Math.max(...q)),c=q[i]*100;if(c>=MIN[k]&&od[i]>=1.12)out.push({m,k,i,c,od:od[i]})};
+if(ok(m.o))add('o',m.o,nm(m.o));
+if(ok(m.ou))add('ou',m.ou,nm(m.ou));if(ok(m.o15))add('o15',m.o15,nm(m.o15));if(ok(m.bt))add('bt',m.bt,nm(m.bt));if(ok(m.dc))add('dc',m.dc,nm(m.dc))}
+out.sort((a,b)=>b.c-a.c);const A=out.slice(0,18),B=out.filter(g=>g.od>=1.3&&!A.includes(g)).slice(0,22);return A.concat(B).sort((a,b)=>b.c-a.c)}
+function build(pool,lo,hi){const res=[];let nodes=0;(function go(s,cur,prod,pr,ids){if(++nodes>6e5)return;if(cur.length>=2&&prod>=lo&&prod<=hi)res.push({legs:cur.slice(),prod,pr});if(cur.length>=5)return;
+for(let j=s;j<pool.length;j++){const g=pool[j],id=g.m.id||g.m.bid||g.m.h+g.m.a;if(ids.has(id))continue;const p=prod*g.od;if(p>hi)continue;ids.add(id);cur.push(g);go(j+1,cur,p,pr*g.c/100,ids);cur.pop();ids.delete(id)}})(0,[],1,1,new Set());
+res.sort((a,b)=>b.pr-a.pr);const pick=[];for(const r of res){const ks=new Set(r.legs.map(g=>g.m.bid||g.m.id));if(pick.every(p=>p.legs.filter(g=>ks.has(g.m.bid||g.m.id)).length<=1))pick.push(r);if(pick.length>=6)break}return pick.length?pick:res.slice(0,3)}
+function card(r,n,d){const tot=r.legs.reduce((t,g)=>t*g.od,1),chance=Math.round(r.pr*100);
+const rows=r.legs.sort((a,b)=>Date.parse(a.m.d)-Date.parse(b.m.d)).map(g=>`<div class="leg"><time>${hm(g.m.d)}</time><div><em>${esc(g.m.h)} v ${esc(g.m.a)}</em><small>${esc(g.m.lg)} · ${esc(L[g.k][g.i])}</small></div><strong>${g.od.toFixed(2)}</strong></div>`).join('');
+return `<div class="slip"><div class="sh"><span>${n} odds · ${d==='today'?'Today':'Tomorrow'}, ${lab(Date.parse(D[d]+'T12:00:00Z'))}</span><b>${tot.toFixed(2)}</b></div>${rows}<div class="sf"><span>${r.legs.length} games · about ${chance}% combined chance</span><button type="button" data-a="copy">Copy slip</button><button type="button" data-a="shuffle" data-n="${n}">Shuffle</button></div></div>`}
+function say(h,u){const e=document.createElement('div');e.className='msg '+(u?'u':'a');e.innerHTML=h;$('msgs').appendChild(e);$('msgs').scrollTop=1e5;return e}
+async function run(n,d){say(`${n} odds ${d}`,1);const w=say('Checking '+d+'’s games…');const ms=await load(D[d]),pool=legs(ms);
+const [lo,hi]=n==2?[1.85,2.3]:[2.7,3.4];const sl=pool.length?build(pool,lo,hi):[];const key=n+d;
+if(!sl.length){w.innerHTML=ms.length?`I couldn’t find a safe ${n} odds slip in ${d}’s games yet. Prices appear as bookmakers publish them, so try again later or try the other day.`:`No games with odds for ${d} yet. Prices usually appear a day or two before kick-off, so check back soon.`;return}
+const r=sl[seed[key]%sl.length];w.innerHTML=`Here’s a ${n} odds slip using only ${d}’s games:`+card(r,n,d);w.dataset.s=JSON.stringify(r.legs.map(g=>`${g.m.h} v ${g.m.a} – ${L[g.k][g.i]} @${g.od.toFixed(2)}`))}
+$('msgs').addEventListener('click',e=>{const b=e.target.closest('button[data-a]');if(!b)return;if(b.dataset.a==='shuffle'){seed[b.dataset.n+day]++;run(+b.dataset.n,day)}else{const t=JSON.parse(b.closest('.msg').dataset.s||'[]').join('\n');navigator.clipboard?.writeText(t+'\nzurepicks').then(()=>b.textContent='Copied')}});
+const setDay=d=>{day=d;$('dT').setAttribute('aria-pressed',d==='today');$('dM').setAttribute('aria-pressed',d==='tomorrow')};
+$('dT').onclick=()=>setDay('today');$('dM').onclick=()=>setDay('tomorrow');$('g2').onclick=()=>run(2,day);$('g3').onclick=()=>run(3,day);
+$('f').onsubmit=e=>{e.preventDefault();const t=$('q').value.trim().toLowerCase();if(!t)return;$('q').value='';const d=/tomorrow/.test(t)?'tomorrow':/today/.test(t)?'today':day,n=/\b3\b|three/.test(t)?3:/\b2\b|two/.test(t)?2:0;setDay(d);if(n)run(n,d);else{say(esc(t),1);say('I build <b>2 odds</b> and <b>3 odds</b> slips for today or tomorrow. Try “3 odds tomorrow”.')}};
+})();
+</script></body></html>
