@@ -207,3 +207,6 @@ header nav{-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-i
 tr.hl td{color:var(--g);font-weight:700}.res{padding:.8rem 1rem;border-radius:14px;border:1px solid var(--line);background:var(--card);line-height:1.6}
 .calc{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:.6rem 0}.calc input,#legs input,#st{font:inherit;padding:.65rem .8rem;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
 .gl dt{font:800 1.02rem var(--fd);margin-top:1rem;letter-spacing:-.02em}.gl dd{margin:.2rem 0 0;color:var(--mut);line-height:1.6}
+
+/* 4 stat tiles: 2 x 2 instead of one wide orphan */
+.kp:has(>div:nth-child(4):last-child)>div{grid-column:span 3}

@@ -103,7 +103,7 @@ function bestCombo(C, T, maxLegs) {
   };
   go(0, 0, 1, 1, []); return best;
 }
-export function combos(ms, now = Date.now()) {
+export function combos(ms, now = Date.now(), dedupe = false) {
   // every odds-based pick of every game that has not started
   const games = [];
   for (const m of ms) {
@@ -130,12 +130,18 @@ export function combos(ms, now = Date.now()) {
     if (r) r.legs.forEach((x) => used.add(x.m.id));
     out.push({ target: T, legs: r ? r.legs.sort((a, b) => Date.parse(a.m.d) - Date.parse(b.m.d)) : [], od: r ? r.od : 0, chance: r ? Math.round(r.pr * 100) : 0, minC, short: !!r && r.od < T });
   }
+  if (dedupe) { const seen = new Set(); return out.filter((c) => { if (!c.legs.length) return true; const key = c.legs.map((x) => x.m.id + x.k).join('|'); if (seen.has(key)) return false; seen.add(key); return true; }); }
   return out;
 }
 export function comboHtml(ms, now = Date.now(), opt = {}) {
+  const h = comboHtmlInner(ms, now, opt); if (opt.only) return h;
+  const n = (h.match(/class="cbx"/g) || []).length;
+  return n && n < 3 ? h + '<p class="mut">Only this many different slips can be built from the games priced so far. More appear as odds are published, and fresh 2, 3 and 5 odds slips arrive every morning.</p>' : h;
+}
+function comboHtmlInner(ms, now = Date.now(), opt = {}) {
   const day = (t) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(t), today = day(now), tomorrow = day(now + 864e5);
   const tag = (m) => { const d = day(Date.parse(m.d)); return d == today ? '' : d == tomorrow ? 'Tmrw' : new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'short', day: 'numeric' }).format(Date.parse(m.d)); };
-  return combos(ms, now).filter((c) => !opt.only || c.target === opt.only).map((c) => !c.legs.length
+  return combos(ms, now, !opt.only).filter((c) => !opt.only || c.target === opt.only).map((c) => !c.legs.length
     ? `<div class="cbx empty"><div class="ch"><span>${c.target} odds</span><b>–</b></div><p>${opt.when || 'Today’s'} slip is still being prepared. It appears as soon as enough games and odds are published, so check back soon.</p></div>`
     : `<div class="cbx"><div class="ch"><span>${c.short ? 'Best available' : c.target + '+ odds'}</span><b>${c.od.toFixed(2)}</b></div><div class="cm">${c.legs.length} games · ${c.chance}% combined chance${c.minC < 65 ? ' · includes picks from ' + c.minC + '%' : ''}</div>${c.legs.map((x) => `<div class="cl"><time>${tag(x.m) ? `<small>${tag(x.m)}</small>` : ''}${hm(x.m.d)}</time><div><b>${esc(x.m.h)} v ${esc(x.m.a)}</b><small>${esc(x.m.lg)}</small></div><span class="tag">${esc(MK[x.k].n[x.i])}</span><span class="mono">${x.od.toFixed(2)}</span></div>`).join('')}${opt.share ? `<a class="cb" href="https://wa.me/?text=${encodeURIComponent(c.target + ' odds slip (' + c.od.toFixed(2) + ')\n' + c.legs.map((x) => x.m.h + ' v ' + x.m.a + ' – ' + MK[x.k].n[x.i] + ' @' + x.od.toFixed(2)).join('\n') + '\nhttps://sidolly20.github.io/zurepick-site/')}" target="_blank" rel="noopener">Share this slip on WhatsApp</a>` : `<button type="button" class="cb" data-t="${c.target}">Add ${c.legs.length} games to slip</button>`}</div>`).join('');
 }
