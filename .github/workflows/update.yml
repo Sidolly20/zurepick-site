@@ -1,7 +1,7 @@
 name: Update match data
 on:
   schedule:
-    - cron: '*/20 * * * *'
+    - cron: '*/10 * * * *'
   workflow_dispatch:
 permissions:
   contents: write
@@ -26,6 +26,11 @@ jobs:
         continue-on-error: true
       # League tables (free football-data.org key; skipped quietly if the key is missing).
       - run: node collect-tables.mjs
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+      # Head-to-head history (free football-data.org key; fetched once per pairing, then reused).
+      - run: node collect-h2h.mjs
         continue-on-error: true
         env:
           FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
