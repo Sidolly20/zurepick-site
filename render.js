@@ -53,6 +53,7 @@ export function statsHtml(ms, hit, label = 'Picks today') {
 }
 import { teamKey } from './teams.js';
 export let CRESTS = {}; export const setCrests = (c) => { CRESTS = c || {}; };
+export let PREVIEWS = {}; export const setPreviews = (p) => { PREVIEWS = p || {}; };
 const badge = (m, name) => { const ch = CRESTS[teamKey(m.h)], ca = CRESTS[teamKey(m.a)], c = CRESTS[teamKey(name)]; return !ch && !ca ? '' : c ? `<img class="bd" src="${esc(c)}" alt="" width="18" height="18" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">` : '<i class="bd"></i>'; };
 export function row(m, k, o = {}) {
   let pk = pick(m, k); if (o.bar && pk && pk.c < (MIN[k] ?? 60)) pk = null; // league pages list every game but only show picks that clear the quality bar
@@ -62,7 +63,7 @@ export function row(m, k, o = {}) {
     ? `<button type="button" class="oc${pk && pk.i == i ? ' pick' : ''}" data-id="${m.id}" data-i="${i}" data-od="${x}" aria-label="${esc(M.n[i])} at ${x}"><small>${M.s[i]}${pk && pk.i == i ? ' · ' + pk.c + '%' : ''}</small>${Number(x).toFixed(2)}</button>`
     : `<span class="oc nil"><small>${M.s[i]}</small>–</span>`).join('');
   const pkh = pk ? `<span>${esc(M.n[pk.i])}</span><i style="--w:${pk.c}%"></i><em>${pk.c}% · ${pk.model ? 'team-record model' : 'from odds'}</em>` : `<span class="mut">${od.length ? 'No strong pick' : st.k == 'ns' ? 'Odds not out yet' : 'Not tipped'}</span><i style="--w:0%"></i><em>${od.length ? 'Below our quality bar' : st.k == 'ns' ? 'Check back closer to kick-off' : 'No odds were published'}</em>`;
-  return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time><div class="tm"><b>${badge(m, m.h)}<span>${esc(m.h)}</span></b><b>${badge(m, m.a)}<span>${esc(m.a)}</span></b></div><div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
+  return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time>${PREVIEWS[m.id] ? `<a class="tm" href="${esc(PREVIEWS[m.id])}" title="Match preview and prediction">` : '<div class="tm">'}<b>${badge(m, m.h)}<span>${esc(m.h)}</span></b><b>${badge(m, m.a)}<span>${esc(m.a)}</span></b>${PREVIEWS[m.id] ? '</a>' : '</div>'}<div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
 }
 const lgSrc = (m) => m.lo || CRESTS['lg:' + normName(m.cn) + ':' + normName(m.lg)] || CRESTS['lg::' + normName(m.lg)] || '';
 const lgLogo = (m) => { const s = lgSrc(m); return s ? `<img src="${esc(s)}" alt="" width="20" height="20" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''; };

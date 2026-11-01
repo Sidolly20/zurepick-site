@@ -210,3 +210,9 @@ tr.hl td{color:var(--g);font-weight:700}.res{padding:.8rem 1rem;border-radius:14
 
 /* 4 stat tiles: 2 x 2 instead of one wide orphan */
 .kp:has(>div:nth-child(4):last-child)>div{grid-column:span 3}
+
+/* match rows link to previews */
+a.tm{color:inherit;text-decoration:none}a.tm:hover b span{text-decoration:underline;text-underline-offset:3px}
+
+/* side-by-side comparison */
+table.cmp td{text-align:center;font-variant-numeric:tabular-nums}table.cmp th{text-align:center}table.cmp td.lb{color:var(--mut);font-size:.8rem;font-weight:600}table.cmp td.bt{color:var(--g);font-weight:800}
