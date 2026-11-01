@@ -1,0 +1,27 @@
+name: Post to Telegram
+on:
+  schedule:
+    - cron: '30 6 * * *'    # 07:30 WAT: today's slips
+    - cron: '30 21 * * *'   # 22:30 WAT: results recap
+    - cron: '0 7 * * 1'     # Monday 08:00 WAT: weekly review
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'slips, recap or weekly'
+        default: 'slips'
+permissions:
+  contents: read
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node post-telegram.mjs "${MODE}"
+        env:
+          MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || (github.event.schedule == '30 6 * * *' && 'slips' || (github.event.schedule == '30 21 * * *' && 'recap' || 'weekly')) }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SITE_URL: https://sidolly20.github.io/zurepick-site
