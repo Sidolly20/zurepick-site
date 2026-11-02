@@ -1,10 +1,6 @@
 name: Post to Telegram
+# Posts run automatically from the backend. This workflow is only for sending one by hand.
 on:
-  schedule:
-    - cron: '30 6 * * *'    # 07:30 WAT: today's slips
-    - cron: '45 6 * * *'    # 07:45 WAT: pick of the day
-    - cron: '30 21 * * *'   # 22:30 WAT: results recap
-    - cron: '0 7 * * 1'     # Monday 08:00 WAT: weekly review
   workflow_dispatch:
     inputs:
       mode:
@@ -22,7 +18,7 @@ jobs:
           node-version: 22
       - run: node post-telegram.mjs "${MODE}"
         env:
-          MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || (github.event.schedule == '30 6 * * *' && 'slips' || (github.event.schedule == '45 6 * * *' && 'potd' || (github.event.schedule == '30 21 * * *' && 'recap' || 'weekly'))) }}
+          MODE: ${{ inputs.mode }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           SITE_URL: https://sidolly20.github.io/zurepick-site
