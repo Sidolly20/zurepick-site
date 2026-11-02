@@ -225,3 +225,6 @@ a.potd .pt{font:800 .75rem var(--fd);color:var(--g);letter-spacing:.02em}a.potd 
 /* estimated double chance prices */
 .oc.est{border-style:dashed}.oc.est.pick{border-style:solid}
 a.tgb{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.7rem 1rem;border-radius:999px;border:1px solid color-mix(in srgb,#38bdf8 45%,transparent);background:color-mix(in srgb,#38bdf8 10%,transparent);color:var(--ink);font-weight:700;text-decoration:none;font-size:.9rem}
+
+/* pick of the day record */
+a.potd-last{display:grid;gap:.2rem;margin:-.4rem 0 1rem;padding:.75rem 1rem;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font-size:.9rem}a.potd-last small{color:var(--mut)}a.potd-last .pr{margin-left:.3rem}

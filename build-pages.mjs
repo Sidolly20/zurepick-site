@@ -85,7 +85,7 @@ const NAV = [['index.html', 'Today'], ['football-predictions-tomorrow.html', 'To
 const FOOT = [
   ['Predictions', [['index.html', 'Predictions today'], ['football-predictions-tomorrow.html', 'Predictions tomorrow'], ['football-predictions-weekend.html', 'Weekend predictions'], ['football-predictions-yesterday.html', 'Yesterday’s results'], ['ai-betting-assistant.html', 'AI Betting Assistant']]],
   ['Odds & tools', [['2-odds-predictions.html', '2 odds tips'], ['3-odds-predictions.html', '3 odds tips'], ['5-odds-predictions.html', '5 odds tips'], ['odds-converter.html', 'Odds converter'], ['accumulator-calculator.html', 'Accumulator calculator'], ['stake-size-calculator.html', 'Stake size calculator']]],
-  ['Guides & results', [['guides.html', 'Betting guides'], ['how-to-read-football-odds.html', 'How to read odds'], ['football-betting-glossary.html', 'Betting glossary'], ['weekly-review.html', 'Weekly review'], ['archive.html', 'Results archive'], ['track-record.html', 'Track record']]],
+  ['Guides & results', [['guides.html', 'Betting guides'], ['how-to-read-football-odds.html', 'How to read odds'], ['football-betting-glossary.html', 'Betting glossary'], ['pick-of-the-day.html', 'Pick of the day record'], ['weekly-review.html', 'Weekly review'], ['archive.html', 'Results archive'], ['track-record.html', 'Track record']]],
   ['Markets', Object.values(MKT).map((x) => [x[0], x[1]])],
   ['Leagues', LG.map((l) => [l.slug + '-predictions.html', l.name])],
   ['About', [['about.html', 'About ZurePicks'], ['how-it-works.html', 'How it works'], ['contact.html', 'Contact us'], ['https://t.me/zurepicks', 'Telegram channel'], ['responsible-gambling.html', 'Responsible gambling']]],

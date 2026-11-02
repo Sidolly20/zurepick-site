@@ -131,23 +131,45 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
   }
   function weeklyReview() { reviewPage(Object.keys(snaps).filter((d) => d < today && d >= dstr(-7)).sort(), 'weekly-review.html', true); }
 
+  // ---- pick of the day: today's card, plus a permanent record so results stay visible after midnight ----
+  const HF = 'data/potd-history.json';
+  const loadHist = () => { try { return JSON.parse(fs.readFileSync(HF, 'utf8')); } catch { return []; } };
+  const potdFile = (id) => matchFile[id] || '';
+  function updateHist(extra) {
+    const hist = loadHist();
+    for (const st of extra ? [extra] : []) if (st && st.id && st.date && !hist.some((e) => e.date == st.date)) { const m = (snaps[st.date] || []).find((x) => x.id == st.id); if (m) hist.push({ date: st.date, id: st.id, i: st.i, c: st.c, od: st.od, h: m.h, a: m.a, lg: m.lg || '', d: m.d, file: potdFile(st.id) }); }
+    for (const e of hist) { const m = (snaps[e.date] || []).find((x) => x.id == e.id); if (m && settled(m)) { e.sc = m.sc; e.res = won(m, 'o', { i: e.i }) ? 'won' : 'lost'; } if (!e.file && potdFile(e.id)) e.file = potdFile(e.id); }
+    hist.sort((x, y) => y.date.localeCompare(x.date));
+    try { fs.writeFileSync(HF, JSON.stringify(hist.slice(0, 400))); } catch {}
+    return hist;
+  }
+  const badge = (e) => e.res ? `<span class="pr ${e.res == 'won' ? 'w' : 'l'}">${e.res == 'won' ? '✓ Won' : '✗ Lost'} ${e.sc[0]}–${e.sc[1]}</span>` : '';
   api.potd = () => {
     const F = 'data/potd.json'; let st = {}; try { st = JSON.parse(fs.readFileSync(F, 'utf8')); } catch {}
+    let hist = updateHist(st.id ? st : null);
     let it = st.date === today ? items.find((x) => x.m.id === st.id) : null;
     if (!it) {
       const cands = (min, od) => items.filter((x) => x.d === today && Date.parse(x.m.d) > Date.now() && (!x.m.st || x.m.st == 'NS')).map((x) => ({ x, p: pick(x.m, 'o') })).filter(({ p }) => p && p.od && p.c >= min && p.od >= od).sort((a, b) => b.p.c - a.p.c);
-      const c = cands(65, 1.3)[0] || cands(60, 1.2)[0]; if (!c) return '';
-      it = c.x; st = { date: today, id: it.m.id, i: c.p.i, c: c.p.c, od: c.p.od }; try { fs.writeFileSync(F, JSON.stringify(st)); } catch {}
+      const c = cands(65, 1.3)[0] || cands(60, 1.2)[0];
+      if (c) { it = c.x; st = { date: today, id: it.m.id, i: c.p.i, c: c.p.c, od: c.p.od }; try { fs.writeFileSync(F, JSON.stringify(st)); } catch {} hist = updateHist(st); }
     }
-    const m = it.m, res = settled(m) ? (won(m, 'o', { i: st.i }) ? '<span class="pr w">✓ Won</span>' : '<span class="pr l">✗ Lost</span>') : '';
-    return `<a class="potd" href="${it.file}"><span class="pt">★ Pick of the day</span><b>${esc(m.h)} vs ${esc(m.a)}</b><span class="pp">${MK.o.n[st.i]} · ${st.c}% chance · odds ${Number(st.od).toFixed(2)} ${res}</span><small>${esc(it.L.name)} · ${sd(m.d)}, ${hm(m.d)} WAT · tap for the full preview</small></a>`;
+    const past = hist.filter((e) => e.date < today && e.res), rec7 = past.slice(0, 7), w7 = rec7.filter((e) => e.res == 'won').length;
+    let html = '';
+    if (it) { const m = it.m, e = hist.find((x) => x.date == today); html += `<a class="potd" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="pt">★ Pick of the day</span><b>${esc(m.h)} vs ${esc(m.a)}</b><span class="pp">${MK.o.n[st.i]} · ${st.c}% chance · odds ${Number(st.od).toFixed(2)}${e ? badge(e) : ''}</span><small>${esc(it.L.name)} · ${sd(m.d)}, ${hm(m.d)} WAT · tap for the full preview</small></a>`; }
+    if (past.length) { const y = past[0]; html += `<a class="potd-last" href="pick-of-the-day.html"><span><b>Last pick of the day</b> ${esc(y.h)} ${y.sc[0]}–${y.sc[1]} ${esc(y.a)} ${badge(y).replace(/ \d+–\d+/, '')}</span><small>Record: ${w7} of ${rec7.length} recent picks won · see every pick of the day →</small></a>`; }
+    return html;
   };
+  function potdArchive() {
+    const hist = updateHist(null), done = hist.filter((e) => e.res), w = done.filter((e) => e.res == 'won').length;
+    page('pick-of-the-day.html', { title: 'Pick of the Day: Free Football Tip & Results Record', desc: `Our football pick of the day, every day, with the result kept for good${done.length ? `: ${w} of ${done.length} won (${Math.round((w / done.length) * 100)}%)` : ''}. Every pick, win or lose.`, h1: 'Pick of the day: <em>the record</em>', lead: `Every morning we choose one pick with a strong chance and a fair price, and we keep the result forever, win or lose. ${done.length ? `So far ${w} of ${done.length} have won (${Math.round((w / done.length) * 100)}%).` : 'The record builds as days finish.'}`, crumb: 'Pick of the day', eyebrow: 'One pick a day · results kept for good', kp: [[done.length || '–', 'Picks settled'], [w, 'Won'], [done.length ? Math.round((w / done.length) * 100) + '%' : '–', 'Win rate']],
+      body: `<div class="prose"><h2>Every pick of the day</h2><ul class="pl">${hist.map((e) => `<li><a href="${e.file || 'index.html'}">${esc(e.h)} vs ${esc(e.a)}</a> <small>${full(e.date + 'T12:00:00Z')} · ${MK.o.n[e.i]} · ${e.c}% chance · odds ${Number(e.od).toFixed(2)} ${badge(e)}</small></li>`).join('') || '<li>No picks recorded yet.</li>'}</ul><h2>How the pick of the day is chosen</h2><p>Each morning we look at the day’s games that haven’t started and pick the 1X2 result the market rates highest, as long as the price is worth taking (odds of at least 1.30, and a chance of 65% or more). The pick is saved once and never changes, so the record can’t be edited after the fact. Read more in <a href="how-it-works.html">how it works</a>, or see the <a href="weekly-review.html">weekly review</a>.</p></div>` });
+  }
   api.write = () => {
     const cut = dstr(-14);
     for (const f of fs.readdirSync('.')) { const mm = f.match(/^prediction-.+-(\d{4}-\d\d-\d\d)\.html$/); if (mm && mm[1] < cut) fs.unlinkSync(f); }
     for (const it of items) matchPage(it);
     const seen = new Set(); for (const v of Object.values(teamFile)) if (!seen.has(v.file)) { seen.add(v.file); teamPage(v); }
-    weeklyArchive(); archivePages(); weeklyReview();
+    weeklyArchive(); archivePages(); weeklyReview(); potdArchive();
     fs.writeFileSync('data/previews.json', JSON.stringify(matchFile));
   };
   return api;
