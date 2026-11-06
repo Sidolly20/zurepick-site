@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import { MK, MIN, pick, won, settled, esc, hm, board } from './render.js';
 import { teamKey, sameTeam } from './teams.js';
+import { matchModel, renderMatch } from './matchpage.mjs';
 
 const slug = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const hash = (s) => [...String(s)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
@@ -55,35 +56,44 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     },
   };
 
+  // pre-kick-off table snapshots, so a finished game's report shows the table as it stood BEFORE the match
+  const PMF = 'data/prematch.json'; let PM = {}; try { PM = JSON.parse(fs.readFileSync(PMF, 'utf8')); } catch {}
+  let FORMJ = {}; try { FORMJ = JSON.parse(fs.readFileSync('data/form.json', 'utf8')).teams || {}; } catch {}
+  const FK = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w && !['fc', 'cf', 'sc', 'ac', 'afc', 'the', 'club', 'de', 'sk', 'fk', 'cd', 'ud', 'ca', 'fa'].includes(w)).sort().join(' ');
+  const snapRow = (r) => ({ pos: r.pos, pts: r.pts, p: r.p, w: r.w, d: r.d, l: r.l, gf: r.gf, ga: r.ga, gd: r.gd });
+  const guide = (team) => (FORMJ[FK(team)] || '').split('').reverse().map((r) => ({ r, s: '', ha: '', opp: '' })); // newest first
+
   function matchPage({ m, L, d, file, idx }) {
-    const h = m.h, a = m.a, s = hash(m.id || file), t = hm(m.d), hr = rowOf(L, h), ar = rowOf(L, a), q = norm(m.o), fi = q.indexOf(Math.max(...q)), fav = [h, 'a draw', a][fi], fc = pct(q[fi]);
-    const H = h2hFor(h, a, m.d.slice(0, 10)), s2 = hash(file + 'h');
-    const h2hHtml = H ? `<h2>Head-to-head: ${esc(h)} v ${esc(a)}</h2><p>${V([`In their last ${H.n} meetings, ${esc(h)} have won ${H.hw} and ${esc(a)} ${H.aw}, with ${H.dr} ${H.dr == 1 ? 'draw' : 'draws'}.`, `Across the last ${H.n} meetings it’s ${esc(h)} ${H.hw}, draws ${H.dr}, ${esc(a)} ${H.aw}.`], s2)} ${H.hw >= H.aw + 2 ? `History leans towards ${esc(h)}.` : H.aw >= H.hw + 2 ? `History leans towards ${esc(a)}.` : 'The record is finely balanced.'} Those games averaged ${H.avg.toFixed(1)} goals; ${H.o25} of ${H.n} had three or more goals and ${H.bt} had both teams scoring.</p><ul class="fl">${H.rows.slice(0, 5).map((r) => `<li>${esc(r.hn)} ${r.hs}–${r.as} ${esc(r.an)} <small>(${r.d.split('-').reverse().join('/')})</small></li>`).join('')}</ul><p class="mut">Head-to-head data from football-data.org.</p>` : '';
-    const cmpH2 = H ? `${h} have won ${H.hw} and ${a} ${H.aw}, with ${H.dr} ${H.dr == 1 ? 'draw' : 'draws'}, in their last ${H.n} meetings, averaging ${H.avg.toFixed(1)} goals a game.` : '';
-    const ps = picksOf(m), p1 = pick(m, 'o'), over = okOdds(m.ou) ? norm(m.ou)[0] : null, btts = okOdds(m.bt) ? norm(m.bt)[0] : null, ov15 = okOdds(m.o15) ? norm(m.o15)[0] : null;
-    const open = V([`${h} take on ${a} in the ${L.name} on ${wd(m.d)}, with kick-off at ${t} WAT.`, `${wd(m.d)} brings ${h} against ${a} in the ${L.name}, kicking off at ${t} WAT.`, `It’s ${h} v ${a} in the ${L.name} on ${wd(m.d)} (${t} WAT).`], s);
-    const view = fc >= 60 ? V([`${fav} are clear favourites: the market rates them ${fc}% to win, at odds of ${m.o[fi].toFixed(2)}.`, `The bookmakers back ${fav} firmly, at ${m.o[fi].toFixed(2)}, which works out to a ${fc}% chance once their margin is stripped out.`], s, 1)
-      : fc >= 45 ? `${fav} start as favourites at ${m.o[fi].toFixed(2)}, but a ${fc}% chance leaves plenty of room for a surprise.` : `This one looks close. No result is rated above ${fc}%, so any 1X2 pick would be a guess.`;
-    const gp = [over != null ? `over 2.5 goals is rated at ${pct(over)}%` : '', ov15 != null ? `over 1.5 at ${pct(ov15)}%` : '', btts != null ? `both teams to score at ${pct(btts)}%` : ''].filter(Boolean), goals = gp.length > 1 ? gp.slice(0, -1).join(', ') + ' and ' + gp[gp.length - 1] : gp[0] || '';
-    const tbl = hr && ar ? `${h} are ${ord(hr.pos)} on ${hr.pts} points from ${hr.p} games (${hr.w}W ${hr.d}D ${hr.l}L, goal difference ${sgn(hr.gd)}); ${a} are ${ord(ar.pos)} on ${ar.pts} (${ar.w}W ${ar.d}D ${ar.l}L, ${sgn(ar.gd)}). ${Math.abs(hr.pos - ar.pos) >= 8 ? `${Math.abs(hr.pos - ar.pos)} places separate them, which is a big gap.` : Math.abs(hr.pos - ar.pos) <= 2 ? 'They sit close together in the table, which fits a tight game.' : `${Math.abs(hr.pos - ar.pos)} places separate them.`} On goals, ${h} average ${(hr.gf / hr.p).toFixed(1)} scored and ${(hr.ga / hr.p).toFixed(1)} conceded per game; ${a} ${(ar.gf / ar.p).toFixed(1)} and ${(ar.ga / ar.p).toFixed(1)}.` : '';
-    let cmp = '';
-    if (hr && ar) {
-      const f1 = (x) => x.toFixed(1), f2 = (x) => x.toFixed(2), hp = hr.pts / hr.p, ap = ar.pts / ar.p, hgf = hr.gf / hr.p, agf = ar.gf / ar.p, hga = hr.ga / hr.p, aga = ar.ga / ar.p;
-      const R = [['League position', hr.pos, ar.pos, true, ord(hr.pos), ord(ar.pos)], ['Points per game', hp, ap, false, f2(hp), f2(ap)], ['Record (W-D-L)', 0, 0, null, `${hr.w}-${hr.d}-${hr.l}`, `${ar.w}-${ar.d}-${ar.l}`], ['Goals scored per game', hgf, agf, false, f1(hgf), f1(agf)], ['Goals conceded per game', hga, aga, true, f1(hga), f1(aga)], ['Goal difference', hr.gd, ar.gd, false, sgn(hr.gd), sgn(ar.gd)]];
-      const cell = (v, o, low, txt) => `<td${low === null || v === o ? '' : (low ? v < o : v > o) ? ' class="bt"' : ''}>${txt}</td>`;
-      const eh = (hgf + aga) / 2, ea = (agf + hga) / 2, tot = eh + ea;
-      const att = `Blending how often each side scores with how often the other concedes gives roughly ${f1(eh)} goals for ${h} and ${f1(ea)} for ${a}, around ${f1(tot)} in total${tot >= 2.8 ? ', which fits a goals-friendly game' : tot <= 2.2 ? ', pointing to a tighter game' : ''}. ${eh - ea >= 0.4 ? `On that basis ${h} hold the edge.` : ea - eh >= 0.4 ? `On that basis ${a} hold the edge.` : 'On that basis there is no clear edge.'}`, att2 = '';
-      const ppgS = Math.abs(hp - ap) >= 0.6 ? `${hp > ap ? h : a} have taken ${f2(Math.abs(hp - ap))} more points per game this season.` : 'Points per game are close, so the table does not separate them clearly.';
-      const mt = done.filter((x) => Date.parse(x.d) < Date.parse(m.d) && ((teamKey(x.h) == teamKey(h) && teamKey(x.a) == teamKey(a)) || (teamKey(x.h) == teamKey(a) && teamKey(x.a) == teamKey(h)))).slice(0, 3);
-      cmp = `<h2>${esc(h)} and ${esc(a)} side by side</h2><div class="sc"><table class="cmp"><thead><tr><th>${esc(h)}</th><th></th><th>${esc(a)}</th></tr></thead><tbody>${R.map(([l, hv, av, low, ht, at]) => `<tr>${cell(hv, av, low, ht)}<td class="lb">${l}</td>${cell(av, hv, low, at)}</tr>`).join('')}</tbody></table></div><p>${att} ${att2} ${ppgS}</p>${!H && mt.length ? `<h3>Meetings we’ve tracked</h3><ul class="fl">${mt.map((x) => `<li>${esc(x.h)} ${x.sc[0]}–${x.sc[1]} ${esc(x.a)} (${sd(x.d)})</li>`).join('')}</ul>` : ''}`;
-    }
-    const rows = KEYS.slice().filter((k) => k != 'dc' && okOdds(m[k])).map((k) => { const qq = norm(m[k]), pk = pick(m, k); return MK[k].n.map((nm, i) => `<tr${pk && pk.i == i && pk.c >= MIN[k] ? ' class="hl"' : ''}><td>${i ? '' : MK[k].l}</td><td>${nm}</td><td>${m[k][i].toFixed(2)}</td><td>${pct(qq[i])}%</td></tr>`).join(''); }).join('');
-    const result = settled(m) ? `<p class="res"><b>Final score:</b> ${esc(h)} ${m.sc[0]}–${m.sc[1]} ${esc(a)}.${ps.length ? ` Our picks: ${ps.filter(([k, p]) => won(m, k, p)).length} won, ${ps.filter(([k, p]) => !won(m, k, p)).length} lost.` : ''}</p>` : m.st && m.st != 'NS' && m.sc && m.sc[0] != null ? `<p class="res"><b>Latest score we have:</b> ${m.sc[0]}–${m.sc[1]}. For live updates open the <a href="index.html">Today</a> page.</p>` : '';
-    const pickHtml = ps.length ? `<ul>${ps.map(([k, p]) => `<li><b>${MK[k].l}:</b> ${MK[k].n[p.i]} at ${p.od.toFixed(2)} <small>(${p.c}% chance${settled(m) ? (won(m, k, p) ? ' · ✓ won' : ' · ✗ lost') : ''})</small></li>`).join('')}</ul>` : `<p>No pick cleared our quality bar here, so we’re leaving this game out of our tips. That’s a feature, not a gap: we only publish picks the market rates at ${MIN.o}% or more (${MIN.dc}% for double chance and over 1.5).</p>`;
-    const L1 = `${esc(h)} vs ${esc(a)} prediction`, ptxt = ps.length ? `${MK[ps[0][0]].n[ps[0][1].i]} (${ps[0][1].c}%)` : 'no pick clears our quality bar';
-    const body = `<div class="prose"><h2>${L1}: the short version</h2><p>${open} ${view}${goals ? ` In the goals markets, ${goals}.` : ''}</p>${result}<h2>Our picks for ${esc(h)} v ${esc(a)}</h2>${pickHtml}<h2>Odds and chances</h2><div class="sc"><table><thead><tr><th>Market</th><th>Selection</th><th>Odds</th><th>Chance</th></tr></thead><tbody>${rows}</tbody></table></div><p class="mut">Chances are worked out from the bookmaker’s odds with their margin removed. They’re estimates, not guarantees. Highlighted rows are the picks that cleared our quality bar.</p>${tbl ? `<h2>What the ${esc(L.name)} table says</h2><p>${tbl}</p>` : ''}${cmp}${h2hHtml}<h2>Recent form we’ve tracked</h2><ul class="fl">${formHtml(h, Date.parse(m.d))}${formHtml(a, Date.parse(m.d))}</ul><p class="mut">Form uses finished games from our own daily records, so it covers recent matches only.</p><h2>Share this preview</h2><p><a class="btn alt" href="https://wa.me/?text=${encodeURIComponent(h + ' vs ' + a + ' prediction: ' + ptxt + ' ' + SITE + '/' + file)}" target="_blank" rel="noopener">Share on WhatsApp</a> <a class="btn alt" href="https://t.me/share/url?url=${encodeURIComponent(SITE + '/' + file)}&text=${encodeURIComponent(h + ' vs ' + a + ' prediction')}" target="_blank" rel="noopener">Share on Telegram</a></p><h2>More on this game</h2><p>${L.slug ? `See all <a href="${L.slug}-predictions.html">${esc(L.name)} predictions</a>, read about` : 'Read about'} ${tlink(h)} and ${tlink(a)}, build a slip with the <a href="ai-betting-assistant.html">AI picker</a>, or learn <a href="how-to-read-football-odds.html">how to read the odds</a>.</p></div>`;
-    page(file, { title: `${h} vs ${a} Prediction & Tips (${sd(m.d)})`, desc: `${h} vs ${a} prediction for ${sd(m.d)}: ${ptxt}. Odds, win chances, form and ${L.name} table position. Free, no sign-up.`, h1: `${esc(h)} vs ${esc(a)} <em>prediction</em>`, lead: `${esc(open)} ${esc(view)}`, crumb: `${h} vs ${a}`, eyebrow: `${esc(L.name)} · ${sd(m.d)} · ${t} WAT`, noindex: !idx, kp: [[fc + '%', 'Favourite’s chance'], [ps.length, 'Picks published'], [t, 'Kick-off WAT']], body,
-      faq: [[`What is the prediction for ${h} vs ${a}?`, `${open} ${view}${ps.length ? ` Our published pick${ps.length > 1 ? 's are' : ' is'}: ${ps.map(([k, p]) => `${MK[k].l} ${MK[k].n[p.i]} at ${p.od.toFixed(2)}`).join('; ')}.` : ' No pick cleared our quality bar.'}`], [`What are the odds for ${h} vs ${a}?`, `1X2 odds are ${h} ${m.o[0].toFixed(2)}, draw ${m.o[1].toFixed(2)}, ${a} ${m.o[2].toFixed(2)}. Prices move before kick-off, so check your bookmaker.`], ...(cmpH2 ? [[`What is the head-to-head record between ${h} and ${a}?`, cmpH2]] : []), [`When does ${h} vs ${a} kick off?`, `${full(m.d)} at ${t} WAT, in the ${L.name}.`]] });
+    const h = m.h, a = m.a, t = hm(m.d), key = String(m.id);
+    const isSet = settled(m), started = isSet || (m.st && m.st != 'NS') || Date.parse(m.d) < Date.now();
+    const state = isSet ? 'post' : started ? 'live' : 'pre';
+    let hr = rowOf(L, h), ar = rowOf(L, a), tableNote = 'Table as of the latest update.';
+    const size = TABLES[L.slug]?.rows?.length || 20;
+    if (state == 'pre' && hr && ar) PM[key] = { h: snapRow(hr), a: snapRow(ar), n: size, t: m.d };
+    else if (PM[key]) { hr = PM[key].h; ar = PM[key].a; tableNote = 'Table as it stood before kick-off.'; }
+    else if (hr && ar) tableNote = 'This is the latest table, so it may already count this game.';
+    const before = Date.parse(m.d);
+    let formH = formOf(h, before), formA = formOf(a, before), guided = false;
+    if (state == 'pre') { if (formH.length < 3 && guide(h).length >= 3) { formH = guide(h); guided = true; } if (formA.length < 3 && guide(a).length >= 3) { formA = guide(a); guided = true; } }
+    const H = h2hFor(h, a, m.d.slice(0, 10)), ps = picksOf(m);
+    const c = { m, L, hr, ar, H, file, SITE, D: { t }, state, ps, formH, formA, fbH: guided ? 'g' : '', fbA: '', tableNote, tableSize: PM[key]?.n || size, tlink };
+    const M = matchModel(c); c.M = M;
+    const rich = [hr && ar, H, formH.length >= 3 && formA.length >= 3, M.o25 != null].filter(Boolean).length;
+    const index = idx && (ps.length > 0 || rich >= 2);
+    const body = renderMatch(c), ag = M.angle, p1 = pick(m, 'o');
+    const ptxt = ps.length ? `${MK[ps[0][0]].n[ps[0][1].i]} (${ps[0][1].c}%)` : 'no pick clears our quality bar';
+    const wonN = ps.filter(([k, p]) => won(m, k, p)).length;
+    const first = ag.story.filter(Boolean)[0].replace(/\s+/g, ' ').trim();
+    const sc = isSet ? `${m.sc[0]}–${m.sc[1]}` : '';
+    const open = `${h} take on ${a} in the ${L.name} on ${wd(m.d)}, kick-off ${t} WAT.`;
+    const title = state == 'post' ? `${h} ${sc} ${a}: Match Report & Prediction Review (${sd(m.d)})` : state == 'live' ? `${h} vs ${a}: Prediction, Odds & Live Score (${sd(m.d)})` : `${h} vs ${a} Prediction, Odds & Tips (${sd(m.d)})`;
+    const desc = state == 'post' ? `${h} ${sc} ${a} in the ${L.name}. ${ps.length ? `${wonN} of ${ps.length} of our picks won. ` : ''}See what our pre-match analysis got right and wrong.` : `${h} vs ${a} prediction for ${sd(m.d)}: ${ptxt}. ${ag.id == 'standard' ? '' : ag.tag + '. '}Odds, form, table and head-to-head.`;
+    page(file, { title, desc: desc.slice(0, 200), h1: state == 'post' ? `${esc(h)} ${sc} ${esc(a)}: <em>match report</em>` : `${esc(h)} vs ${esc(a)} <em>prediction</em>`, lead: `${esc(ag.head)}. ${esc(first)}`, crumb: `${h} vs ${a}`, eyebrow: `${esc(L.name)} · ${sd(m.d)} · ${t} WAT${ag.id == 'standard' ? '' : ' · ' + esc(ag.tag)}`, noindex: !index,
+      kp: state == 'post' ? [[sc, 'Final score'], [ps.length ? `${wonN}/${ps.length}` : '–', 'Our picks won'], [M.fc + '%', 'Favourite’s pre-match chance']] : [[M.fc + '%', 'Favourite’s chance'], [ps.length, 'Picks published'], [t, 'Kick-off WAT']], body,
+      faq: [[`What is the prediction for ${h} vs ${a}?`, `${open} ${first} ${ps.length ? `Our published pick${ps.length > 1 ? 's are' : ' is'}: ${ps.map(([k, p]) => `${MK[k].l} ${MK[k].n[p.i]}${p.od ? ' at ' + p.od.toFixed(2) : ''}`).join('; ')}.` : 'No pick cleared our quality bar.'}`],
+        [`What are the odds for ${h} vs ${a}?`, `1X2 odds are ${h} ${m.o[0].toFixed(2)}, draw ${m.o[1].toFixed(2)}, ${a} ${m.o[2].toFixed(2)}. Prices move before kick-off, so check your bookmaker.`],
+        ...(isSet ? [[`What was the score in ${h} vs ${a}?`, `${h} ${sc} ${a}.${ps.length ? ` ${wonN} of our ${ps.length} published picks won.` : ''}`]] : [[`When does ${h} vs ${a} kick off?`, `${full(m.d)} at ${t} WAT, in the ${L.name}.`]]),
+        ...(H ? [[`What is the head-to-head record between ${h} and ${a}?`, `${h} have won ${H.hw} and ${a} ${H.aw}, with ${H.dr} ${H.dr == 1 ? 'draw' : 'draws'}, in their last ${H.n} meetings, averaging ${H.avg.toFixed(1)} goals a game.`]] : [])] });
   }
 
   function teamPage({ file, L, r }) {
@@ -171,6 +181,8 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     for (const f of fs.readdirSync('.')) if (/^prediction-.+\.html$/.test(f)) { const s = fs.readFileSync(f, 'utf8'); if (s.includes('SportsEvent')) fs.writeFileSync(f, s.replace(/<script type="application\/ld\+json">(?:(?!<\/script>).)*SportsEvent(?:(?!<\/script>).)*<\/script>/gs, '')); }
     const seen = new Set(); for (const v of Object.values(teamFile)) if (!seen.has(v.file)) { seen.add(v.file); teamPage(v); }
     weeklyArchive(); archivePages(); weeklyReview(); potdArchive();
+    for (const k of Object.keys(PM)) if (PM[k].t.slice(0, 10) < dstr(-14)) delete PM[k];
+    try { fs.writeFileSync(PMF, JSON.stringify(PM)); } catch {}
     fs.writeFileSync('data/previews.json', JSON.stringify(matchFile));
   };
   return api;
