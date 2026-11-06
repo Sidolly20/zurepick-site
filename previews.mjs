@@ -50,6 +50,10 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
   const api = {
     map: matchFile,
     linksFor(L) { const l = upcoming(byLeague[L.slug] || []).slice(0, 12); return l.length ? `<div class="prose"><h2>${esc(L.name)} match previews</h2><ul class="pl">${l.map(link).join('')}</ul></div>` : ''; },
+    radar(L) {
+      const l = upcoming(byLeague[L.slug] || []).slice(0, 8); if (!l.length) return '';
+      return `<section class="mx-card" id="radar"><h2>${esc(L.name)} matchday radar</h2><ul class="mx-rad">${l.map((it) => { const g = TAGS[it.file] || {}, p = pick(it.m, 'o'), pk = p && p.od && p.c >= MIN.o; return `<li><a href="${it.file}"><small>${sd(it.m.d)} · ${hm(it.m.d)}</small><b>${esc(it.m.h)} vs ${esc(it.m.a)}</b>${g.tag ? `<span class="mx-tag">${esc(g.tag)}</span>` : ''}</a><em class="${pk ? 'on' : ''}">${pk ? MK.o.s[p.i] + ' · ' + p.c + '%' : 'No tip'}</em></li>`; }).join('')}</ul></section>`;
+    },
     featured() {
       const l = upcoming(items).filter((it) => it.d <= dstr(1)).map((it) => ({ it, p: pick(it.m, 'o') })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((a, b) => b.p.c - a.p.c).slice(0, 8);
       return l.length ? `<div class="prose"><h2>Match previews: today’s strongest picks</h2><ul class="pl">${l.map(({ it, p }) => `<li><a href="${it.file}">${esc(it.m.h)} vs ${esc(it.m.a)}</a> <small>${MK.o.n[p.i]} · ${p.c}% · ${sd(it.m.d)}</small></li>`).join('')}</ul></div>` : '';
@@ -63,6 +67,7 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
   const snapRow = (r) => ({ pos: r.pos, pts: r.pts, p: r.p, w: r.w, d: r.d, l: r.l, gf: r.gf, ga: r.ga, gd: r.gd });
   const guide = (team) => (FORMJ[FK(team)] || '').split('').reverse().map((r) => ({ r, s: '', ha: '', opp: '' })); // newest first
 
+  const TAGS = {};
   function matchPage({ m, L, d, file, idx }) {
     const h = m.h, a = m.a, t = hm(m.d), key = String(m.id);
     const isSet = settled(m), started = isSet || (m.st && m.st != 'NS') || Date.parse(m.d) < Date.now();
@@ -81,6 +86,7 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     const rich = [hr && ar, H, formH.length >= 3 && formA.length >= 3, M.o25 != null].filter(Boolean).length;
     const index = idx && (ps.length > 0 || rich >= 2);
     const body = renderMatch(c), ag = M.angle, p1 = pick(m, 'o');
+    TAGS[file] = { tag: ag.id == 'standard' ? '' : ag.tag, fc: M.fc, fav: M.fav, state };
     const ptxt = ps.length ? `${MK[ps[0][0]].n[ps[0][1].i]} (${ps[0][1].c}%)` : 'no pick clears our quality bar';
     const wonN = ps.filter(([k, p]) => won(m, k, p)).length;
     const first = ag.story.filter(Boolean)[0].replace(/\s+/g, ' ').trim();

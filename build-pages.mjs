@@ -79,6 +79,7 @@ const LG = [
 ];
 import { ODDS, GUIDES, TOOLS, GLOSSARY } from './extra-pages.mjs';
 import { makePreviews } from './previews.mjs';
+import { leaguePulse } from './leaguepage.mjs';
 try { setCrests(JSON.parse(fs.readFileSync('data/crests.json', 'utf8'))); } catch {}
 let TABLES = {}; try { TABLES = JSON.parse(fs.readFileSync('data/tables.json', 'utf8')).tables || {}; } catch {}
 const NAV = [['index.html', 'Today'], ['football-predictions-tomorrow.html', 'Tomorrow'], ['ai-betting-assistant.html', 'AI Picker'], ['2-odds-predictions.html', '2 Odds'], ['3-odds-predictions.html', '3 Odds'], ['1x2-predictions.html', '1X2'], ['over-2-5-goals-predictions.html', 'Goals'], ['btts-predictions.html', 'BTTS'], ['leagues.html', 'Leagues'], ['guides.html', 'Guides'], ['track-record.html', 'Track record']];
@@ -219,7 +220,7 @@ for (const L of LG) {
   page(L.slug + '-predictions.html', { title: `${L.name} Predictions Today – Tips, ${r.length ? 'Odds & Table' : 'Fixtures & Odds'} | ZurePicks`, desc: `${L.name} predictions today: free tips, odds and win chance for the next 3 days of fixtures${r.length ? ', plus the current league table' : ''}. Results tracked.`,
     h1: `${logoImg(emblemOf(t), L.name, 'lgo big')} ${L.name} predictions &amp; tips <em>today</em>`, lead: `Free ${L.name} predictions for the next three days: 1X2, double chance, over 1.5, over 2.5 and BTTS, with odds, win chance and live scores.${r.length ? ' Includes the current league table.' : ''}`,
     crumb: L.name, board: { k: 'o', off: 0, ms: POOL(leagueTest(L)), mode: 'league', spec: { id: L.id, name: L.name, names: L.names, countries: L.countries } }, top: false,
-    body: standingsHtml(t, L.name, !!L.cup) + leagueWriteup(L, t, fx) + PV.linksFor(L), faq });
+    body: `<div class="mx">${leaguePulse(L, t, HV)}${PV.radar(L)}</div>` + standingsHtml(t, L.name, !!L.cup) + leagueWriteup(L, t, fx) + PV.linksFor(L), faq });
 }
 // Leagues hub
 page('leagues.html', { title: 'Football Leagues – Predictions by League | ZurePicks', desc: 'Pick a league: Premier League, La Liga, Serie A, Bundesliga, Ligue 1 and European cup predictions.', h1: 'Predictions by <em>league</em>', lead: 'Choose a competition to see its fixtures for the next three days, plus odds, tips and the league table.', body: `<div class="grid">${LG.map((l) => `<a href="${l.slug}-predictions.html">${logoImg(emblemOf(TABLES[l.slug]), l.name, 'lgo')} ${l.name}<small>${l.cn}</small></a>`).join('')}</div>` });
