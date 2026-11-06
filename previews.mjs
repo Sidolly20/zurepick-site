@@ -1,6 +1,6 @@
 // Match previews, team pages, results archive and weekly review: all built from the site's own data (odds, tables, tracked results).
 import fs from 'node:fs';
-import { MK, MIN, pick, won, settled, esc, hm, board } from './render.js';
+import { MK, MIN, pick, won, settled, esc, hm, board, logoImg, emblemOf } from './render.js';
 import { teamKey, sameTeam } from './teams.js';
 import { matchModel, renderMatch } from './matchpage.mjs';
 
@@ -50,6 +50,25 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
   const api = {
     map: matchFile,
     linksFor(L) { const l = upcoming(byLeague[L.slug] || []).slice(0, 12); return l.length ? `<div class="prose"><h2>${esc(L.name)} match previews</h2><ul class="pl">${l.map(link).join('')}</ul></div>` : ''; },
+    // ---- homepage modules ----
+    pulse() {
+      const ms = snaps[today] || [], tips = ms.filter((m) => KEYS.some((k) => { const q = pick(m, k); return q && !q.model && q.c >= MIN[k]; })).length;
+      const S = summary([...Array(7)].flatMap((_, i) => rec(snaps[dstr(-(i + 1))] || []))), lg = new Set(ms.map((m) => m.li)).size;
+      const T = (v, l, h) => `<${h ? 'a href="' + h + '"' : 'div'}><b>${v}</b><span>${l}</span></${h ? 'a' : 'div'}>`;
+      return `<div class="mx-strip">${T(ms.length, 'Games today')}${T(tips, 'Tips published')}${T(S.r == null ? '–' : S.r + '%', 'Won, last 7 days', 'track-record.html')}${T(lg, 'Leagues today')}</div>${api.potd()}`;
+    },
+    radarAll() {
+      const l = upcoming(items).filter((it) => it.d <= dstr(1)).map((it) => ({ it, p: pick(it.m, 'o'), g: TAGS[it.file] || {} })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((a, b) => (b.g.tag ? 1 : 0) - (a.g.tag ? 1 : 0) || b.p.c - a.p.c).slice(0, 6);
+      return l.length ? `<section class="mx-card" id="radar"><h2>Today and tomorrow: games worth a look</h2><ul class="mx-rad">${l.map(({ it, p, g }) => `<li><a href="${it.file}"><small>${esc(it.L.name)} · ${sd(it.m.d)} · ${hm(it.m.d)}</small><b>${esc(it.m.h)} vs ${esc(it.m.a)}</b>${g.tag ? `<span class="mx-tag">${esc(g.tag)}</span>` : ''}</a><em class="on">${MK.o.s[p.i]} · ${p.c}%</em></li>`).join('')}</ul></section>` : '';
+    },
+    recordStrip() {
+      const ds = [...Array(7)].map((_, i) => dstr(-(7 - i))), cells = ds.map((d) => { const S = summary(rec(snaps[d] || [])); return `<a title="${S.w} of ${S.n} won" href="predictions-${d}.html" class="${S.n ? (S.r >= 60 ? 'dw' : 'dl') : 'dz'}"><small>${D(d + 'T12:00:00Z', { weekday: 'short', day: 'numeric' })}</small><b>${S.n ? S.r + '%' : '–'}</b></a>`; }).join('');
+      return `<section class="mx-card" id="record"><h2>Last 7 days, win or lose</h2><div class="mx-days">${cells}</div><p class="mut">Every published pick, with losses shown. <a href="weekly-review.html">Read the weekly review</a> or the <a href="track-record.html">track record</a>.</p></section>`;
+    },
+    leagueTiles() {
+      const t = LG.filter((L) => TABLES[L.slug]?.rows?.length);
+      return t.length ? `<section class="mx-card"><h2>Leagues</h2><div class="mx-lt">${t.map((L) => { const r = TABLES[L.slug].rows[0]; return `<a href="${L.slug}-predictions.html">${logoImg(emblemOf(TABLES[L.slug]), L.name, 'lgo')}<span><b>${esc(L.name)}</b><small>${esc(r.team)} lead on ${r.pts}</small></span></a>`; }).join('')}</div></section>` : '';
+    },
     radar(L) {
       const l = upcoming(byLeague[L.slug] || []).slice(0, 8); if (!l.length) return '';
       return `<section class="mx-card" id="radar"><h2>${esc(L.name)} matchday radar</h2><ul class="mx-rad">${l.map((it) => { const g = TAGS[it.file] || {}, p = pick(it.m, 'o'), pk = p && p.od && p.c >= MIN.o; return `<li><a href="${it.file}"><small>${sd(it.m.d)} · ${hm(it.m.d)}</small><b>${esc(it.m.h)} vs ${esc(it.m.a)}</b>${g.tag ? `<span class="mx-tag">${esc(g.tag)}</span>` : ''}</a><em class="${pk ? 'on' : ''}">${pk ? MK.o.s[p.i] + ' · ' + p.c + '%' : 'No tip'}</em></li>`; }).join('')}</ul></section>`;
