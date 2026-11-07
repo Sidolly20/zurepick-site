@@ -33,6 +33,8 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     const d = dstr(o);
     for (const m of snaps[d] || []) {
       if (!okOdds(m.o)) continue;
+      if (['CANC','PST','ABD','AWD','WO','TBD'].includes(m.st)) continue;
+      if (/\b(stadium|arena|stadion|estadio)\b/i.test(`${m.h} ${m.a}`)) continue;
       const L0 = leagueOf(m), L = L0 || { name: m.lg || 'League', slug: null }, idx = !!L0 || picksOf(m).length > 0;
       const file = `prediction-${slug(m.h)}-vs-${slug(m.a)}-${d}.html`; if (matchFile[m.id]) continue;
       const it = { m, L, d, file, idx }; items.push(it); matchFile[m.id] = file; if (L0) (byLeague[L0.slug] ??= []).push(it);
@@ -103,7 +105,7 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     const c = { m, L, hr, ar, H, file, SITE, D: { t }, state, ps, formH, formA, fbH: guided ? 'g' : '', fbA: '', tableNote, tableSize: PM[key]?.n || size, tlink };
     const M = matchModel(c); c.M = M;
     const rich = [hr && ar, H, formH.length >= 3 && formA.length >= 3, M.o25 != null].filter(Boolean).length;
-    const index = idx && (ps.length > 0 || rich >= 2);
+    const index = idx && !!L.slug && ps.length > 0 && (state == 'post' || rich >= 3);
     const body = renderMatch(c), ag = M.angle, p1 = pick(m, 'o');
     TAGS[file] = { tag: ag.id == 'standard' ? '' : ag.tag, fc: M.fc, fav: M.fav, state };
     const ptxt = ps.length ? `${MK[ps[0][0]].n[ps[0][1].i]} (${ps[0][1].c}%)` : 'no pick clears our quality bar';
