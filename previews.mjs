@@ -4,6 +4,15 @@ import { MK, MIN, pick, won, settled, esc, hm, board, logoImg, emblemOf } from '
 import { teamKey, sameTeam } from './teams.js';
 import { matchModel, renderMatch } from './matchpage.mjs';
 
+// Keep unfinished match pages out of search. The build only rewrites recent days,
+// so older pages still marked indexable are switched to noindex here.
+for (const f of fs.readdirSync('.')) {
+  if (!/^prediction-.*\.html$/.test(f)) continue;
+  const s = fs.readFileSync(f, 'utf8');
+  if (s.includes('Match Report') || !s.includes('name="robots" content="index,follow')) continue;
+  fs.writeFileSync(f, s.replace('name="robots" content="index,follow', 'name="robots" content="noindex,follow'));
+}
+
 const slug = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const hash = (s) => [...String(s)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
 const V = (arr, s, salt = 0) => arr[(s + salt) % arr.length];
@@ -105,7 +114,7 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     const c = { m, L, hr, ar, H, file, SITE, D: { t }, state, ps, formH, formA, fbH: guided ? 'g' : '', fbA: '', tableNote, tableSize: PM[key]?.n || size, tlink };
     const M = matchModel(c); c.M = M;
     const rich = [hr && ar, H, formH.length >= 3 && formA.length >= 3, M.o25 != null].filter(Boolean).length;
-    const index = idx && !!L.slug && ps.length > 0 && (state == 'post' || rich >= 3);
+    const index = idx && !!L.slug && ps.length > 0 && state == 'post';
     const body = renderMatch(c), ag = M.angle, p1 = pick(m, 'o');
     TAGS[file] = { tag: ag.id == 'standard' ? '' : ag.tag, fc: M.fc, fav: M.fav, state };
     const ptxt = ps.length ? `${MK[ps[0][0]].n[ps[0][1].i]} (${ps[0][1].c}%)` : 'no pick clears our quality bar';
