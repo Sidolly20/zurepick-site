@@ -94,6 +94,8 @@ import { makePreviews } from './previews.mjs';
 import { leaguePulse } from './leaguepage.mjs';
 try { setCrests(JSON.parse(fs.readFileSync('data/crests.json', 'utf8'))); } catch {}
 let TABLES = {}; try { TABLES = JSON.parse(fs.readFileSync('data/tables.json', 'utf8')).tables || {}; } catch {}
+// One name per club: the league tables say "Brighton Hove", the match feed says "Brighton & Hove Albion".
+TABLES = JSON.parse(JSON.stringify(TABLES).replace(/"Brighton Hove"/g, '"Brighton & Hove Albion"'));
 const NAV = [['index.html', 'Today'], ['football-predictions-tomorrow.html', 'Tomorrow'], ['ai-betting-assistant.html', 'AI Picker'], ['2-odds-predictions.html', '2 Odds'], ['3-odds-predictions.html', '3 Odds'], ['1x2-predictions.html', '1X2'], ['over-2-5-goals-predictions.html', 'Goals'], ['btts-predictions.html', 'BTTS'], ['leagues.html', 'Leagues'], ['guides.html', 'Guides'], ['track-record.html', 'Track record']];
 const FOOT = [
   ['Predictions', [['index.html', 'Predictions today'], ['football-predictions-tomorrow.html', 'Predictions tomorrow'], ['football-predictions-weekend.html', 'Weekend predictions'], ['football-predictions-yesterday.html', 'Yesterday’s results'], ['ai-betting-assistant.html', 'AI Betting Assistant']]],
