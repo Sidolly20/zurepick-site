@@ -22,6 +22,29 @@ async function api(path) {
 }
 
 const WANT = { o: ['Match Winner', ['Home', 'Draw', 'Away']], dc: ['Double Chance', ['Home/Draw', 'Home/Away', 'Draw/Away']], ou: ['Goals Over/Under', ['Over 2.5', 'Under 2.5']], o15: ['Goals Over/Under', ['Over 1.5', 'Under 1.5']], bt: ['Both Teams Score', ['Yes', 'No']] };
+
+// Extra markets for the AI picker only. Same /odds response, so no extra API calls.
+// Stored compactly as m.mk = [[key, oddsA, oddsB], ...]. Pages that don't know "mk" simply ignore it.
+const EXTRA = [
+  ['h05', 'Total - Home', ['Over 0.5', 'Under 0.5']], ['h15', 'Total - Home', ['Over 1.5', 'Under 1.5']],
+  ['a05', 'Total - Away', ['Over 0.5', 'Under 0.5']], ['a15', 'Total - Away', ['Over 1.5', 'Under 1.5']],
+  ['o05', 'Goals Over/Under', ['Over 0.5', 'Under 0.5']], ['u35', 'Goals Over/Under', ['Over 3.5', 'Under 3.5']], ['u45', 'Goals Over/Under', ['Over 4.5', 'Under 4.5']],
+  ['ht05', 'Goals Over/Under First Half', ['Over 0.5', 'Under 0.5']], ['dnb', 'Home/Away', ['Home', 'Away']],
+  ['ahh15', 'Asian Handicap', ['Home +1.5', 'Away -1.5']], ['aha15', 'Asian Handicap', ['Away +1.5', 'Home -1.5']],
+];
+function extraOf(item) {
+  const mk = [];
+  for (const [k, name, vals] of EXTRA) {
+    let found = null;
+    for (const bk of item.bookmakers || []) { for (const bet of bk.bets || []) {
+      if (bet.name !== name) continue;
+      const arr = vals.map((v) => Number(bet.values.find((x) => x.value === v)?.odd));
+      if (arr.every((n) => n > 1)) { found = arr; break; }
+    } if (found) break; }
+    if (found) mk.push([k, ...found]);
+  }
+  return mk;
+}
 function oddsOf(item) {
   const out = {};
   for (const bk of item.bookmakers || []) for (const bet of bk.bets || []) for (const [k, [name, vals]] of Object.entries(WANT)) {
@@ -29,11 +52,13 @@ function oddsOf(item) {
     const arr = vals.map((v) => Number(bet.values.find((x) => x.value === v)?.odd));
     if (arr.every((n) => n > 1)) out[k] = arr;
   }
+  out.mk = extraOf(item);
   return out;
 }
 
-fs.mkdirSync('data', { recursive: true });
-const file = (d) => `data/${d}.json`;
+const DATA_DIR = process.env.DATA_DIR || 'data';
+fs.mkdirSync(DATA_DIR, { recursive: true });
+const file = (d) => `${DATA_DIR}/${d}.json`;
 const read = (d) => { try { return JSON.parse(fs.readFileSync(file(d), 'utf8')); } catch { return null; } };
 const SETTLED = ['FT', 'AET', 'PEN', 'CANC', 'PST', 'ABD', 'AWD', 'WO'];
 const dates = [0, 1].map(day);
@@ -48,13 +73,13 @@ for (const d of dates) {
   const prev = read(d), pm = new Map((prev?.matches || []).map((m) => [m.id, m]));
   const matches = (fx.response || []).map((x) => {
     const m = { id: x.fixture.id, d: x.fixture.date, li: x.league.id, se: x.league.season, lg: x.league.name, cn: x.league.country, lo: x.league.logo, h: x.teams.home.name, a: x.teams.away.name, st: x.fixture.status.short, el: x.fixture.status.elapsed, sc: [x.goals.home, x.goals.away] };
-    const p = pm.get(m.id); if (p) for (const k of Object.keys(WANT)) if (p[k]) m[k] = p[k];
+    const p = pm.get(m.id); if (p) for (const k of Object.keys(WANT)) if (p[k]) m[k] = p[k]; if (p?.mk) m.mk = p.mk;
     return m;
   });
   days[d] = { matches, od: prev?.od || 0, op: prev?.op || 0 };
 }
 
-const missing = (d) => days[d].matches.filter((m) => m.st === 'NS' && !m.o);
+const missing = (d) => days[d].matches.filter((m) => m.st === 'NS' && (!m.o || !m.mk));
 async function fetchOdds(d, extra, start = 1) {
   const byId = new Map(days[d].matches.map((m) => [m.id, m]));
   for (let page = start; page < 80; page++) {
@@ -87,5 +112,5 @@ for (const [d, v] of Object.entries(days)) {
   fs.writeFileSync(file(d), JSON.stringify({ date: d, updated: new Date().toISOString(), od: v.od, op: v.op, matches: v.matches }));
   console.log(d, v.matches.length, 'matches,', v.matches.filter((m) => m.o).length, 'with odds');
 }
-for (const f of fs.readdirSync('data')) if (/^\d{4}-\d\d-\d\d\.json$/.test(f) && f.slice(0, 10) < day(-10)) fs.unlinkSync('data/' + f);
+for (const f of fs.readdirSync(DATA_DIR)) if (/^\d{4}-\d\d-\d\d\.json$/.test(f) && f.slice(0, 10) < day(-10)) fs.unlinkSync(`${DATA_DIR}/${f}`);
 console.log('API calls used this run:', calls);
