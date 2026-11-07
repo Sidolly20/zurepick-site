@@ -122,7 +122,7 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     const first = ag.story.filter(Boolean)[0].replace(/\s+/g, ' ').trim();
     const sc = isSet ? `${m.sc[0]}–${m.sc[1]}` : '';
     const open = `${h} take on ${a} in the ${L.name} on ${wd(m.d)}, kick-off ${t} WAT.`;
-    const title = state == 'post' ? `${h} ${sc} ${a}: Match Report & Prediction Review (${sd(m.d)})` : state == 'live' ? `${h} vs ${a}: Prediction, Odds & Live Score (${sd(m.d)})` : `${h} vs ${a} Prediction, Odds & Tips (${sd(m.d)})`;
+    const title = state == 'post' ? `${h} ${sc} ${a}: Match Report (${sd(m.d)})` : state == 'live' ? `${h} vs ${a}: Live Score & Prediction (${sd(m.d)})` : `${h} vs ${a} Prediction & Odds (${sd(m.d)})`;
     const desc = state == 'post' ? `${h} ${sc} ${a} in the ${L.name}. ${ps.length ? `${wonN} of ${ps.length} of our picks won. ` : ''}See what our pre-match analysis got right and wrong.` : `${h} vs ${a} prediction for ${sd(m.d)}: ${ptxt}. ${ag.id == 'standard' ? '' : ag.tag + '. '}Odds, form, table and head-to-head.`;
     page(file, { title, desc: desc.slice(0, 200), h1: state == 'post' ? `${esc(h)} ${sc} ${esc(a)}: <em>match report</em>` : `${esc(h)} vs ${esc(a)} <em>prediction</em>`, lead: `${esc(ag.head)}. ${esc(first)}`, crumb: `${h} vs ${a}`, eyebrow: `${esc(L.name)} · ${sd(m.d)} · ${t} WAT${ag.id == 'standard' ? '' : ' · ' + esc(ag.tag)}`, noindex: !index,
       kp: state == 'post' ? [[sc, 'Final score'], [ps.length ? `${wonN}/${ps.length}` : '–', 'Our picks won'], [M.fc + '%', 'Favourite’s pre-match chance']] : [[M.fc + '%', 'Favourite’s chance'], [ps.length, 'Picks published'], [t, 'Kick-off WAT']], body,
