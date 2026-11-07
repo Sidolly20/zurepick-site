@@ -213,6 +213,33 @@ for (const k in MKT) {
 const POOL = (match) => { const ahead = [0, 1, 2, 3].flatMap((o) => snapFor(o)).filter(match), t0 = dstr(0);
   const past = Object.keys(snaps).filter((d) => d < t0).sort().reverse().flatMap((d) => snaps[d]).filter(match).filter(settled).slice(0, 12); return [...ahead, ...past]; };
 const NEXT3 = () => [0, 1, 2].flatMap((o) => snapFor(o));
+// Track record and recent results for one league, from the finished-match history (only the picks the site published).
+const TR_KEYS = ['o', 'dc', 'ou', 'o15', 'bt'];
+function leagueRecord(L) {
+  const test = leagueTest(L), ms = HV.filter((m) => test({ lg: m.lg, cn: m.cn })).sort((x, y) => (y.d > x.d ? 1 : -1));
+  const rows = TR_KEYS.map((k) => {
+    const P = ms.filter((m) => m.p[k] && m.p[k][2] != null && m.p[k][1] >= MIN[k]);
+    const od = P.reduce((t, m) => t + m.p[k][2], 0) / (P.length || 1);
+    return { k, n: P.length, w: P.filter((m) => m.p[k][3]).length, od };
+  }).filter((x) => x.n);
+  const n = rows.reduce((t, x) => t + x.n, 0), w = rows.reduce((t, x) => t + x.w, 0);
+  const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+  let out = `<div class="prose"><h2>${esc(L.name)} track record</h2>`;
+  if (n < 10) out += `<p>We have tracked ${n} published ${esc(L.name)} pick${n == 1 ? '' : 's'} so far. That is too few to read a win rate, so the full record will appear here as results come in.</p>`;
+  else {
+    out += `<p>Across ${n} published ${esc(L.name)} picks since tracking began, ${w} won (${pct(w, n)}%). Each market below lists its win rate next to the average odds it was priced at. Break-even is the win rate needed to stay even at those odds, so a lower win rate on longer odds can still pay.</p><ul>`;
+    out += rows.map((x) => `<li>${esc(MK[x.k].l)}: ${x.w} of ${x.n} won (${pct(x.w, x.n)}%), average odds ${x.od.toFixed(2)}, break-even ${Math.round(100 / x.od)}%</li>`).join('');
+    out += `</ul>`;
+  }
+  const recent = ms.slice(0, 8);
+  if (recent.length) {
+    out += `<h3>Recent ${esc(L.name)} results</h3><ul>` + recent.map((m) => {
+      const picks = TR_KEYS.filter((k) => m.p[k] && m.p[k][2] != null && m.p[k][1] >= MIN[k]).map((k) => `${esc(MK[k].n[m.p[k][0]])} ${m.p[k][3] ? '✅' : '❌'}`);
+      return `<li>${esc(m.d)}: ${esc(m.h)} ${m.sc[0]}–${m.sc[1]} ${esc(m.a)}${picks.length ? ` · ${picks.join(', ')}` : ''}</li>`;
+    }).join('') + `</ul>`;
+  }
+  return out + `</div>`;
+}
 // Each league gets one of several openings and closings, chosen by league and by day, so pages read differently and change on rebuild.
 const pickVariant = (seed, n) => { let h = 7; for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % n; };
 function leagueWriteup(L, t, fx) {
@@ -247,7 +274,7 @@ for (const L of LG) {
   page(L.slug + '-predictions.html', { title: `${L.name} Predictions Today – Tips, ${r.length ? 'Odds & Table' : 'Fixtures & Odds'} | ZurePicks`, desc: `${L.name} predictions today: free tips, odds and win chance for the next 3 days of fixtures${r.length ? ', plus the current league table' : ''}. Results tracked.`,
     h1: `${logoImg(emblemOf(t), L.name, 'lgo big')} ${L.name} predictions &amp; tips <em>today</em>`, lead: `Free ${L.name} predictions for the next three days: 1X2, double chance, over 1.5, over 2.5 and BTTS, with odds, win chance and live scores.${r.length ? ' Includes the current league table.' : ''}`,
     crumb: L.name, board: { k: 'o', off: 0, ms: POOL(leagueTest(L)), mode: 'league', spec: { id: L.id, name: L.name, names: L.names, countries: L.countries } }, top: false,
-    body: `<div class="mx">${leaguePulse(L, t, HV)}${PV.radar(L)}</div>` + standingsHtml(t, L.name, !!L.cup) + leagueWriteup(L, t, fx) + PV.linksFor(L), faq });
+    body: `<div class="mx">${leaguePulse(L, t, HV)}${PV.radar(L)}</div>` + standingsHtml(t, L.name, !!L.cup) + leagueWriteup(L, t, fx) + leagueRecord(L) + PV.linksFor(L), faq });
 }
 // Leagues hub
 page('leagues.html', { title: 'Football Leagues – Predictions by League | ZurePicks', desc: 'Pick a league: Premier League, La Liga, Serie A, Bundesliga, Ligue 1 and European cup predictions.', h1: 'Predictions by <em>league</em>', lead: 'Choose a competition to see its fixtures for the next three days, plus odds, tips and the league table.', body: `<div class="grid">${LG.map((l) => `<a href="${l.slug}-predictions.html">${logoImg(emblemOf(TABLES[l.slug]), l.name, 'lgo')} ${l.name}<small>${l.cn}</small></a>`).join('')}</div>` });
