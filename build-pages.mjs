@@ -72,6 +72,18 @@ const LG = [
   { id: 94, slug: 'primeira-liga', name: 'Primeira Liga', cn: 'Portugal', names: ['Primeira Liga', 'Liga Portugal', 'Liga Portugal Betclic'], countries: ['portugal'], intro: 'The Primeira Liga is the top division of Portuguese football: 18 clubs, each playing 34 matches.' },
   { id: 179, slug: 'scottish-premiership', name: 'Scottish Premiership', cn: 'Scotland', names: ['Premiership', 'Scottish Premiership'], countries: ['scotland'], intro: 'The Scottish Premiership is the top division of Scottish football: 12 clubs, who split into a top and a bottom six after 33 games each.' },
   { id: 253, slug: 'mls', name: 'MLS', cn: 'USA', names: ['MLS', 'Major League Soccer'], countries: ['usa'], intro: 'Major League Soccer is the top flight in the United States and Canada: 30 clubs, two conferences and a play-off race that runs deep into the autumn.' },
+  { id: 100038, slug: 'segunda-division', name: 'Segunda División', cn: 'Spain', names: ['Segunda División', 'Segunda Division', 'LaLiga 2'], countries: ['spain'], intro: 'The Segunda División is the second tier of Spanish football, one level below La Liga.' },
+  { id: 100089, slug: 'ligue-2', name: 'Ligue 2', cn: 'France', names: ['Ligue 2'], countries: ['france'], intro: 'Ligue 2 is the second tier of French football, one level below Ligue 1.' },
+  { id: 100100, slug: 'serie-b', name: 'Serie B', cn: 'Italy', names: ['Serie B'], countries: ['italy'], intro: 'Serie B is the second tier of Italian football, one level below Serie A.' },
+  { id: 100094, slug: '2-bundesliga', name: '2. Bundesliga', cn: 'Germany', names: ['2. Bundesliga', '2 Bundesliga'], countries: ['germany'], intro: 'The 2. Bundesliga is the second tier of German football, one level below the Bundesliga.' },
+  { id: 100026, slug: 'allsvenskan', name: 'Allsvenskan', cn: 'Sweden', names: ['Allsvenskan'], countries: ['sweden'], intro: 'Allsvenskan is the top division of Swedish football.' },
+  { id: 100085, slug: 'liga-profesional', name: 'Liga Profesional', cn: 'Argentina', names: ['Liga Profesional de Fútbol', 'Liga Profesional de Futbol', 'Liga Profesional'], countries: ['argentina'], intro: 'The Liga Profesional de Fútbol is the top division of Argentine football.' },
+  { id: 100080, slug: 'categoria-primera-a', name: 'Categoría Primera A', cn: 'Colombia', names: ['Categoría Primera A', 'Categoria Primera A'], countries: ['colombia'], intro: 'The Categoría Primera A is the top division of Colombian football.' },
+  { id: 41, slug: 'league-one', name: 'League One', cn: 'England', names: ['League One'], countries: ['england'], intro: 'League One is the third tier of English football, one level below the Championship.' },
+  { id: 100025, slug: 'ekstraklasa', name: 'Ekstraklasa', cn: 'Poland', names: ['Ekstraklasa'], countries: ['poland'], intro: 'The Ekstraklasa is the top division of Polish football.' },
+  { id: 100014, slug: 'pro-league', name: 'Pro League', cn: 'Belgium', names: ['Pro League', 'Jupiler Pro League'], countries: ['belgium'], intro: 'The Pro League is the top division of Belgian football.' },
+  { id: 100054, slug: 'eliteserien', name: 'Eliteserien', cn: 'Norway', names: ['Eliteserien'], countries: ['norway'], intro: 'The Eliteserien is the top division of Norwegian football.' },
+  { id: 100028, slug: 'npfl', name: 'Nigeria Premier Football League', cn: 'Nigeria', names: ['Nigeria Premier Football League', 'NPFL'], countries: ['nigeria'], intro: 'The Nigeria Premier Football League is the top division of Nigerian football.' },
   { id: 203, slug: 'super-lig', name: 'Süper Lig', cn: 'Turkey', names: ['Süper Lig', 'Super Lig', 'Trendyol Süper Lig', 'Trendyol Super Lig'], countries: ['turkey', 'turkiye'], intro: 'Turkey’s top division, where Galatasaray, Fenerbahçe and Beşiktaş chase the title in some of the loudest stadiums in the game.' },
   { id: 71, slug: 'brasileirao', name: 'Brasileirão Serie A', cn: 'Brazil', names: ['Brasileirão Serie A', 'Brasileirao Serie A', 'Brasileirão', 'Serie A Betano'], countries: ['brazil'], intro: 'Brazil’s top division: 20 clubs and 38 rounds on a calendar that follows its own rhythm, not Europe’s.' },
   { id: 262, slug: 'liga-mx', name: 'Liga MX', cn: 'Mexico', names: ['Liga MX', 'Liga MX Apertura', 'Liga MX Clausura'], countries: ['mexico'], intro: 'Mexico’s top league plays two short seasons a year, the Apertura and the Clausura, and each one ends in a Liguilla play-off.' },
@@ -201,17 +213,31 @@ for (const k in MKT) {
 const POOL = (match) => { const ahead = [0, 1, 2, 3].flatMap((o) => snapFor(o)).filter(match), t0 = dstr(0);
   const past = Object.keys(snaps).filter((d) => d < t0).sort().reverse().flatMap((d) => snaps[d]).filter(match).filter(settled).slice(0, 12); return [...ahead, ...past]; };
 const NEXT3 = () => [0, 1, 2].flatMap((o) => snapFor(o));
+// Each league gets one of several openings and closings, chosen by league and by day, so pages read differently and change on rebuild.
+const pickVariant = (seed, n) => { let h = 7; for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % n; };
 function leagueWriteup(L, t, fx) {
-  const p = [`<p>${L.intro} ZurePicks lists every ${L.name} fixture for the next three days with the bookmaker odds, the win chance for each result and a pick wherever the numbers are strong enough. Every result is tracked, so you can see how the picks perform.</p>`];
-  const r = t?.rows || [];
+  const r = t?.rows || [], n = fx.length, plural = (k, w) => `${k} ${w}${k == 1 ? '' : 's'}`, name = esc(L.name);
+  const up = fx.filter((m) => Date.parse(m.d) > Date.now()).sort((x, y) => Date.parse(x.d) - Date.parse(y.d));
+  const tips = fx.filter((m) => Object.keys(MK).some((k) => { const q = pick(m, k); return q && !q.model && q.c >= MIN[k]; })).length;
+  const first = up.slice(0, 2).map((m) => `${esc(m.h)} v ${esc(m.a)}`).join(' and ');
+  const openings = [
+    `${n ? `${plural(n, name + ' game')} are listed for the next three days` : `No ${name} games are listed for the next three days yet`}${first ? `, opening with ${first}` : ''}. ${L.intro}`,
+    `${L.intro} ${n ? `The next three days bring ${plural(n, name + ' fixture')}, each with bookmaker odds, a win chance and, where the numbers allow, a pick.` : `There are no ${name} fixtures in the next three days yet, so the board fills as bookmakers publish their prices.`}`,
+    `${tips ? `${plural(tips, name + ' match')} in the next three days ${tips == 1 ? 'carries' : 'carry'} a published pick.` : n ? `No ${name} match in the next three days has a pick yet, because none clears our win-chance threshold.` : `No ${name} picks are published yet.`} Picks only appear when the win chance clears the threshold for that market.`,
+    `Every ${name} pick on this page shows the odds it was priced at and is tracked after the final whistle, so the record builds match by match. ${L.intro}`,
+  ];
+  const closings = [
+    `Looking for ${name} predictions today? Switch between 1X2, double chance, over 1.5, over 2.5 and both teams to score (BTTS) above to compare the odds and win chance for each match, and tap any odds to build your slip.`,
+    `To compare the ${name} markets, use the tabs above: 1X2, double chance, over 1.5, over 2.5 and BTTS show the same fixtures priced differently, and tapping any odds adds it to your slip.`,
+    `Each ${name} market has its own tab above, so you can compare the same match across 1X2, double chance, over 1.5, over 2.5 and BTTS before you tap any odds into your slip.`,
+  ];
+  const p = [`<p>${openings[pickVariant(L.slug + dstr(0), openings.length)]}</p>`];
   if (r.length >= 2) {
     const [a, c, d] = r, gap = a.pts - c.pts, atk = [...r].sort((x, y) => y.gf - x.gf)[0], def = [...r].sort((x, y) => x.ga - y.ga)[0];
-    p.push(`<p>${esc(a.team)} lead the ${esc(L.name)}${L.cup ? ' league phase' : ''} on ${a.pts} points from ${a.p} games${gap > 0 ? `, ${gap} point${gap == 1 ? '' : 's'} ahead of ${esc(c.team)}` : `, level on points with ${esc(c.team)}`} (${c.pts} points).${d ? ` ${esc(d.team)} are third on ${d.pts}.` : ''} ${esc(atk.team)} have scored the most goals (${atk.gf}) and ${esc(def.team)} have conceded the fewest (${def.ga}).</p>`);
+    p.push(`<p>${esc(a.team)} lead the ${name}${L.cup ? ' league phase' : ''} on ${a.pts} points from ${a.p} games${gap > 0 ? `, ${gap} point${gap == 1 ? '' : 's'} ahead of ${esc(c.team)}` : `, level on points with ${esc(c.team)}`} (${c.pts} points).${d ? ` ${esc(d.team)} are third on ${d.pts}.` : ''} ${esc(atk.team)} have scored the most goals (${atk.gf}) and ${esc(def.team)} have conceded the fewest (${def.ga}).</p>`);
   }
-  const up = fx.filter((m) => Date.parse(m.d) > Date.now()).sort((x, y) => Date.parse(x.d) - Date.parse(y.d)), tips = fx.filter((m) => Object.keys(MK).some((k) => { const q = pick(m, k); return q && !q.model && q.c >= MIN[k]; })).length;
-  if (fx.length) p.push(`<p>There ${fx.length == 1 ? 'is 1' : 'are ' + fx.length} ${esc(L.name)} game${fx.length == 1 ? '' : 's'} in the next three days${up.length ? `, starting with ${up.slice(0, 2).map((m) => esc(m.h) + ' v ' + esc(m.a)).join(' and ')}` : ''}.${tips ? ` ${tips} of them ${tips == 1 ? 'has' : 'have'} a published tip.` : ''}</p>`);
-  p.push(`<p>Looking for ${esc(L.name)} predictions today? Switch between 1X2, double chance, over 1.5, over 2.5 and both teams to score (BTTS) above to compare the odds and win chance for each match, and tap any odds to build your slip.</p>`);
-  return `<div class="prose"><h2>${esc(L.name)} predictions and betting tips</h2>${p.join('')}</div>`;
+  p.push(`<p>${closings[pickVariant(L.slug + 'close' + dstr(0), closings.length)]}</p>`);
+  return `<div class="prose"><h2>${name} predictions and betting tips</h2>${p.join('')}</div>`;
 }
 for (const L of LG) {
   const t = TABLES[L.slug], fx = NEXT3().filter(leagueTest(L)), r = t?.rows || [];
