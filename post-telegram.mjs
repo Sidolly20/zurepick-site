@@ -19,6 +19,19 @@ async function send(text) {
   if (!r.ok || !j.ok) { console.log('Telegram error', r.status, j.description || ''); process.exit(1); }
   console.log('Telegram: sent', MODE);
 }
+// Graded slip legs from data/slip-log.json (written by log-slips.mjs). A leg counts once per slip size.
+const slipRec = (days) => {
+  let L = { legs: [] }; try { L = JSON.parse(fs.readFileSync('data/slip-log.json', 'utf8')); } catch {}
+  const seen = new Set(), out = [];
+  for (const x of L.legs) {
+    if (!days.includes(x.date) || seen.has(x.key)) continue;
+    const m = load(x.date).find((y) => y.id === x.id);
+    if (!m || !settled(m)) continue;
+    seen.add(x.key); out.push({ target: x.target, w: !!won(m, x.k, { i: x.i }) });
+  }
+  return out;
+};
+const slipLines = (R) => [2, 3, 5].map((t) => [t, sum(R.filter((x) => x.target == t))]).filter(([, x]) => x.n).map(([t, x]) => `• ${t} odds slip legs: ${x.w}/${x.n} (${x.r}%)`).join('\n');
 const sum = (R) => ({ n: R.length, w: R.filter((x) => x.w).length, r: R.length ? Math.round((R.filter((x) => x.w).length / R.length) * 100) : 0 });
 
 if (MODE == 'slips') {
@@ -38,9 +51,11 @@ if (MODE == 'slips') {
   if (!S.n) { console.log('Telegram: nothing settled yet'); process.exit(0); }
   const byK = KEYS.map((k) => [k, sum(R.filter((x) => x.k == k))]).filter(([, x]) => x.n).map(([k, x]) => `• ${h(MK[k].l)}: ${x.w}/${x.n}`).join('\n');
   let pot = ''; try { const st = JSON.parse(fs.readFileSync('data/potd.json', 'utf8')), m = st.date === day() && load(day()).find((x) => x.id === st.id); if (m && settled(m)) pot = `\n★ Pick of the day: ${h(m.h)} ${m.sc[0]}–${m.sc[1]} ${h(m.a)} (${h(MK.o.n[st.i])}) ${won(m, 'o', { i: st.i }) ? '✅ won' : '❌ lost'}\n`; } catch {}
-  await send(`📊 <b>ZurePicks · today’s results</b>\n${h(date)}\n\n${S.w} of ${S.n} published picks won (${S.r}%)\n\n${byK}\n${pot}\nEvery pick, win or lose: ${SITE}/weekly-review.html${foot}`);
+  const sl = slipLines(slipRec([day()]));
+  await send(`📊 <b>ZurePicks · today’s results</b>\n${h(date)}\n\n${S.w} of ${S.n} published picks won (${S.r}%)\n\n${byK}\n${pot}${sl ? `\n${sl}\n` : ''}\nEvery pick, win or lose: ${SITE}/weekly-review.html${foot}`);
 } else if (MODE == 'weekly') {
   const R = [1, 2, 3, 4, 5, 6, 7].flatMap((o) => rec(load(day(-o)))), S = sum(R);
   if (!S.n) { console.log('Telegram: no weekly data yet'); process.exit(0); }
-  await send(`🗓 <b>ZurePicks · weekly review</b>\n\nLast 7 days: ${S.w} of ${S.n} published picks won (${S.r}%).\nThe misses, the best calls and each market’s record: ${SITE}/weekly-review.html${foot}`);
+  const sl = slipLines(slipRec([1, 2, 3, 4, 5, 6, 7].map((o) => day(-o))));
+  await send(`🗓 <b>ZurePicks · weekly review</b>\n\nLast 7 days: ${S.w} of ${S.n} published picks won (${S.r}%).\n${sl ? `${sl}\n` : ''}The misses, the best calls and each market’s record: ${SITE}/weekly-review.html${foot}`);
 } else { console.log('Telegram: unknown mode', MODE); process.exit(1); }
