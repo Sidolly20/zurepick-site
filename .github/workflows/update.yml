@@ -34,6 +34,9 @@ jobs:
         continue-on-error: true
         env:
           FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+      # Records each slip leg shown on the site, so the Telegram results can grade it later.
+      - run: node log-slips.mjs
+        continue-on-error: true
       # Pages are built separately so a problem here can never block the data update.
       - run: node build-pages.mjs
         continue-on-error: true
