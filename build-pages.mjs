@@ -102,7 +102,6 @@ const FOOT = [
   ['Odds & tools', [['2-odds-predictions.html', '2 odds tips'], ['3-odds-predictions.html', '3 odds tips'], ['5-odds-predictions.html', '5 odds tips'], ['odds-converter.html', 'Odds converter'], ['accumulator-calculator.html', 'Accumulator calculator'], ['stake-size-calculator.html', 'Stake size calculator']]],
   ['Guides & results', [['guides.html', 'Betting guides'], ['how-to-read-football-odds.html', 'How to read odds'], ['football-betting-glossary.html', 'Betting glossary'], ['pick-of-the-day.html', 'Pick of the day record'], ['weekly-review.html', 'Weekly review'], ['archive.html', 'Results archive'], ['track-record.html', 'Track record']]],
   ['Markets', Object.values(MKT).map((x) => [x[0], x[1]])],
-  ['Leagues', LG.map((l) => [l.slug + '-predictions.html', l.name])],
   ['About', [['about.html', 'About ZurePicks'], ['how-it-works.html', 'How it works'], ['contact.html', 'Contact us'], ['https://t.me/zurepicks', 'Telegram channel'], ['responsible-gambling.html', 'Responsible gambling']]],
 ];
 const FAV = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23d9b56c'/%3E%3Cpath d='M9 10h14l-10 12h10' fill='none' stroke='%231a1304' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
@@ -140,7 +139,7 @@ function page(file, o) {
 <main class="w"><p class="crumbs">${crumbs.map((c, i) => i < crumbs.length - 1 ? `<a href="${c[1]}">${esc(c[0])}</a> › ` : esc(c[0])).join('')}</p>
 <section class="hero${o.art ? ' art' : ''}"><div class="ht">${o.eyebrow ? `<p class="eyebrow">${o.eyebrow}</p>` : ''}<h1>${o.h1}</h1><p class="lead">${o.lead}</p>${o.cta ? `<div class="cta2"><a class="mega" href="#top"><span class="mi">⚡</span><span class="mt"><b>Get today’s slips</b><small>Ready-made 2, 3 &amp; 5 odds</small></span><span class="arr">→</span></a><div class="chips3"><a href="2-odds-predictions.html"><b>2</b>odds</a><a href="3-odds-predictions.html"><b>3</b>odds</a><a href="5-odds-predictions.html"><b>5</b>odds</a></div><a class="aibox" href="ai-betting-assistant.html"><span class="spark">✦</span><span class="at"><b>AI picker <em>live</em></b><span class="tl"><span id="aiType">Build me a 3 odds slip for tomorrow</span><i class="caret"></i></span></span><span class="arr">→</span></a><div class="ghost"><a class="btn alt" href="#board">Browse all predictions</a>${file == 'index.html' ? `<a class="btn alt" href="https://wa.me/?text=${encodeURIComponent('Free football predictions and 2, 3 odds slips: ' + SITE + '/')}" target="_blank" rel="noopener">Share on WhatsApp</a>` : ''}</div><a class="tgb" href="https://t.me/zurepicks" target="_blank" rel="noopener">✈️ Join our Telegram channel for daily slips</a></div>` : ''}${b ? `<div class="kp" id="kp">${b.mode == 'league' ? statsHtml(b.ms.filter(leagueTest(b.spec)), null, 'Games listed') : statsHtml(visible(b.ms, b.k, { lg: b.lg }), HIT(b.k))}</div>` : o.kp ? `<div class="kp">${o.kp.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>` : ''}</div>${o.art ? banner(visible(b.ms, b.k, { lg: b.lg }).length, HIT(b.k)?.r ?? null) : ''}</section>
 ${o.pre || ''}${topHtml}${boardHtml}${o.body || ''}${o.faq ? faqHtml(o.faq) : ''}
-<footer><div class="fg">${FOOT.map(([t, l]) => `<div><b>${t}</b>${l.map(([h, x]) => `<a href="${h}">${x}</a>`).join('')}</div>`).join('')}</div><p><b>18+ only.</b> Percentages are estimates worked out from bookmaker odds, not guarantees, and no pick is a “sure” win. Only stake what you can afford to lose and check that betting is legal where you live. <a href="responsible-gambling.html">Get help</a>.</p><p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p></footer></main>
+<footer><div class="fg">${FOOT.map(([t, l]) => `<div><b>${t}</b>${l.map(([h, x]) => `<a href="${h}">${x}</a>`).join('')}</div>`).join('')}</div><div class=\"fl\" style=\"margin:1.6rem 0 0;border:1px solid var(--line);border-radius:14px;padding:1.2rem 1rem;text-align:center\"><b style=\"display:block;color:var(--au2);font-family:var(--fd);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.8rem\">Leagues</b><div style=\"display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1rem\">${LG.map((l) => `<a href=\"${l.slug}-predictions.html\" style=\"color:#8f98ab;font-size:.85rem;text-decoration:none;line-height:1.9\">${l.name}</a>`).join('')}</div></div><p><b>18+ only.</b> Percentages are estimates worked out from bookmaker odds, not guarantees, and no pick is a “sure” win. Only stake what you can afford to lose and check that betting is legal where you live. <a href="responsible-gambling.html">Get help</a>.</p><p>© 2026 ZurePicks · Times shown in WAT (Africa/Lagos)</p></footer></main>
 ${b ? '<script src="api-config.js"></script><script type="module" src="app.js"></script>' : ''}${o.cta ? `<script>(()=>{const e=document.getElementById('aiType');if(!e||matchMedia('(prefers-reduced-motion:reduce)').matches)return;const P=['Build me a 3 odds slip for tomorrow','2 odds, today’s games only','Shuffle me something bolder','Is there a safe-ish 5 odds today?'];let i=0,j=0,d=0;(function t(){const s=P[i];j+=d?-1:1;e.textContent=s.slice(0,j);let w=d?24:46;if(!d&&j===s.length){d=1;w=1500}else if(d&&j===0){d=0;i=(i+1)%P.length;w=380}setTimeout(t,w)})()})();</script>` : ''}</body></html>`;
   fs.writeFileSync(file, html); if (!o.noindex) PAGES.push(file);
 }
@@ -215,7 +214,7 @@ for (const k in MKT) {
 const POOL = (match) => { const ahead = [0, 1, 2, 3].flatMap((o) => snapFor(o)).filter(match), t0 = dstr(0);
   const past = Object.keys(snaps).filter((d) => d < t0).sort().reverse().flatMap((d) => snaps[d]).filter(match).filter(settled).slice(0, 12); return [...ahead, ...past]; };
 const NEXT3 = () => [0, 1, 2].flatMap((o) => snapFor(o));
-// Track record and recent results for one league, from the finished-match history (only the picks the site published).
+// Track record and recent results for one league, styled with the site's own card, stat and list components.
 const TR_KEYS = ['o', 'dc', 'ou', 'o15', 'bt'];
 function leagueRecord(L) {
   const test = leagueTest(L), ms = HV.filter((m) => test({ lg: m.lg, cn: m.cn })).sort((x, y) => (y.d > x.d ? 1 : -1));
@@ -225,23 +224,29 @@ function leagueRecord(L) {
     return { k, n: P.length, w: P.filter((m) => m.p[k][3]).length, od };
   }).filter((x) => x.n);
   const n = rows.reduce((t, x) => t + x.n, 0), w = rows.reduce((t, x) => t + x.w, 0);
-  const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
-  let out = `<div class="prose"><h2>${esc(L.name)} track record</h2>`;
-  if (n < 10) out += `<p>We have tracked ${n} published ${esc(L.name)} pick${n == 1 ? '' : 's'} so far. That is too few to read a win rate, so the full record will appear here as results come in.</p>`;
-  else {
-    out += `<p>Across ${n} published ${esc(L.name)} picks since tracking began, ${w} won (${pct(w, n)}%). Each market below lists its win rate next to the average odds it was priced at. Break-even is the win rate needed to stay even at those odds, so a lower win rate on longer odds can still pay.</p><ul>`;
-    out += rows.map((x) => `<li>${esc(MK[x.k].l)}: ${x.w} of ${x.n} won (${pct(x.w, x.n)}%), average odds ${x.od.toFixed(2)}, break-even ${Math.round(100 / x.od)}%</li>`).join('');
-    out += `</ul>`;
-  }
+  const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0), name = esc(L.name);
+  const card = (title, body) => `<section class="mx-card"><h2>${title}</h2>${body}</section>`;
+
+  let rec;
+  if (n < 10) rec = `<p class="mut" style="margin:0">We have tracked ${n} published ${name} pick${n == 1 ? '' : 's'} so far. The win rate will appear here once there are 10.</p>`;
+  else rec = `<div class="kp"><div><b>${pct(w, n)}%</b><span>Overall · ${w} of ${n} picks</span></div>` +
+    rows.map((x) => `<div><b>${pct(x.w, x.n)}%</b><span>${esc(MK[x.k].l)} · ${x.w} of ${x.n} · avg ${x.od.toFixed(2)} · break-even ${Math.round(100 / x.od)}%</span></div>`).join('') +
+    `</div><p class="mut" style="margin:.7rem 0 0;font-size:.82rem">Break-even is the win rate needed to stay even at the average odds, so a lower win rate on longer odds can still pay.</p>`;
+
   const recent = ms.slice(0, 8);
-  if (recent.length) {
-    out += `<h3>Recent ${esc(L.name)} results</h3><ul>` + recent.map((m) => {
-      const picks = TR_KEYS.filter((k) => m.p[k] && m.p[k][2] != null && m.p[k][1] >= MIN[k]).map((k) => `${esc(MK[k].n[m.p[k][0]])} ${m.p[k][3] ? '✅' : '❌'}`);
-      return `<li>${esc(m.d)}: ${esc(m.h)} ${m.sc[0]}–${m.sc[1]} ${esc(m.a)}${picks.length ? ` · ${picks.join(', ')}` : ''}</li>`;
-    }).join('') + `</ul>`;
-  }
+  const list = recent.map((m) => {
+    const picks = TR_KEYS.filter((k) => m.p[k] && m.p[k][2] != null && m.p[k][1] >= MIN[k]).map((k) => {
+      const ok = !!m.p[k][3], col = ok ? 'var(--g)' : 'var(--no)';
+      return `<span style="font-size:.72rem;font-weight:700;padding:.2rem .6rem;border-radius:999px;border:1px solid ${col};color:${col};white-space:nowrap">${esc(MK[k].l)} · ${ok ? 'Won' : 'Lost'}</span>`;
+    }).join('');
+    return `<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.4rem .9rem;padding:.8rem 0;border-top:1px solid var(--line)"><div style="min-width:0"><div class="mut" style="font-size:.74rem">${esc(m.d)}</div><div style="font-weight:700">${esc(m.h)} <span style="font-family:var(--fd);font-weight:800;padding:0 .3rem">${m.sc[0]}–${m.sc[1]}</span> ${esc(m.a)}</div></div><div style="display:flex;flex-wrap:wrap;gap:.35rem">${picks}</div></div>`;
+  }).join('');
+
+  let out = `<div class="mx">${card(`${name} track record`, rec)}`;
+  if (recent.length) out += card(`Recent ${name} results`, `<div>${list}</div>`);
   return out + `</div>`;
 }
+
 // Each league gets one of several openings and closings, chosen by league and by day, so pages read differently and change on rebuild.
 const pickVariant = (seed, n) => { let h = 7; for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % n; };
 function leagueWriteup(L, t, fx) {
@@ -260,12 +265,18 @@ function leagueWriteup(L, t, fx) {
     `To compare the ${name} markets, use the tabs above: 1X2, double chance, over 1.5, over 2.5 and BTTS show the same fixtures priced differently, and tapping any odds adds it to your slip.`,
     `Each ${name} market has its own tab above, so you can compare the same match across 1X2, double chance, over 1.5, over 2.5 and BTTS before you tap any odds into your slip.`,
   ];
-  const p = [`<p>${openings[pickVariant(L.slug + dstr(0), openings.length)]}</p>`];
+  // Some leagues have fixtures but no published prices yet (for example NPFL): say so instead of describing odds that are not there.
+  const priced = fx.filter((m) => { const q = pick(m, 'o'); return q && q.od; }).length;
+  const noOdds = n > 0 && priced === 0, partialOdds = n > 0 && priced > 0 && priced < n;
+  const partialOpening = `${plural(n, name + ' game')} ${n == 1 ? 'is' : 'are'} listed for the next three days. Bookmakers have published odds for ${priced} of ${n === 1 ? 'it' : 'them'} so far, and the rest will be priced as their odds are released. ${L.intro}`;
+  const noOddsOpening = `${n ? plural(n, name + ' game') : 'No ' + name + ' games'} ${n == 1 ? 'is' : 'are'} listed for the next three days, but bookmakers have not published odds for ${n == 1 ? 'it' : 'them'} yet, so there are no win chances or picks to show. ${L.intro} The prices will appear here as soon as they are released.`;
+  const noOddsClosing = `Odds for ${name} fixtures appear here once bookmakers publish them. Until then, the fixtures and the league table are the most useful parts of this page.`;
+  const p = [`<p>${noOdds ? noOddsOpening : partialOdds ? partialOpening : openings[pickVariant(L.slug + dstr(0), openings.length)]}</p>`];
   if (r.length >= 2) {
     const [a, c, d] = r, gap = a.pts - c.pts, atk = [...r].sort((x, y) => y.gf - x.gf)[0], def = [...r].sort((x, y) => x.ga - y.ga)[0];
     p.push(`<p>${esc(a.team)} lead the ${name}${L.cup ? ' league phase' : ''} on ${a.pts} points from ${a.p} games${gap > 0 ? `, ${gap} point${gap == 1 ? '' : 's'} ahead of ${esc(c.team)}` : `, level on points with ${esc(c.team)}`} (${c.pts} points).${d ? ` ${esc(d.team)} are third on ${d.pts}.` : ''} ${esc(atk.team)} have scored the most goals (${atk.gf}) and ${esc(def.team)} have conceded the fewest (${def.ga}).</p>`);
   }
-  p.push(`<p>${closings[pickVariant(L.slug + 'close' + dstr(0), closings.length)]}</p>`);
+  p.push(`<p>${noOdds ? noOddsClosing : closings[pickVariant(L.slug + 'close' + dstr(0), closings.length)]}</p>`);
   return `<div class="prose"><h2>${name} predictions and betting tips</h2>${p.join('')}</div>`;
 }
 for (const L of LG) {
