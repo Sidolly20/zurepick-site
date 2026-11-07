@@ -90,17 +90,17 @@ let best=null;
 for(let k=minL;k<=maxL;k++)for(let w=0;w<=W;w++){let s=dp[k][w];if(!s)continue;const lg=[];for(;s&&s.g;s=s.p)lg.push(s.g);
 const prod=lg.reduce((t,g)=>t*g.od,1);if(prod<lo||prod>hi)continue;
 let pr=1,pen=1;const lc={};lg.forEach(g=>{pr*=g.c/100;lc[g.m.lg]=(lc[g.m.lg]||0)+1;if(lc[g.m.lg]>1)pen*=.98});pr*=pen;
-if(!best||pr>best.pr)best={legs:lg,prod,pr}}
+const sc=pr*(.9+.2*Math.min(...lg.map(g=>g.c/100)));if(!best||sc>best.sc)best={legs:lg,prod,pr,sc}}
 return best}
 let lastKey='';
 function build(pool,lo,hi,maxL,minL,sd){let r=null;for(let t=0;t<(sd?4:1);t++){r=dpPick(pool,lo,hi,maxL,minL,sd);if(!r)return[];const k=r.legs.map(g=>gid(g)+g.k+g.i).sort().join();if(k!==lastKey){lastKey=k;return[r]}}return[r]}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800)}
 function count(el,to,dec,suf){const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/900);el.textContent=(to*k).toFixed(dec)+(suf||'');if(k<1)requestAnimationFrame(f)})(t0)}
 const U='https://sidolly20.github.io/zurepick-site/ai-betting-assistant.html';
-function show(r,n,d){cur={r,n,d};const tot=r.legs.reduce((t,g)=>t*g.od,1),ch=Math.round(r.pr*100);
+function show(r,n,d,st){cur={r,n,d};const tot=r.legs.reduce((t,g)=>t*g.od,1),ch=Math.round(r.pr*100);
 const rows=r.legs.slice().sort((a,b)=>Date.parse(a.m.d)-Date.parse(b.m.d)).map((g,i)=>{const c=Math.round(g.c),tag=c>=80?'Strong':c>=70?'Solid':'Fair';return `<div class="tk-leg" style="animation-delay:${.3+i*.15}s"><div><b>${esc(g.m.h)} v ${esc(g.m.a)}</b><small>${esc(g.m.lg)} · ${hm(g.m.d)}</small><div class="tk-pick">${esc(g.lb)}</div></div><strong>${g.od.toFixed(2)}</strong><div class="tk-bar" aria-hidden="true"><i data-w="${c}"></i></div><div class="tk-conf">${tag} pick · ${c}% chance</div></div>`}).join('');
 const txt=n+' odds '+d+' ('+tot.toFixed(2)+')\n'+r.legs.map(g=>g.m.h+' v '+g.m.a+' – '+g.lb+' @'+g.od.toFixed(2)).join('\n'),tx=encodeURIComponent(txt+'\n'+U);
-$('tk').innerHTML=`<div class="tk-top"><button class="tk-x" id="cl" type="button" aria-label="Close">×</button><small>${d==='today'?'Today':'Tomorrow'}, ${lab(Date.parse(D[d]+'T12:00:00Z'))} · ${n} odds slip</small><h2>Your slip is ready</h2></div><div class="tk-tear"></div><div class="tk-list">${rows}</div><div class="tk-sum"><div><small>Total odds</small><b id="to">0.00</b></div><div><small>Combined chance</small><b id="tc">0%</b></div></div><p class="tk-note">${r.legs.length} games chosen to spread the risk: many safer legs instead of a few risky ones.</p><div class="tk-act"><button class="m" id="sf" type="button">Shuffle</button><button id="cp" type="button">Copy slip</button><a href="https://wa.me/?text=${tx}" target="_blank" rel="noopener">WhatsApp</a><a href="https://t.me/share/url?url=${encodeURIComponent(U)}&text=${tx}" target="_blank" rel="noopener">Telegram</a><button class="t" id="cl2" type="button">Close</button></div><p class="tk-warn">Chances are worked out from bookmaker odds and are not guarantees. 18+ only. Bet responsibly.</p>`;
+$('tk').innerHTML=`<div class="tk-top"><button class="tk-x" id="cl" type="button" aria-label="Close">×</button><small>${d==='today'?'Today':'Tomorrow'}, ${lab(Date.parse(D[d]+'T12:00:00Z'))} · ${n} odds slip</small><h2>Your slip is ready</h2></div><div class="tk-tear"></div><div class="tk-list">${rows}</div><div class="tk-sum"><div><small>Total odds</small><b id="to">0.00</b></div><div><small>Combined chance</small><b id="tc">0%</b></div></div><p class="tk-note">${r.legs.length} games: the lowest-risk mix found at these odds. Searched ${st.g} games across ${st.k} market types${st.x?'':' (extra markets not loaded yet)'}.</p><div class="tk-act"><button class="m" id="sf" type="button">Shuffle</button><button id="cp" type="button">Copy slip</button><a href="https://wa.me/?text=${tx}" target="_blank" rel="noopener">WhatsApp</a><a href="https://t.me/share/url?url=${encodeURIComponent(U)}&text=${tx}" target="_blank" rel="noopener">Telegram</a><button class="t" id="cl2" type="button">Close</button></div><p class="tk-warn">Chances are worked out from bookmaker odds and are not guarantees. 18+ only. Bet responsibly.</p>`;
 const tk=$('tk');tk.style.animation='none';void tk.offsetWidth;tk.style.animation='';$('sheet').classList.add('on');
 setTimeout(()=>{document.querySelectorAll('#tk .tk-bar i').forEach(b=>b.style.width=b.dataset.w+'%');count($('to'),tot,2);count($('tc'),ch,0,'%')},450);
 $('cl').onclick=$('cl2').onclick=close;$('sf').onclick=()=>{seed[n+d]=(seed[n+d]||0)+1;run(n,d)};
@@ -109,10 +109,11 @@ function close(){$('sheet').classList.remove('on')}
 const steps=['Reading live odds…','Removing bookmaker margin…','Testing combinations…','Building your slip…'];
 async function run(n,d){if(busy)return;busy=true;day=d;sync();$('note').textContent='';close();const sc=$('scan'),tx=$('stxt');let i=0;tx.textContent=steps[0];sc.classList.add('on');
 const iv=setInterval(()=>{i++;if(i<steps.length)tx.textContent=steps[i]},420),t0=Date.now();
-const ms=await load(D[d]),pool=legs(ms),[lo,hi]=n==2?[1.85,2.3]:[2.7,3.4],sl=pool.length?build(pool,lo,hi,n==2?4:6,n==2?2:3,seed[n+d]||0):[];
+const ms=await load(D[d]),pool=legs(ms),rg=n==2?[[1.95,2.15],[1.85,2.3]]:[[2.9,3.2],[2.7,3.4]],mx=n==2?4:6,mn=n==2?2:3,sd=seed[n+d]||0;let sl=pool.length?build(pool,rg[0][0],rg[0][1],mx,mn,sd):[];if(!sl.length&&pool.length)sl=build(pool,rg[1][0],rg[1][1],mx,mn,sd);
+const st={g:new Set(pool.map(gid)).size,k:new Set(pool.map(g=>g.k)).size,x:ms.filter(m=>m.mk&&m.mk.length).length};
 const w=Math.max(0,1700-(Date.now()-t0));await new Promise(r=>setTimeout(r,w));clearInterval(iv);sc.classList.remove('on');busy=false;
 if(!sl.length){$('note').textContent=ms.length?`No safe ${n} odds slip in ${d}’s games yet. Prices appear as bookmakers publish them, so try later or try the other day.`:`No games with odds for ${d} yet. Prices usually appear a day or two before kick-off, so check back soon.`;return}
-show(sl[0],n,d)}
+show(sl[0],n,d,st)}
 function sync(){$('dT').setAttribute('aria-pressed',day==='today');$('dM').setAttribute('aria-pressed',day==='tomorrow')}
 $('dT').onclick=()=>{day='today';sync()};$('dM').onclick=()=>{day='tomorrow';sync()};
 $('g2').onclick=()=>run(2,day);$('g3').onclick=()=>run(3,day);
