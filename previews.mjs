@@ -66,7 +66,7 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
       const ms = snaps[today] || [], tips = ms.filter((m) => KEYS.some((k) => { const q = pick(m, k); return q && !q.model && q.c >= MIN[k]; })).length;
       const S = summary([...Array(7)].flatMap((_, i) => rec(snaps[dstr(-(i + 1))] || []))), lg = new Set(ms.map((m) => m.li)).size;
       const T = (v, l, h) => `<${h ? 'a href="' + h + '"' : 'div'}><b>${v}</b><span>${l}</span></${h ? 'a' : 'div'}>`;
-      return `<div class="mx-strip">${T(ms.length, 'Games today')}${T(tips, 'Tips published')}${T(S.r == null ? '–' : S.r + '%', 'Won, last 7 days', 'track-record.html')}${T(lg, 'Leagues today')}</div>${api.potd()}`;
+      return `<div class="mx-strip">${T(ms.length, 'Games today')}${T(tips, 'Tips published')}${T(S.r == null ? '–' : S.r + '%', 'Won, last 7 days', 'track-record.html')}${T(lg, 'Leagues today')}</div>${api.potd('last')}`;
     },
     radarAll() {
       const l = upcoming(items).filter((it) => it.d <= dstr(1)).map((it) => ({ it, p: pick(it.m, 'o'), g: TAGS[it.file] || {} })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((a, b) => (b.g.tag ? 1 : 0) - (a.g.tag ? 1 : 0) || b.p.c - a.p.c).slice(0, 6);
@@ -189,7 +189,8 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     return hist;
   }
   const badge = (e) => e.res ? `<span class="pr ${e.res == 'won' ? 'w' : 'l'}">${e.res == 'won' ? '✓ Won' : '✗ Lost'} ${e.sc[0]}–${e.sc[1]}</span>` : '';
-  api.potd = () => {
+  let potdNow = null; // today's pick of the day, kept so the home page hero can show it too
+  api.potd = (parts = 'all') => {
     const F = 'data/potd.json'; let st = {}; try { st = JSON.parse(fs.readFileSync(F, 'utf8')); } catch {}
     let hist = updateHist(st.id ? st : null);
     let it = st.date === today ? items.find((x) => x.m.id === st.id) : null;
@@ -200,9 +201,16 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     }
     const past = hist.filter((e) => e.date < today && e.res), rec7 = past.slice(0, 7), w7 = rec7.filter((e) => e.res == 'won').length;
     let html = '';
-    if (it) { const m = it.m, e = hist.find((x) => x.date == today); html += `<a class="potd" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="pt">★ Pick of the day</span><b>${esc(m.h)} vs ${esc(m.a)}</b><span class="pp">${MK.o.n[st.i]} · ${st.c}% chance · odds ${Number(st.od).toFixed(2)}${e ? badge(e) : ''}</span><small>${esc(it.L.name)} · ${sd(m.d)}, ${hm(m.d)} WAT · tap for the full preview</small></a>`; }
+    potdNow = it ? { it, st, e: hist.find((x) => x.date == today) } : null;
+    if (it && parts != 'last') { const m = it.m, e = hist.find((x) => x.date == today); html += `<a class="potd" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="pt">★ Pick of the day</span><b>${esc(m.h)} vs ${esc(m.a)}</b><span class="pp">${MK.o.n[st.i]} · ${st.c}% chance · odds ${Number(st.od).toFixed(2)}${e ? badge(e) : ''}</span><small>${esc(it.L.name)} · ${sd(m.d)}, ${hm(m.d)} WAT · tap for the full preview</small></a>`; }
     if (past.length) { const y = past[0]; html += `<a class="potd-last" href="pick-of-the-day.html"><span><b>Last pick of the day</b> ${esc(y.h)} ${y.sc[0]}–${y.sc[1]} ${esc(y.a)} ${badge(y).replace(/ \d+–\d+/, '')}</span><small>Record: ${w7} of ${rec7.length} recent picks won · see every pick of the day →</small></a>`; }
     return html;
+  };
+  // The big button at the top of the home page: today's pick of the day (empty when there is no pick yet).
+  api.potdHero = () => {
+    if (!potdNow) return '';
+    const { it, st, e } = potdNow, m = it.m;
+    return `<a class="mega potd-hero" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="mi">★</span><span class="mt"><small class="pt">Pick of the day</small><b>${esc(m.h)} vs ${esc(m.a)}</b><small class="pp">${MK.o.n[st.i]} · ${st.c}% · odds ${Number(st.od).toFixed(2)}${e ? badge(e) : ''}</small></span><span class="arr">→</span></a>`;
   };
   function potdArchive() {
     const hist = updateHist(null), done = hist.filter((e) => e.res), w = done.filter((e) => e.res == 'won').length;
