@@ -1,4 +1,4 @@
-import { setPreviews, setCrests, settled, won, MK, TZ, board, comboHtml, combos, statsHtml, state, visible, fixturesByDay, leagueTest } from './render.js';
+import { setPreviews, setCrests, settled, won, MK, TZ, board, comboHtml, combos, singleHtml, statsHtml, state, visible, fixturesByDay, leagueTest } from './render.js';
 try { setCrests(await (await fetch('data/crests.json')).json()); } catch {}
 try { setPreviews(await (await fetch('data/previews.json')).json()); } catch {}
 const $ = (s) => document.querySelector(s), B = $('#board');
@@ -46,7 +46,8 @@ if (B) {
   }
   // The combo slips use upcoming games from today, tomorrow and the day after, whichever day is selected below.
   const dayK = (t) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(t), forDay = (p, off) => p.filter((m) => dayK(Date.parse(m.d)) === dayK(Date.now() + off * 864e5));
-  function paintTop() { const t = $('#top'); if (!t || !S.pool) return; const h = comboHtml(forDay(S.pool, +(t.dataset.off || 0))); if (h !== S.lastTop) { const was = [...t.querySelectorAll('.cbx')].map((c) => c.classList.contains('open')); S.lastTop = h; t.innerHTML = h; t.querySelectorAll('.cbx').forEach((c, i) => { if (was[i]) { c.classList.add('open'); c.querySelector('.tg')?.setAttribute('aria-expanded', 'true'); } }); } }
+  function paintSingle() { const g = $('#single-list'); if (!g || !S.pool) return; const h = singleHtml(forDay(S.pool, +(g.dataset.off || 0)), Date.now(), { when: +(g.dataset.off || 0) === 1 ? 'Tomorrow’s' : 'Today’s' }); if (h !== S.lastSg) { S.lastSg = h; g.innerHTML = h; } }
+  function paintTop() { paintSingle(); const t = $('#top'); if (!t || !S.pool) return; const h = comboHtml(forDay(S.pool, +(t.dataset.off || 0))); if (h !== S.lastTop) { const was = [...t.querySelectorAll('.cbx')].map((c) => c.classList.contains('open')); S.lastTop = h; t.innerHTML = h; t.querySelectorAll('.cbx').forEach((c, i) => { if (was[i]) { c.classList.add('open'); c.querySelector('.tg')?.setAttribute('aria-expanded', 'true'); } }); } }
   async function loadPool() {
     let all = [];
     for (const d of (LMODE ? [-3, -2, -1, 0, 1, 2, 3] : [0, 1, 2]).map(day)) {

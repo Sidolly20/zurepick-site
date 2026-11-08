@@ -630,3 +630,19 @@ main .sf a,main .sf button{background:rgba(255,255,255,.04);border-color:var(--l
   main.dayp .mega.potd-hero .mt b{font-size:.92rem}
   main.dayp .mega.potd-hero .mt .pp{font-size:.72rem}
 }
+
+/* ---- Single shot cards ---- */
+.singles{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));margin:.6rem 0 1.2rem}
+.sgl{position:relative;overflow:hidden;padding:1rem 1.05rem 1.05rem;border-radius:20px;background:linear-gradient(160deg,color-mix(in srgb,var(--g) 14%,var(--card)),var(--card) 62%);border:1px solid color-mix(in srgb,var(--g) 35%,var(--line));box-shadow:var(--sh)}
+.sgl::after{content:"";position:absolute;right:-40px;top:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--g) 30%,transparent),transparent);pointer-events:none}
+.sgl.bk{background:var(--card);border-color:var(--line)}.sgl.bk::after{display:none}
+.sg-h{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+.sg-h span{font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--g)}
+.sg-h b{font-family:var(--fd);font-size:1.45rem;line-height:1;padding:.3rem .6rem;border-radius:12px;background:var(--pk);color:var(--g)}
+.sg-m{margin:.75rem 0 .1rem}.sg-m b{display:block;font-size:1rem;line-height:1.25}.sg-m small{color:var(--mut);font-size:.78rem}
+.sg-p{font-family:var(--fd);font-size:1.35rem;font-weight:700;margin:.35rem 0 .6rem}
+.sg-bar{height:7px;border-radius:9px;background:var(--line);overflow:hidden}.sg-bar i{display:block;height:100%;border-radius:9px;background:var(--g)}
+.sg-c{margin:.55rem 0 .7rem;font-size:.84rem;color:var(--mut);line-height:1.45}.sg-c b{color:var(--ink)}
+.sg-s{display:inline-block;font-size:.8rem;font-weight:700;color:var(--g);text-decoration:none;padding:.4rem .75rem;border:1px solid color-mix(in srgb,var(--g) 40%,var(--line));border-radius:99px}
+.sgl.empty{grid-column:1/-1}.sgl.empty::after{display:none}
+@media(max-width:720px){#single{margin-top:1.4rem}}

@@ -149,6 +149,51 @@ function comboHtmlInner(ms, now = Date.now(), opt = {}) {
     : `<div class="cbx"><div class="ch"><span>${c.short ? 'Best available' : c.target + '+ odds'}</span><b>${c.od.toFixed(2)}</b></div><div class="cm">${c.legs.length} games · ${c.chance}% combined chance${c.minC < 65 ? ' · includes picks from ' + c.minC + '%' : ''}</div><button type="button" class="tg" aria-expanded="false"><span class="t1">See ${c.legs.length} games ▾</span><span class="t2">Hide games ▴</span></button>${c.legs.map((x) => `<div class="cl"><time>${tag(x.m) ? `<small>${tag(x.m)}</small>` : ''}${hm(x.m.d)}</time><div><b>${esc(x.m.h)} v ${esc(x.m.a)}</b><small>${esc(x.m.lg)}</small></div><span class="tag">${esc(MK[x.k].n[x.i])}</span><span class="mono">${x.od.toFixed(2)}</span></div>`).join('')}${opt.share ? `<a class="cb" href="https://wa.me/?text=${encodeURIComponent(c.target + ' odds slip (' + c.od.toFixed(2) + ')\n' + c.legs.map((x) => x.m.h + ' v ' + x.m.a + ' – ' + MK[x.k].n[x.i] + ' @' + x.od.toFixed(2)).join('\n') + '\nhttps://sidolly20.github.io/zurepick-site/')}" target="_blank" rel="noopener">Share this slip on WhatsApp</a>` : `<button type="button" class="cb" data-t="${c.target}">Add ${c.legs.length} games to slip</button>`}</div>`).join('');
 }
 
+// ---- Single shot: ONE game priced around 2.00, the outcome the market rates most likely inside that price band. ----
+// Looks at every market we hold (1X2, double chance, goals lines, both teams score and the extra markets), keeps one outcome
+// per game and returns at most two games: the shot of the day and a backup. Never a combo, never more than two.
+export const SINGLE_BAND = [1.85, 2.3];
+export const XM = { h05: ['Home team over 0.5 goals', 'Home team under 0.5 goals'], h15: ['Home team over 1.5 goals', 'Home team under 1.5 goals'], a05: ['Away team over 0.5 goals', 'Away team under 0.5 goals'], a15: ['Away team over 1.5 goals', 'Away team under 1.5 goals'], o05: ['Over 0.5 goals', 'Under 0.5 goals'], u35: ['Over 3.5 goals', 'Under 3.5 goals'], u45: ['Over 4.5 goals', 'Under 4.5 goals'], ht05: ['Over 0.5 first-half goals', 'Under 0.5 first-half goals'], dnb: ['Home to win (draw no bet)', 'Away to win (draw no bet)'], ahh15: ['Home +1.5 handicap', 'Away -1.5 handicap'], aha15: ['Away +1.5 handicap', 'Home -1.5 handicap'] };
+export function singles(ms, now = Date.now(), max = 2, past = false) {
+  // Try the tight band around 2.00 first (1.90 to 2.20); only widen it when fewer than two games qualify.
+  // past = true replays an old day: every finished game counts and only the standard markets are used.
+  for (const band of [[1.9, 2.2], SINGLE_BAND]) { const r = singlesIn(ms, now, max, band, past); if (r.length >= max) return r; if (band === SINGLE_BAND) return r; }
+}
+function singlesIn(ms, now, max, band, past = false) {
+  const cands = [], add = (m, mkt, i, od, q, label) => { if (od >= band[0] && od <= band[1]) cands.push({ m, k: mkt, i, od, c: Math.round(q[i] * 100), p: q[i], label }); };
+  for (const m of ms) {
+    if (past ? !settled(m) : state(m, now).k != 'ns') continue;
+    for (const k in MK) {
+      const od = m[k]; if (!od || od.some((x) => !(x > 1))) continue;
+      let q; if (k == 'dc') { if (!m.o || m.o.some((x) => !(x > 1))) continue; const p = norm(m.o); q = [p[0] + p[1], p[0] + p[2], p[1] + p[2]]; } else q = norm(od);
+      od.forEach((o, i) => add(m, k, i, o, q, MK[k].n[i]));
+    }
+    if (!past) for (const x of m.mk || []) { const lb = XM[x[0]], o = [x[1], x[2]]; if (!lb || o.some((v) => !(v > 1))) continue; const q = norm(o); o.forEach((v, i) => add(m, 'x:' + x[0], i, v, q, lb[i])); }
+  }
+  cands.sort((a, b) => b.p - a.p || Math.abs(a.od - 2) - Math.abs(b.od - 2));
+  const out = [], seen = new Set();
+  for (const x of cands) { if (seen.has(x.m.id)) continue; seen.add(x.m.id); out.push(x); if (out.length >= max) break; }
+  return out;
+}
+// Replay: what the single shot would have been on every earlier day we hold, and how it did. Honest numbers, wins and losses.
+export function singleRecord(snapsByDate, today, days = 30) {
+  const dates = Object.keys(snapsByDate).filter((d) => d < today).sort().slice(-days), out = { days: 0, n: 0, w: 0, ret: 0, b: { n: 0, w: 0 }, last: [] };
+  for (const d of dates) {
+    const L = singles(snapsByDate[d] || [], 0, 2, true); if (!L.length) continue; out.days++;
+    L.forEach((x, i) => { const win = MK[x.k] && settled(x.m) && MK[x.k].ev(x.i, x.m.sc[0], x.m.sc[1]); if (i == 0) { out.n++; if (win) { out.w++; out.ret += x.od; } out.last.push({ d, m: x.m, label: x.label, od: x.od, c: x.c, win: !!win }); } else { out.b.n++; if (win) out.b.w++; } });
+  }
+  out.profit = out.ret - out.n; out.last = out.last.slice(-10).reverse(); return out;
+}
+const sgNote = (c) => c >= 56 ? 'The market rates this clearly better than a coin flip.' : c >= 50 ? 'Slightly better than a coin flip, which is about the best any price near 2.00 can offer.' : 'Close to a coin flip. That is normal at these odds.';
+export function singleHtml(ms, now = Date.now(), opt = {}) {
+  const L = singles(ms, now), when = opt.when || 'Today’s';
+  if (!L.length) return `<div class="sgl empty"><p>${when} single shot is still being prepared. It appears as soon as games near 2.00 odds are priced, so check back soon.</p></div>`;
+  return L.map((x, n) => {
+    const share = 'https://wa.me/?text=' + encodeURIComponent((n ? 'Backup shot' : 'Single shot') + ': ' + x.m.h + ' v ' + x.m.a + ' – ' + x.label + ' @' + x.od.toFixed(2) + '\nhttps://sidolly20.github.io/zurepick-site/single-shot-predictions.html');
+    return `<article class="sgl${n ? ' bk' : ''}"><div class="sg-h"><span>${n ? 'Backup shot' : 'Single shot'}</span><b>${x.od.toFixed(2)}</b></div><div class="sg-m"><b>${esc(x.m.h)} v ${esc(x.m.a)}</b><small>${esc(x.m.lg)} · ${hm(x.m.d)}</small></div><div class="sg-p">${esc(x.label)}</div><div class="sg-bar" aria-hidden="true"><i style="width:${x.c}%"></i></div><p class="sg-c"><b>${x.c}% chance.</b> ${sgNote(x.c)}</p><a class="sg-s" href="${share}" target="_blank" rel="noopener">Share on WhatsApp</a></article>`;
+  }).join('');
+}
+
 // ---- League pages: all fixtures of one league for the next days, grouped by day (with or without a pick) ----
 export const normName = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
 export function leagueTest(spec) {
