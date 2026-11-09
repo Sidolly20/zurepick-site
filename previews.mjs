@@ -54,6 +54,7 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
   for (const L of LG) for (const r of TABLES[L.slug]?.rows || []) { const k = teamKey(r.team); if (!k || teamFile[k]) continue; teamFile[k] = { file: `team-${slug(r.team)}.html`, L, r }; }
   const fileCount = {}; for (const v of Object.values(teamFile)) fileCount[v.file] = (fileCount[v.file] || 0) + 1;
   for (const v of Object.values(teamFile)) if (fileCount[v.file] > 1) v.file = v.file.replace('.html', '-' + v.L.slug + '.html');
+  for (const [k, v] of Object.entries(teamFile)) matchFile['t:' + k] = v.file; // lets the league table and fixture rows link to team pages
   const tlink = (name) => { const t = teamFile[teamKey(name)]; return t ? `<a href="${t.file}">${esc(name)}</a>` : esc(name); };
 
   const upcoming = (arr) => arr.filter((it) => it.d >= today && !settled(it.m)).sort((a, b) => Date.parse(a.m.d) - Date.parse(b.m.d));

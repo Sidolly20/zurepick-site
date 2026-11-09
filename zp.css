@@ -646,3 +646,6 @@ main .sf a,main .sf button{background:rgba(255,255,255,.04);border-color:var(--l
 .sg-s{display:inline-block;font-size:.8rem;font-weight:700;color:var(--g);text-decoration:none;padding:.4rem .75rem;border:1px solid color-mix(in srgb,var(--g) 40%,var(--line));border-radius:99px}
 .sgl.empty{grid-column:1/-1}.sgl.empty::after{display:none}
 @media(max-width:720px){#single{margin-top:1.4rem}}
+
+/* team links inside tables and rows */
+.tl{color:inherit;text-decoration:none}.tl:hover,.tl:focus-visible{text-decoration:underline;text-decoration-color:var(--g);text-underline-offset:3px}
