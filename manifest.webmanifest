@@ -3,8 +3,8 @@
  "short_name": "ZurePicks",
  "start_url": "./",
  "display": "standalone",
- "background_color": "#0b0f0d",
- "theme_color": "#0b8a52",
+ "background_color": "#06080e",
+ "theme_color": "#06080e",
  "icons": [
   {
    "src": "icon-192.png",
