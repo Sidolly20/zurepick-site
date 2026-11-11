@@ -26,8 +26,9 @@ export function pick(m, k) {
 // Quality bar: a pick is only published when its implied chance reaches this level (own tracked results: 1X2 picks under 60% won ~45-50%, 60%+ won ~80%).
 export const MIN = { o: 60, dc: 75, ou: 60, o15: 75, bt: 60 };
 export function visible(ms, k, o = {}) {
-  const min = o.min === undefined || o.min === '' || o.min === null ? MIN[k] : +o.min; // min 0 = show every pick
-  let L = ms.filter((m) => { const p = pick(m, k); return p && p.c >= min && (!o.lg || m.li == o.lg) && (!o.match || o.match(m)); });
+  const all = o.min === 'all'; // "All games": list every game we hold, with or without odds or a pick
+  const min = all || o.min === undefined || o.min === '' || o.min === null ? MIN[k] : +o.min; // min 0 = show every pick
+  let L = ms.filter((m) => { const p = pick(m, k); return (all || (p && p.c >= min)) && (!o.lg || m.li == o.lg) && (!o.match || o.match(m)); });
   if (o.q) { const q = o.q.toLowerCase(); L = L.filter((m) => (m.h + ' ' + m.a + ' ' + m.lg + ' ' + m.cn).toLowerCase().includes(q)); }
   return L;
 }
@@ -74,10 +75,12 @@ const lgLogo = (m) => { const s = lgSrc(m); return s ? `<img src="${esc(s)}" alt
 export function board(ms, k, o = {}) {
   let L = visible(ms, k, o);
   if (o.max) L = L.slice().sort((a, b) => (pick(b, k)?.c || 0) - (pick(a, k)?.c || 0)).slice(0, o.max);
+  if (!L.length && o.min === 'all') return '<div class="empty">No games found for this day yet. The schedule fills in as our data feed updates.</div>';
   if (!L.length) return '<div class="empty">No picks meet our quality bar for this day yet. We only publish games where the chance is strong enough, so quiet days are normal.</div>';
+  const hint = o.min === 'all' ? `<div class="empty" style="padding:10px 14px;margin-bottom:10px">Showing all ${L.length} games in our data for this day. Games without a tip have no odds yet or did not pass our quality bar.</div>` : '';
   const G = {}; for (const m of L) (G[m.li + '|' + m.cn + '|' + m.lg] ??= []).push(m);
   const rank = (g) => { const i = PRIO.indexOf(+g.split('|')[0]); return i < 0 ? 99 : i; };
-  return Object.keys(G).sort((a, b) => rank(a) - rank(b) || G[b].length - G[a].length || a.localeCompare(b)).map((g) => {
+  return hint + Object.keys(G).sort((a, b) => rank(a) - rank(b) || G[b].length - G[a].length || a.localeCompare(b)).map((g) => {
     const [, cn, lg] = g.split('|'), x = G[g].sort((a, b) => a.d.localeCompare(b.d));
     return `<section class="lg"><h3>${lgLogo(x[0])}<span>${esc(cn)} · ${esc(lg)}</span><em>${x.length}</em></h3>${x.map((m) => row(m, k)).join('')}</section>`;
   }).join('');

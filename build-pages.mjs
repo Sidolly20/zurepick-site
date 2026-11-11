@@ -191,7 +191,7 @@ function page(file, o) {
   if (o.faq) ld.push({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: o.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
   const b = o.board;
   const boardHtml = !b ? '' : b.mode == 'league' ? leagueBoardHtml(b) : `<div class="bar"><div class="scr" id="days" aria-label="Choose a day"></div><div class="scr" id="mkts" aria-label="Choose a market"></div></div>
-<div class="tools"><input type="search" id="q" placeholder="Search team or league" aria-label="Search team or league"><select id="min" aria-label="Pick quality"><option value="">Published picks</option><option value="70">Strong only (70%+)</option><option value="80">Very strong (80%+)</option><option value="0">Show all picks</option></select></div>
+<div class="tools"><input type="search" id="q" placeholder="Search team or league" aria-label="Search team or league"><select id="min" aria-label="Pick quality"><option value="">Published picks</option><option value="70">Strong only (70%+)</option><option value="80">Very strong (80%+)</option><option value="0">Show all picks</option><option value="all">All games (even without a tip)</option></select></div>
 <p id="status" role="status">Loaded from the latest data snapshot.</p>
 <div id="board" data-mk="${b.k}" data-off="${b.off}" data-lg="${b.lg || ''}" data-hit="${HIT(b.k) ? [HIT(b.k).r, HIT(b.k).w, HIT(b.k).n].join('|') : ''}">${board(b.ms, b.k, { lg: b.lg, max: 100 })}</div>
 <div id="slip" hidden><span><b id="slipn"></b> · <b id="slipo"></b></span><button type="button" id="slipx">Copy slip</button><button type="button" id="slipc">Clear</button></div>`;
