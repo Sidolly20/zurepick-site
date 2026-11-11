@@ -156,26 +156,57 @@ function comboHtmlInner(ms, now = Date.now(), opt = {}) {
 // per game and returns at most two games: the shot of the day and a backup. Never a combo, never more than two.
 export const SINGLE_BAND = [1.85, 2.3];
 export const XM = { h05: ['Home team over 0.5 goals', 'Home team under 0.5 goals'], h15: ['Home team over 1.5 goals', 'Home team under 1.5 goals'], a05: ['Away team over 0.5 goals', 'Away team under 0.5 goals'], a15: ['Away team over 1.5 goals', 'Away team under 1.5 goals'], o05: ['Over 0.5 goals', 'Under 0.5 goals'], u35: ['Over 3.5 goals', 'Under 3.5 goals'], u45: ['Over 4.5 goals', 'Under 4.5 goals'], ht05: ['Over 0.5 first-half goals', 'Under 0.5 first-half goals'], dnb: ['Home to win (draw no bet)', 'Away to win (draw no bet)'], ahh15: ['Home +1.5 handicap', 'Away -1.5 handicap'], aha15: ['Away +1.5 handicap', 'Home -1.5 handicap'] };
+// ---- HOW THE SINGLE SHOT IS CHOSEN (settings you can change are in SINGLE_RULES) ----
+// 1) A straight Home win or Away win comes first. A draw is never picked.
+// 2) Goals markets (Over/Under lines) are only a fill-in when too few win picks exist, and never more than maxGoals per day.
+// 3) A win pick must be clearly more likely than the other side (minGap), so coin-flip games are skipped.
+// 4) Every price is checked: all three 1X2 prices must be real and the bookmaker margin must look normal.
+// 5) One pick per game. The backup always comes from a different game.
+export const SINGLE_RULES = {
+  tight: [1.9, 2.2],      // preferred odds range
+  wide: [1.85, 2.2],      // used only when the preferred range gives too few picks (never above 2.20: higher prices are under 42% likely)
+  minGap: 0.08,           // a win pick must beat the opposite side by at least 8 points of chance (0.08)
+  maxGoals: 1,            // most Over/Under-type picks allowed in the daily pair
+  allowBtts: false,       // Both Teams To Score: false = never used (it was the weakest market in our own results)
+  margin: [1.0, 1.2],     // normal bookmaker margin range (1.05 = 5%). Prices outside this are ignored as bad data
+};
 export function singles(ms, now = Date.now(), max = 2, past = false) {
-  // Try the tight band around 2.00 first (1.90 to 2.20); only widen it when fewer than two games qualify.
-  // past = true replays an old day: every finished game counts and only the standard markets are used.
-  for (const band of [[1.9, 2.2], SINGLE_BAND]) { const r = singlesIn(ms, now, max, band, past); if (r.length >= max) return r; if (band === SINGLE_BAND) return r; }
+  const R = SINGLE_RULES, out = [], used = new Set();
+  let goals = 0;
+  // order of preference: wins in the tight range, wins in the wide range, then goals markets (tight, then wide)
+  for (const [kind, band] of [['win', R.tight], ['win', R.wide], ['goals', R.tight], ['goals', R.wide]]) {
+    for (const x of singlesIn(ms, now, band, kind, past)) {
+      if (out.length >= max) return out;
+      if (used.has(x.m.id)) continue;
+      if (kind == 'goals') { if (goals >= R.maxGoals) continue; goals++; }
+      used.add(x.m.id); out.push(x);
+    }
+  }
+  return out;
 }
-function singlesIn(ms, now, max, band, past = false) {
-  const cands = [], add = (m, mkt, i, od, q, label) => { if (od >= band[0] && od <= band[1]) cands.push({ m, k: mkt, i, od, c: Math.round(q[i] * 100), p: q[i], label }); };
+const sane = (od) => { const s = od.reduce((t, x) => t + 1 / x, 0); return s >= SINGLE_RULES.margin[0] && s <= SINGLE_RULES.margin[1]; };
+function singlesIn(ms, now, band, kind, past = false) {
+  const R = SINGLE_RULES, cands = [];
+  const add = (m, mkt, i, od, q, label, gap = 1) => { if (od >= band[0] && od <= band[1] && gap >= (kind == 'win' ? R.minGap : -1)) cands.push({ m, k: mkt, i, od, c: Math.round(q[i] * 100), p: q[i], label }); };
   for (const m of ms) {
     if (past ? !settled(m) : state(m, now).k != 'ns') continue;
+    if (kind == 'win') {
+      const od = m.o; if (!od || od.length != 3 || od.some((x) => !(x > 1)) || !sane(od)) continue;
+      const q = norm(od);
+      add(m, 'o', 0, od[0], q, MK.o.n[0], q[0] - q[2]); // Home win, ahead of Away by this much
+      add(m, 'o', 2, od[2], q, MK.o.n[2], q[2] - q[0]); // Away win, ahead of Home by this much
+      continue;
+    }
     for (const k in MK) {
-      const od = m[k]; if (!od || od.some((x) => !(x > 1))) continue;
+      if (k == 'o' || (k == 'bt' && !R.allowBtts)) continue; // wins are handled above; BTTS only if switched on
+      const od = m[k]; if (!od || od.some((x) => !(x > 1)) || !sane(od)) continue;
       let q; if (k == 'dc') { if (!m.o || m.o.some((x) => !(x > 1))) continue; const p = norm(m.o); q = [p[0] + p[1], p[0] + p[2], p[1] + p[2]]; } else q = norm(od);
       od.forEach((o, i) => add(m, k, i, o, q, MK[k].n[i]));
     }
-    if (!past) for (const x of m.mk || []) { const lb = XM[x[0]], o = [x[1], x[2]]; if (!lb || o.some((v) => !(v > 1))) continue; const q = norm(o); o.forEach((v, i) => add(m, 'x:' + x[0], i, v, q, lb[i])); }
+    if (!past) for (const x of m.mk || []) { const lb = XM[x[0]], o = [x[1], x[2]]; if (!lb || o.some((v) => !(v > 1)) || !sane(o)) continue; const q = norm(o); o.forEach((v, i) => add(m, 'x:' + x[0], i, v, q, lb[i])); }
   }
-  cands.sort((a, b) => b.p - a.p || Math.abs(a.od - 2) - Math.abs(b.od - 2));
-  const out = [], seen = new Set();
-  for (const x of cands) { if (seen.has(x.m.id)) continue; seen.add(x.m.id); out.push(x); if (out.length >= max) break; }
-  return out;
+  // most likely first; if equal, the price closest to 2.00
+  return cands.sort((a, b) => b.p - a.p || Math.abs(a.od - 2) - Math.abs(b.od - 2));
 }
 // Replay: what the single shot would have been on every earlier day we hold, and how it did. Honest numbers, wins and losses.
 export function singleRecord(snapsByDate, today, days = 30) {

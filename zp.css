@@ -649,3 +649,42 @@ main .sf a,main .sf button{background:rgba(255,255,255,.04);border-color:var(--l
 
 /* team links inside tables and rows */
 .tl{color:inherit;text-decoration:none}.tl:hover,.tl:focus-visible{text-decoration:underline;text-decoration-color:var(--g);text-underline-offset:3px}
+
+/* ---- v2: results tables become stacked rows on phones (no sideways scrolling), clearer Won/Lost badges ---- */
+/* the badge class "w" was also picking up the page-wrapper rule .w (fixed width, auto margins) */
+.pr.w{width:auto;max-width:none;margin-right:0}
+.pr.w,.pr.l{font-weight:800;letter-spacing:.01em}
+.rt .pr{margin-left:0;padding:.28rem .7rem;font-size:.8rem;white-space:nowrap}
+.rt .pr.w{background:color-mix(in srgb,var(--g) 16%,transparent)}
+.rt .pr.l{background:color-mix(in srgb,var(--no) 16%,transparent)}
+@media(max-width:640px){
+  .sc:has(>table.rt){overflow:visible}
+  table.rt,table.rt tbody{display:block;width:100%}
+  table.rt thead{display:none}
+  table.rt tr{display:grid;grid-template-columns:auto auto 1fr auto;column-gap:.65rem;row-gap:.25rem;align-items:center;padding:.8rem .1rem;border-bottom:1px solid var(--line)}
+  table.rt tbody tr:last-child{border-bottom:0}
+  table.rt td{display:block;padding:0;border:0;min-width:0}
+  table.rt td:nth-child(2){overflow-wrap:anywhere;grid-column:1/4;grid-row:1;font-weight:700;font-size:.95rem;line-height:1.3}
+  table.rt td:nth-child(5){white-space:nowrap;grid-column:4;grid-row:1/3;justify-self:end;align-self:center}
+  table.rt td:nth-child(1){grid-column:1;grid-row:2;color:var(--mut);font-size:.78rem;white-space:nowrap}
+  table.rt td:nth-child(3){grid-column:2;grid-row:2;font-size:.82rem}
+  table.rt td:nth-child(4){grid-column:3;grid-row:2;font-size:.82rem;font-weight:700;font-variant-numeric:tabular-nums}
+}
+
+/* ---- v2: "Learn more" boxes, draw badge, odds typeface, clipped status label ---- */
+.learn{margin:2rem 0 1rem}
+.learn h2{font-size:1.15rem;margin:0 0 .8rem}
+.learn-g{display:grid;gap:.6rem;grid-template-columns:minmax(0,1fr)}
+@media(min-width:640px){.learn-g{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.learn-g a{display:block;padding:.85rem 1rem;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);text-decoration:none;transition:border-color .15s,transform .15s}
+.learn-g a:hover,.learn-g a:focus-visible{border-color:var(--g);transform:translateY(-1px)}
+.learn-g b{display:block;font-size:.95rem;line-height:1.3}
+.learn-g small{display:block;margin-top:.25rem;color:var(--mut);font-size:.8rem;line-height:1.4}
+.lgs{display:block;margin-top:.1rem;color:var(--mut);font-size:.72rem}
+.pr.dr{color:var(--au2,#d9b56c);background:color-mix(in srgb,#d9b56c 14%,transparent)}
+:root{--fn:"Barlow Condensed","Sora",ui-sans-serif,system-ui,sans-serif}
+.oc,.mono,.tc .mono,.sg-h b,.cbx .ch b{font-family:var(--fn);font-weight:700;letter-spacing:.015em;font-variant-numeric:tabular-nums}
+.mono{font-size:1.08em}
+.oc{font-size:1.02rem}
+.oc small{font-family:var(--fb,system-ui,sans-serif)}
+.sb small{white-space:normal;text-align:center;line-height:1.15;overflow-wrap:anywhere}
