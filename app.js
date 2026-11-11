@@ -89,6 +89,7 @@ if (B) {
   tabs.onclick = (e) => { const b = e.target.closest('[data-k]'); if (!b) return; S.k = b.dataset.k; tabs.querySelectorAll('.chip').forEach((x) => x.setAttribute('aria-pressed', x == b)); paint(); };
   $('#q').oninput = (e) => { S.q = e.target.value.trim(); paint(); };
   if ($('#min')) $('#min').onchange = (e) => { S.min = e.target.value; paint(); };
+  B.addEventListener('click', (e) => { if (!e.target.closest('[data-all]')) return; S.min = 'all'; const sel = $('#min'); if (sel) sel.value = 'all'; paint(); });
   B.onclick = (e) => {
     const b = e.target.closest('.oc'); if (!b) return;
     const m = (LMODE ? S.pool || [] : S.data).find((x) => x.id == b.dataset.id), i = +b.dataset.i, at = slip.findIndex((s) => s.id == m.id);

@@ -64,8 +64,9 @@ export function row(m, k, o = {}) {
   const M = MK[k], od = m[k] || [], st = state(m);
   const w = st.k == 'fin' && pk ? (won(m, k, pk) ? ' win' : ' loss') : '';
   const eo = k == 'dc' && !od.length && m.o && !m.o.some((x) => !(x > 1)) ? dcFrom(m.o) : null;
+  const fp = ['o','ou','o15','bt'].includes(k) && od.length && !od.some((x) => !(x > 1)) ? (() => { const q = od.map((x) => 1 / x), t = q.reduce((a, b) => a + b, 0); return q.map((x) => Math.round((x / t) * 100)); })() : null; // margin-free chance for each outcome
   const cells = eo ? eo.map((x, i) => `<span class="oc est${pk && pk.i == i ? ' pick' : ''}" title="Estimated from the 1X2 odds"><small>${M.s[i]}${pk && pk.i == i ? ' · ' + pk.c + '%' : ''}</small>~${x.toFixed(2)}</span>`).join('') : (od.length ? od : M.s.map(() => null)).map((x, i) => x
-    ? `<button type="button" class="oc${pk && pk.i == i ? ' pick' : ''}" data-id="${m.id}" data-i="${i}" data-od="${x}" aria-label="${esc(M.n[i])} at ${x}"><small>${M.s[i]}${pk && pk.i == i ? ' · ' + pk.c + '%' : ''}</small>${Number(x).toFixed(2)}</button>`
+    ? `<button type="button" class="oc${pk && pk.i == i ? ' pick' : ''}" data-id="${m.id}" data-i="${i}" data-od="${x}" aria-label="${esc(M.n[i])} at ${x}"><small>${M.s[i]}${pk && pk.i == i ? ' · ' + pk.c + '%' : fp ? ' · ' + fp[i] + '%' : ''}</small>${Number(x).toFixed(2)}</button>`
     : pk && pk.i == i ? `<span class="oc nil pick" title="Predicted from team form, no odds published yet"><small>${M.s[i]} · ${pk.c}%</small>pick</span>` : `<span class="oc nil"><small>${M.s[i]}</small>–</span>`).join('');
   const pkh = pk ? `<span>${esc(M.n[pk.i])}</span><i style="--w:${pk.c}%"></i><em>${pk.c}% · ${pk.model ? 'team-record model' : 'from odds'}</em>` : `<span class="mut">${od.length ? 'No strong pick' : st.k == 'ns' ? 'Odds not out yet' : 'Not tipped'}</span><i style="--w:0%"></i><em>${od.length ? 'Below our quality bar' : st.k == 'ns' ? 'Check back closer to kick-off' : 'No odds were published'}</em>`;
   return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time>${PREVIEWS[m.id] ? `<a class="tm" href="${esc(PREVIEWS[m.id])}" title="Match preview and prediction">` : '<div class="tm">'}<b>${badge(m, m.h)}<span>${PREVIEWS[m.id] ? esc(m.h) : tlink(m.h)}</span></b><b>${badge(m, m.a)}<span>${PREVIEWS[m.id] ? esc(m.a) : tlink(m.a)}</span></b>${PREVIEWS[m.id] ? '</a>' : '</div>'}<div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
@@ -76,11 +77,13 @@ export function board(ms, k, o = {}) {
   let L = visible(ms, k, o);
   if (o.max) L = L.slice().sort((a, b) => (pick(b, k)?.c || 0) - (pick(a, k)?.c || 0)).slice(0, o.max);
   if (!L.length && o.min === 'all') return '<div class="empty">No games found for this day yet. The schedule fills in as our data feed updates.</div>';
-  if (!L.length) return '<div class="empty">No picks meet our quality bar for this day yet. We only publish games where the chance is strong enough, so quiet days are normal.</div>';
+  if (!L.length) { const n = ms.filter((m) => (!o.lg || m.li == o.lg) && (!o.match || o.match(m))).length; return '<div class="empty">No picks meet our quality bar for this day yet. We only publish games where the chance is strong enough, so quiet days are normal.' + (n && !o.max ? ` <button type="button" class="lnk" data-all>Show all ${n} games</button>` : '') + '</div>'; }
+  const held = ms.filter((m) => (!o.lg || m.li == o.lg) && (!o.match || o.match(m))).length;
+  const more = o.min !== 'all' && !o.max && !o.q && held > L.length ? `<div class="more"><span>Showing ${L.length} of ${held} games that clear our quality bar.</span><button type="button" data-all>Show all ${held} games</button></div>` : '';
   const hint = o.min === 'all' ? `<div class="empty" style="padding:10px 14px;margin-bottom:10px">Showing all ${L.length} games in our data for this day. Games without a tip have no odds yet or did not pass our quality bar.</div>` : '';
   const G = {}; for (const m of L) (G[m.li + '|' + m.cn + '|' + m.lg] ??= []).push(m);
   const rank = (g) => { const i = PRIO.indexOf(+g.split('|')[0]); return i < 0 ? 99 : i; };
-  return hint + Object.keys(G).sort((a, b) => rank(a) - rank(b) || G[b].length - G[a].length || a.localeCompare(b)).map((g) => {
+  return hint + more + Object.keys(G).sort((a, b) => rank(a) - rank(b) || G[b].length - G[a].length || a.localeCompare(b)).map((g) => {
     const [, cn, lg] = g.split('|'), x = G[g].sort((a, b) => a.d.localeCompare(b.d));
     return `<section class="lg"><h3>${lgLogo(x[0])}<span>${esc(cn)} · ${esc(lg)}</span><em>${x.length}</em></h3>${x.map((m) => row(m, k)).join('')}</section>`;
   }).join('');
