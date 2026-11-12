@@ -83,10 +83,16 @@ export function board(ms, k, o = {}) {
   const hint = o.min === 'all' ? `<div class="empty" style="padding:10px 14px;margin-bottom:10px">Showing all ${L.length} games in our data for this day. Games without a tip have no odds yet or did not pass our quality bar.</div>` : '';
   const G = {}; for (const m of L) (G[m.li + '|' + m.cn + '|' + m.lg] ??= []).push(m);
   const rank = (g) => { const i = PRIO.indexOf(+g.split('|')[0]); return i < 0 ? 99 : i; };
-  return hint + more + Object.keys(G).sort((a, b) => rank(a) - rank(b) || G[b].length - G[a].length || a.localeCompare(b)).map((g) => {
+  // Leagues with only 1-2 games are merged into one shared card (league shown on each row) so cards hold many matches, not one.
+  const SMALL = 3, small = Object.keys(G).filter((g) => G[g].length < SMALL), mergeable = small.length > 1 && small.reduce((n, g) => n + G[g].length, 0) >= 4;
+  const tag = (m) => row(m, k).replace(/(<\/b>)(<\/a>|<\/div>)/, `$1<small class="lgt">${esc(m.lg)}</small>$2`);
+  const big = Object.keys(G).filter((g) => !mergeable || G[g].length >= SMALL).sort((a, b) => rank(a) - rank(b) || G[b].length - G[a].length || a.localeCompare(b)).map((g) => {
     const [, cn, lg] = g.split('|'), x = G[g].sort((a, b) => a.d.localeCompare(b.d));
     return `<section class="lg"><h3>${lgLogo(x[0])}<span>${esc(cn)} · ${esc(lg)}</span><em>${x.length}</em></h3>${x.map((m) => row(m, k)).join('')}</section>`;
   }).join('');
+  if (!mergeable) return hint + more + big;
+  const rest = small.flatMap((g) => G[g]).sort((a, b) => a.d.localeCompare(b.d));
+  return hint + more + big + `<section class="lg"><h3><span>More matches</span><em>${rest.length}</em></h3>${rest.map(tag).join('')}</section>`;
 }
 export function topCards(ms, n = 6) {
   const L = ms.filter((m) => !settled(m) && !LIVE.includes(m.st)).map((m) => ({ m, p: pick(m, 'o') })).filter((x) => x.p && x.p.od && x.p.od >= 1.15)

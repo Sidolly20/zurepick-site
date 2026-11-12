@@ -821,3 +821,7 @@ article.lc .lps{grid-area:p;display:flex;flex-wrap:wrap;gap:.35rem;align-items:c
   .more{padding:.6rem .8rem;display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
   .more span{font-size:.8rem}.more button{padding:.4rem .9rem;font-size:.85rem}
 }
+
+.lgt{display:block;font:600 .66rem var(--fb,system-ui);color:var(--mut);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:.1rem}
+.potd-wrap .potd-hero .mt{min-width:0;flex:1 1 auto}.potd-wrap .potd-hero .mt b{overflow-wrap:anywhere}
+.potd-wrap .potd-hero .mt{grid-template-columns:minmax(0,1fr)}.potd-wrap .potd-hero .mt b{white-space:normal}
