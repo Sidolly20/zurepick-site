@@ -50,7 +50,7 @@ export function stats(ms, now = Date.now()) {
 }
 export function statsHtml(ms, hit, label = 'Picks today') {
   const s = stats(ms), p = (x) => (s.n ? Math.round((x / s.n) * 100) : 0);
-  return `<div><b>${s.n || '–'}</b><span>${label}</span></div><div><b>${s.done}</b><span>Played · ${s.pct}%</span></div><div class="lv"><b>${s.live}</b><span>Live now</span></div>${s.wait ? `<div><b>${s.wait}</b><span>Awaiting score</span></div>` : ''}<div><b>${s.left}</b><span>Not started · ${p(s.left)}%</span></div>${hit && hit.n ? `<div><b>${hit.r}%</b><span>Won ${hit.w} of ${hit.n} · 30 days</span></div>` : ''}`;
+  return `<div><b>${s.n || '–'}</b><span>${label}</span></div><div><b>${s.done ? s.done : '–'}</b><span>${s.done ? 'Played · ' + s.pct + '%' : 'Not started yet'}</span></div><div class="lv"><b>${s.live}</b><span>Live now</span></div>${s.wait ? `<div><b>${s.wait}</b><span>Awaiting score</span></div>` : ''}<div><b>${s.left}</b><span>Not started · ${p(s.left)}%</span></div>${hit && hit.n ? `<div><b>${hit.r}%</b><span>Won ${hit.w} of ${hit.n} · 30 days</span></div>` : ''}`;
 }
 import { teamKey } from './teams.js';
 export let CRESTS = {}; export const setCrests = (c) => { CRESTS = c || {}; };
@@ -146,6 +146,7 @@ export function combos(ms, now = Date.now(), dedupe = false) {
 }
 export function comboHtml(ms, now = Date.now(), opt = {}) {
   const h = comboHtmlInner(ms, now, opt); if (opt.only) return h;
+  if (!(h.match(/class="cbx"/g) || []).length) return `<div class="empty combos-none">${opt.when || 'Today’s'} 2, 3 and 5 odds slips are still being prepared. They appear as soon as enough games and odds are published, so check back closer to kick-off.</div>`;
   const n = (h.match(/class="cbx"/g) || []).length;
   return n && n < 3 ? h + '<p class="mut">Only this many different slips can be built from the games priced so far. More appear as odds are published, and fresh 2, 3 and 5 odds slips arrive every morning.</p>' : h;
 }
@@ -154,7 +155,11 @@ function comboHtmlInner(ms, now = Date.now(), opt = {}) {
   const tag = (m) => { const d = day(Date.parse(m.d)); return d == today ? '' : d == tomorrow ? 'Tmrw' : new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'short', day: 'numeric' }).format(Date.parse(m.d)); };
   return combos(ms, now, !opt.only).filter((c) => !opt.only || c.target === opt.only).map((c) => !c.legs.length
     ? `<div class="cbx empty"><div class="ch"><span>${c.target} odds</span><b>–</b></div><p>${opt.when || 'Today’s'} slip is still being prepared. It appears as soon as enough games and odds are published, so check back soon.</p></div>`
-    : `<div class="cbx"><div class="ch"><span>${c.short ? 'Best available' : c.target + '+ odds'}</span><b>${c.od.toFixed(2)}</b></div><div class="cm">${c.legs.length} games · ${c.chance}% combined chance${c.minC < 65 ? ' · includes picks from ' + c.minC + '%' : ''}</div><button type="button" class="tg" aria-expanded="false"><span class="t1">See ${c.legs.length} games ▾</span><span class="t2">Hide games ▴</span></button>${c.legs.map((x) => `<div class="cl"><time>${tag(x.m) ? `<small>${tag(x.m)}</small>` : ''}${hm(x.m.d)}</time><div><b>${esc(x.m.h)} v ${esc(x.m.a)}</b><small>${esc(x.m.lg)}</small></div><span class="tag">${esc(MK[x.k].n[x.i])}</span><span class="mono">${x.od.toFixed(2)}</span></div>`).join('')}${opt.share ? `<a class="cb" href="https://wa.me/?text=${encodeURIComponent(c.target + ' odds slip (' + c.od.toFixed(2) + ')\n' + c.legs.map((x) => x.m.h + ' v ' + x.m.a + ' – ' + MK[x.k].n[x.i] + ' @' + x.od.toFixed(2)).join('\n') + '\nhttps://sidolly20.github.io/zurepick-site/')}" target="_blank" rel="noopener">Share this slip on WhatsApp</a>` : `<button type="button" class="cb" data-t="${c.target}">Add ${c.legs.length} games to slip</button>`}</div>`).join('');
+    : (() => {
+      const first = c.legs[0], last = c.legs[c.legs.length - 1], span = first && last ? (hm(first.m.d) == hm(last.m.d) ? hm(first.m.d) : hm(first.m.d) + ' – ' + hm(last.m.d)) : '';
+      const note = c.chance >= 45 ? 'On the safer side for a slip this size.' : c.chance >= 25 ? 'A balanced slip: every extra game lowers the chance.' : 'A bold slip. It pays well but loses more often than it wins.';
+      return `<div class="cbx tk"><div class="tk-top"><span class="tk-tag">${c.short ? 'Best available' : c.target + '+ odds slip'}</span><span class="tk-k">${c.legs.length} games · ${span} WAT</span></div><div class="tk-main"><div class="tk-od"><small>Total odds</small><b>${c.od.toFixed(2)}</b></div><div class="tk-g"><small>Combined chance</small><b>${c.chance}%</b><i style="--w:${c.chance}%"></i></div></div><p class="tk-note">${note}${c.minC < 65 ? ' Includes picks from ' + c.minC + '%.' : ''}</p><button type="button" class="tg" aria-expanded="false"><span class="t1">See ${c.legs.length} games ▾</span><span class="t2">Hide games ▴</span></button><div class="tk-legs">${c.legs.map((x, n) => `<div class="cl"><time>${tag(x.m) ? `<small>${tag(x.m)}</small>` : ''}${hm(x.m.d)}</time><div class="cm2"><b>${esc(x.m.h)} v ${esc(x.m.a)}</b><small>${esc(x.m.lg)}</small></div><span class="tag">${esc(MK[x.k].n[x.i])}</span><span class="mono">${x.od.toFixed(2)}</span><i class="lb" style="--w:${x.c}%" title="${x.c}% chance"></i></div>`).join('')}</div><div class="tk-foot">${opt.share ? `<a class="cb" href="https://wa.me/?text=${encodeURIComponent(c.target + ' odds slip (' + c.od.toFixed(2) + ')\n' + c.legs.map((x) => x.m.h + ' v ' + x.m.a + ' – ' + MK[x.k].n[x.i] + ' @' + x.od.toFixed(2)).join('\n') + '\nhttps://sidolly20.github.io/zurepick-site/')}" target="_blank" rel="noopener">Share this slip on WhatsApp</a>` : `<button type="button" class="cb" data-t="${c.target}">Add ${c.legs.length} games to slip</button>`}</div></div>`;
+    })()).join('');
 }
 
 // ---- Single shot: ONE game priced around 2.00, the outcome the market rates most likely inside that price band. ----
@@ -229,7 +234,7 @@ export function singleHtml(ms, now = Date.now(), opt = {}) {
   if (!L.length) return `<div class="sgl empty"><p>${when} single shot is still being prepared. It appears as soon as games near 2.00 odds are priced, so check back soon.</p></div>`;
   return L.map((x, n) => {
     const share = 'https://wa.me/?text=' + encodeURIComponent((n ? 'Backup shot' : 'Single shot') + ': ' + x.m.h + ' v ' + x.m.a + ' – ' + x.label + ' @' + x.od.toFixed(2) + '\nhttps://sidolly20.github.io/zurepick-site/single-shot-predictions.html');
-    return `<article class="sgl${n ? ' bk' : ''}"><div class="sg-h"><span>${n ? 'Backup shot' : 'Single shot'}</span><b>${x.od.toFixed(2)}</b></div><div class="sg-m"><b>${esc(x.m.h)} v ${esc(x.m.a)}</b><small>${esc(x.m.lg)} · ${hm(x.m.d)}</small></div><div class="sg-p">${esc(x.label)}</div><div class="sg-bar" aria-hidden="true"><i style="width:${x.c}%"></i></div><p class="sg-c"><b>${x.c}% chance.</b> ${sgNote(x.c)}</p><a class="sg-s" href="${share}" target="_blank" rel="noopener">Share on WhatsApp</a></article>`;
+    return `<article class="sgl${n ? ' bk' : ''}"><div class="sg-h"><span>${n ? 'Backup shot' : 'Single shot'}</span><b>${x.od.toFixed(2)}</b></div><div class="sg-m"><b>${esc(x.m.h)} v ${esc(x.m.a)}</b><small>${esc(x.m.lg)} · ${hm(x.m.d)}</small></div><div class="sg-p">${esc(x.label)}</div><div class="sg-row"><div class="sg-ring" style="--p:${x.c}"><b>${x.c}%</b><small>chance</small></div><p class="sg-c">${sgNote(x.c)}</p></div><a class="sg-s" href="${share}" target="_blank" rel="noopener">Share on WhatsApp</a></article>`;
   }).join('');
 }
 
@@ -264,4 +269,31 @@ export function standingsHtml(t, name, cup = false) {
   const crest = (x) => logoImg(x.crest, x.tla || x.team, 'cr');
   const key = cup ? '<span class="z up">Top 8: straight to the last 16</span><span class="z po">9th to 24th: knockout play-off</span>' : '<span class="z up">Top four</span>' + (down ? '<span class="z dn">Relegation zone</span>' : '');
   return `<div class="prose tb"><h2>${esc(name)} table${t.season ? ' ' + esc(t.season) : ''}</h2><div class="sc"><div class="th">${logoImg(emblemOf(t), name, 'lgo big')}<div><b>${esc(name)}</b><small>${t.season ? esc(t.season) + ' · ' : ''}live standings</small></div></div><table class="st"><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>${t.rows.map((x) => `<tr class="${zone(x)}"><td>${x.pos}</td><td><span class="tt">${crest(x)}<span>${tlink(x.team)}</span></span></td><td>${x.p}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf}</td><td>${x.ga}</td><td class="${x.gd > 0 ? 'gp' : x.gd < 0 ? 'gn' : ''}">${x.gd > 0 ? '+' : ''}${x.gd}</td><td><b>${x.pts}</b></td></tr>`).join('')}</tbody></table></div><p class="zk">${key}</p><p class="mut">Updated ${when} WAT · Data and club badges from football-data.org; badges belong to their clubs.</p></div>`;
+}
+
+// ---- Live page: three segments. Live now, kicking off soon (next 4 hours) and today's finished results with every published pick graded. ----
+const PICK_ORDER = ['o', 'dc', 'ou', 'o15', 'bt'];
+function liveCard(m, now) {
+  const st = state(m, now), picks = PICK_ORDER.map((k) => { const p = pick(m, k); return p && p.c >= MIN[k] ? { k, p } : null; }).filter(Boolean);
+  const href = PREVIEWS[m.id] || '';
+  const chips = picks.map(({ k, p }) => { const r = st.k == 'fin' ? (won(m, k, p) ? ' w' : ' l') : ''; return `<span class="lp${r}" title="${esc(MK[k].n[p.i])} · ${p.c}%">${r == ' w' ? '✓' : r == ' l' ? '✗' : '•'} <b>${esc(MK[k].l)}</b> ${esc(MK[k].n[p.i])} <em>${p.c}%</em></span>`; }).join('');
+  const w = st.k == 'fin' ? picks.filter(({ k, p }) => won(m, k, p)).length : 0;
+  const sum = st.k == 'fin' && picks.length ? `<span class="ls">${w} of ${picks.length} picks won</span>` : '';
+  const t = href ? `<a class="lt" href="${esc(href)}">` : '<div class="lt">', te = href ? '</a>' : '</div>';
+  return `<article class="lc ${st.k}" data-id="${m.id}"><div class="lh"><span>${esc(m.cn ? m.cn + ' · ' : '')}${esc(m.lg)}</span><time>${hm(m.d)}</time></div>${t}<b>${badge(m, m.h)}<span>${esc(m.h)}</span></b><b>${badge(m, m.a)}<span>${esc(m.a)}</span></b>${te}<div class="lx"><strong>${st.big}</strong><small>${st.sm}</small></div>${chips || st.k == 'fin' ? `<div class="lps">${chips || '<span class="mut">No published pick for this game</span>'}${sum}</div>` : ''}</article>`;
+}
+export function liveHtml(ms, now = Date.now()) {
+  const day = (t) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(t), today = day(now), seen = new Set(), all = [];
+  for (const m of ms) if (!seen.has(m.id)) { seen.add(m.id); all.push(m); }
+  const S = all.map((m) => ({ m, k: state(m, now).k })), t = (x) => Date.parse(x.m.d);
+  const live = S.filter((x) => x.k == 'live' || x.k == 'ko').sort((a, b) => t(a) - t(b));
+  const next = S.filter((x) => x.k == 'ns' && t(x) > now).sort((a, b) => t(a) - t(b));
+  const soon = next.filter((x) => t(x) - now <= 4 * 36e5), later = soon.length ? [] : next.slice(0, 4);
+  const fin = S.filter((x) => x.k == 'fin' && day(t(x)) == today || x.k == 'fin' && now - t(x) < 20 * 36e5).sort((a, b) => t(b) - t(a));
+  const wonN = fin.reduce((s, { m }) => s + PICK_ORDER.filter((k) => { const p = pick(m, k); return p && p.c >= MIN[k] && won(m, k, p); }).length, 0), pickN = fin.reduce((s, { m }) => s + PICK_ORDER.filter((k) => { const p = pick(m, k); return p && p.c >= MIN[k]; }).length, 0);
+  const seg = (id, title, sub, items, empty, cls = '') => `<section class="lseg ${cls}" id="${id}"><h2>${title}<em>${items.length}</em></h2><p class="mut">${sub}</p>${items.length ? items.map((x) => liveCard(x.m, now)).join('') : `<div class="empty">${empty}</div>`}</section>`;
+  const nx = next[0] ? `The next kick-off in our data is ${esc(next[0].m.h)} v ${esc(next[0].m.a)} at ${hm(next[0].m.d)} WAT.` : 'No more games are scheduled in our data for now.';
+  return seg('live-now', '<i class="ld"></i>Live now', 'Games in play, with the current score and minute.', live, `No games in play right now. ${nx}`, 'lv')
+    + seg('live-soon', soon.length || !later.length ? 'Kicking off in the next 4 hours' : 'Later today', soon.length || !later.length ? 'Not started yet, with our published picks and their chance.' : 'Nothing starts in the next 4 hours, so here are the next games on the list.', soon.length ? soon : later, 'Nothing is lined up in the next 4 hours.')
+    + seg('live-done', 'Finished today', `Final scores${pickN ? `, with every published pick graded: ${wonN} of ${pickN} won so far` : ''}.`, fin, 'No games have finished yet today.', 'fn');
 }
