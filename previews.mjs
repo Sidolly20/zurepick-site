@@ -249,7 +249,8 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
   api.potdHero = () => {
     if (!potdNow) return '';
     const { it, st, e } = potdNow, m = it.m;
-    return `<a class="mega potd-hero" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="mi">★</span><span class="mt"><small class="pt">Pick of the day</small><b>${esc(m.h)} vs ${esc(m.a)}</b><small class="pp">${MK.o.n[st.i]} · ${st.c}% · odds ${Number(st.od).toFixed(2)}${e ? badge(e) : ''}</small></span><span class="arr">→</span></a>`;
+    const TGI = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M21.9 4.1 2.8 11.4c-.9.4-.9 1.2-.2 1.4l4.9 1.5 1.9 5.8c.2.6.4.8.8.8.4 0 .6-.2.9-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.2-15.1c.3-1.2-.4-1.8-1.2-1.4ZM9.2 13.8l9.3-5.9c.4-.3.8-.1.5.2l-7.6 6.9-.3 3.2-1.9-4.4Z"/></svg>';
+    return `<div class="potd-wrap"><a class="mega potd-hero" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="mi">★</span><span class="mt"><small class="pt">Pick of the day</small><b>${esc(m.h)} vs ${esc(m.a)}</b><small class="pp">${MK.o.n[st.i]} · ${st.c}% · odds ${Number(st.od).toFixed(2)}${e ? badge(e) : ''}</small></span></a><a class="potd-tg" href="https://t.me/zurepicks" target="_blank" rel="noopener" aria-label="Join the ZurePicks Telegram channel" title="Join our Telegram channel">${TGI}<small>Join</small></a></div>`;
   };
   function potdArchive() {
     const hist = updateHist(null), done = hist.filter((e) => e.res), w = done.filter((e) => e.res == 'won').length;
