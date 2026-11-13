@@ -3,7 +3,7 @@ try { setCrests(await (await fetch('data/crests.json')).json()); } catch {}
 try { setPreviews(await (await fetch('data/previews.json')).json()); } catch {}
 const $ = (s) => document.querySelector(s), B = $('#board');
 if (B) {
-  const S = { k: B.dataset.mk || 'o', off: +(B.dataset.off || 0), lg: +(B.dataset.lg || 0), q: '', min: '', data: [], tok: 0, hit: null };
+  const S = { sel: B.dataset.sel === '' || B.dataset.sel == null ? null : +B.dataset.sel, k: B.dataset.mk || 'o', off: +(B.dataset.off || 0), lg: +(B.dataset.lg || 0), q: '', min: '', data: [], tok: 0, hit: null };
   const LMODE = B.dataset.mode === 'league', MATCH = LMODE ? leagueTest(JSON.parse(B.dataset.lgspec)) : null; // league pages: next three days of one league
   const day = (o) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date(Date.now() + o * 864e5));
   const lab = (o) => o == -1 ? 'Yesterday' : o == 0 ? 'Today' : o == 1 ? 'Tomorrow' : new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'short', day: 'numeric', month: 'short' }).format(new Date(Date.now() + o * 864e5));
@@ -36,12 +36,12 @@ if (B) {
   function paint(status) {
     paintPotd();
     if (LMODE) return paintLeague(status);
-    const html = board(S.data, S.k, { lg: S.lg, q: S.q, min: S.min });
+    const html = board(S.data, S.k, { lg: S.lg, q: S.q, min: S.min, sel: S.sel });
     swap(html);
     paintTop();
     const bn = $('#bn-n'); if (bn && S.off == 0) bn.textContent = visible(S.data, S.k, { lg: S.lg }).length; const bh = $('#bn-h'); if (bh && S.hit) bh.textContent = S.hit.r + '%';
     const st = $('#status'); if (st && status && st.textContent !== status) st.textContent = status;
-    const kp = $('#kp'); if (kp) { const h = statsHtml(visible(S.data, S.k, { lg: S.lg, q: S.q, min: S.min }), S.hit); if (h !== S.lastKp) { S.lastKp = h; kp.innerHTML = h; } }
+    const kp = $('#kp'); if (kp) { const h = statsHtml(visible(S.data, S.k, { lg: S.lg, q: S.q, min: S.min, sel: S.sel }), S.hit); if (h !== S.lastKp) { S.lastKp = h; kp.innerHTML = h; } }
     mark();
   }
   // The combo slips use upcoming games from today, tomorrow and the day after, whichever day is selected below.
@@ -86,7 +86,7 @@ if (B) {
   const strip = $('#days'); if (strip) strip.innerHTML = [-2, -1, 0, 1, 2, 3].map((o) => `<button type="button" class="chip" data-o="${o}" aria-pressed="${o == S.off}">${lab(o)}</button>`).join('');
   if (strip) strip.onclick = (e) => { const b = e.target.closest('[data-o]'); if (!b) return; S.off = +b.dataset.o; strip.querySelectorAll('.chip').forEach((x) => x.setAttribute('aria-pressed', x == b)); load(); };
   const tabs = $('#mkts'); tabs.innerHTML = Object.keys(MK).map((k) => `<button type="button" class="chip" data-k="${k}" aria-pressed="${k == S.k}">${MK[k].l}</button>`).join('');
-  tabs.onclick = (e) => { const b = e.target.closest('[data-k]'); if (!b) return; S.k = b.dataset.k; tabs.querySelectorAll('.chip').forEach((x) => x.setAttribute('aria-pressed', x == b)); paint(); };
+  tabs.onclick = (e) => { const b = e.target.closest('[data-k]'); if (!b) return; S.k = b.dataset.k; S.sel = null; tabs.querySelectorAll('.chip').forEach((x) => x.setAttribute('aria-pressed', x == b)); paint(); };
   $('#q').oninput = (e) => { S.q = e.target.value.trim(); paint(); };
   if ($('#min')) $('#min').onchange = (e) => { S.min = e.target.value; paint(); };
   B.addEventListener('click', (e) => { if (!e.target.closest('[data-all]')) return; S.min = 'all'; const sel = $('#min'); if (sel) sel.value = 'all'; paint(); });

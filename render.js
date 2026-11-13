@@ -6,6 +6,7 @@ export const MK = {
   dc: { l: 'Double chance', s: ['1X', '12', 'X2'], n: ['Home or draw', 'Home or away', 'Draw or away'], ev: (i, h, a) => (i == 0 ? h >= a : i == 1 ? h != a : a >= h) },
   ou: { l: 'Over/Under 2.5', s: ['Over', 'Under'], n: ['Over 2.5', 'Under 2.5'], ev: (i, h, a) => (i == 0 ? h + a > 2.5 : h + a < 2.5) },
   o15: { l: 'Over/Under 1.5', s: ['Over', 'Under'], n: ['Over 1.5', 'Under 1.5'], ev: (i, h, a) => (i == 0 ? h + a > 1.5 : h + a < 1.5) },
+  o35: { l: 'Over/Under 3.5', s: ['Over', 'Under'], n: ['Over 3.5', 'Under 3.5'], ev: (i, h, a) => (i == 0 ? h + a > 3.5 : h + a < 3.5) },
   bt: { l: 'Both teams score', s: ['Yes', 'No'], n: ['Both score', 'Not both'], ev: (i, h, a) => (i == 0 ? h > 0 && a > 0 : !(h > 0 && a > 0)) },
 };
 export const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -24,11 +25,11 @@ export function pick(m, k) {
   const i = q.indexOf(Math.max(...q)); return { i, c: Math.round(q[i] * 100), od: o === true ? od[i] : null, model: !o };
 }
 // Quality bar: a pick is only published when its implied chance reaches this level (own tracked results: 1X2 picks under 60% won ~45-50%, 60%+ won ~80%).
-export const MIN = { o: 60, dc: 75, ou: 60, o15: 75, bt: 60 };
+export const MIN = { o: 60, dc: 75, ou: 60, o15: 75, o35: 70, bt: 60 };
 export function visible(ms, k, o = {}) {
   const all = o.min === 'all'; // "All games": list every game we hold, with or without odds or a pick
   const min = all || o.min === undefined || o.min === '' || o.min === null ? MIN[k] : +o.min; // min 0 = show every pick
-  let L = ms.filter((m) => { const p = pick(m, k); return (all || (p && p.c >= min)) && (!o.lg || m.li == o.lg) && (!o.match || o.match(m)); });
+  let L = ms.filter((m) => { const p = pick(m, k); return (all || (p && p.c >= min)) && (o.sel == null || o.sel === '' || (p && p.i === +o.sel)) && (!o.lg || m.li == o.lg) && (!o.match || o.match(m)); });
   if (o.q) { const q = o.q.toLowerCase(); L = L.filter((m) => (m.h + ' ' + m.a + ' ' + m.lg + ' ' + m.cn).toLowerCase().includes(q)); }
   return L;
 }
@@ -64,12 +65,12 @@ export function row(m, k, o = {}) {
   const M = MK[k], od = m[k] || [], st = state(m);
   const w = st.k == 'fin' && pk ? (won(m, k, pk) ? ' win' : ' loss') : '';
   const eo = k == 'dc' && !od.length && m.o && !m.o.some((x) => !(x > 1)) ? dcFrom(m.o) : null;
-  const fp = ['o','ou','o15','bt'].includes(k) && od.length && !od.some((x) => !(x > 1)) ? (() => { const q = od.map((x) => 1 / x), t = q.reduce((a, b) => a + b, 0); return q.map((x) => Math.round((x / t) * 100)); })() : null; // margin-free chance for each outcome
+  const fp = ['o','ou','o15','o35','bt'].includes(k) && od.length && !od.some((x) => !(x > 1)) ? (() => { const q = od.map((x) => 1 / x), t = q.reduce((a, b) => a + b, 0); return q.map((x) => Math.round((x / t) * 100)); })() : null; // margin-free chance for each outcome
   const cells = eo ? eo.map((x, i) => `<span class="oc est${pk && pk.i == i ? ' pick' : ''}" title="Estimated from the 1X2 odds"><small>${M.s[i]}${pk && pk.i == i ? ' · ' + pk.c + '%' : ''}</small>~${x.toFixed(2)}</span>`).join('') : (od.length ? od : M.s.map(() => null)).map((x, i) => x
     ? `<button type="button" class="oc${pk && pk.i == i ? ' pick' : ''}" data-id="${m.id}" data-i="${i}" data-od="${x}" aria-label="${esc(M.n[i])} at ${x}"><small>${M.s[i]}${pk && pk.i == i ? ' · ' + pk.c + '%' : fp ? ' · ' + fp[i] + '%' : ''}</small>${Number(x).toFixed(2)}</button>`
     : pk && pk.i == i ? `<span class="oc nil pick" title="Predicted from team form, no odds published yet"><small>${M.s[i]} · ${pk.c}%</small>pick</span>` : `<span class="oc nil"><small>${M.s[i]}</small>–</span>`).join('');
   const pkh = pk ? `<span>${esc(M.n[pk.i])}</span><i style="--w:${pk.c}%"></i><em>${pk.c}% · ${pk.model ? 'team-record model' : 'from odds'}</em>` : `<span class="mut">${od.length ? 'No strong pick' : st.k == 'ns' ? 'Odds not out yet' : 'Not tipped'}</span><i style="--w:0%"></i><em>${od.length ? 'Below our quality bar' : st.k == 'ns' ? 'Check back closer to kick-off' : 'No odds were published'}</em>`;
-  return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time>${PREVIEWS[m.id] ? `<a class="tm" href="${esc(PREVIEWS[m.id])}" title="Match preview and prediction">` : '<div class="tm">'}<b>${badge(m, m.h)}<span>${PREVIEWS[m.id] ? esc(m.h) : tlink(m.h)}</span></b><b>${badge(m, m.a)}<span>${PREVIEWS[m.id] ? esc(m.a) : tlink(m.a)}</span></b>${PREVIEWS[m.id] ? '</a>' : '</div>'}<div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
+  return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time>${PREVIEWS[m.id] ? `<a class="tm" href="${esc(PREVIEWS[m.id])}" title="Match preview and prediction">` : '<div class="tm">'}<b>${badge(m, m.h)}<span>${PREVIEWS[m.id] ? esc(m.h) : tlink(m.h)}</span></b><b>${badge(m, m.a)}<span>${PREVIEWS[m.id] ? esc(m.a) : tlink(m.a)}</span></b>${PREVIEWS[m.id] ? '</a>' : '</div>'}<div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div><div class="pq">${pk ? `<span class="pl">★ ${esc(M.n[pk.i])} · ${pk.c}%</span>` : ''}${PREVIEWS[m.id] ? `<a class="go" href="${esc(PREVIEWS[m.id])}">Preview &amp; H2H →</a>` : ''}</div></article>`;
 }
 const lgSrc = (m) => m.lo || CRESTS['lg:' + normName(m.cn) + ':' + normName(m.lg)] || CRESTS['lg::' + normName(m.lg)] || '';
 const lgLogo = (m) => { const s = lgSrc(m); return s ? `<img src="${esc(s)}" alt="" width="20" height="20" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''; };
@@ -278,7 +279,7 @@ export function standingsHtml(t, name, cup = false) {
 }
 
 // ---- Live page: three segments. Live now, kicking off soon (next 4 hours) and today's finished results with every published pick graded. ----
-const PICK_ORDER = ['o', 'dc', 'ou', 'o15', 'bt'];
+const PICK_ORDER = ['o', 'dc', 'ou', 'o15', 'o35', 'bt'];
 function liveCard(m, now) {
   const st = state(m, now), picks = PICK_ORDER.map((k) => { const p = pick(m, k); return p && p.c >= MIN[k] ? { k, p } : null; }).filter(Boolean);
   const href = PREVIEWS[m.id] || '';

@@ -45,7 +45,7 @@ export async function bsdList(from, to, status, st) {
 const pair = (...v) => (v.every((n) => Number(n) > 1) ? v.map(Number) : null);
 export function mapOdds(o = {}) {
   const r = {}, x = pair(o.home_win, o.draw, o.away_win), u = pair(o.over_25_goals, o.under_25_goals), w = pair(o.over_15_goals, o.under_15_goals), b = pair(o.btts_yes, o.btts_no);
-  if (x) r.o = x; if (u) r.ou = u; if (w) r.o15 = w; if (b) r.bt = b; return r;
+  const t = pair(o.over_35_goals ?? o.over_35, o.under_35_goals ?? o.under_35); if (x) r.o = x; if (u) r.ou = u; if (w) r.o15 = w; if (b) r.bt = b; if (t) r.o35 = t; return r;
 }
 
 // League names/countries come from a separate list; cached for a day.
@@ -95,7 +95,7 @@ export async function collect({ dataDir = path.resolve(env('DATA_DIR', path.join
     .sort((a, b) => (a.li >= 100000) - (b.li >= 100000) || Date.parse(a.d) - Date.parse(b.d)).slice(0, maxOdds); // big leagues first, then soonest
   let filled = 0;
   for (const m of cand) {
-    try { const add = mapOdds((await bsdGet(`/events/${m.bid}/odds/`, st)).odds); Object.assign(m, add); m.oa = now; if (Object.keys(add).length) filled++; } catch (e) { console.error('BSD odds failed for', m.bid, e.message); }
+    try { const rawOdds = (await bsdGet(`/events/${m.bid}/odds/`, st)).odds; if (!globalThis.__oddsKeys) { globalThis.__oddsKeys = 1; console.log('BSD odds fields:', Object.keys(rawOdds || {}).join(', ')); } const add = mapOdds(rawOdds); Object.assign(m, add); m.oa = now; if (Object.keys(add).length) filled++; } catch (e) { console.error('BSD odds failed for', m.bid, e.message); }
     await sleep(+env('BSD_ODDS_PAUSE_MS', 120));
   }
   for (const [d, day] of Object.entries(days)) { day.matches.sort((a, b) => Date.parse(a.d) - Date.parse(b.d)); const f = path.join(dataDir, d + '.json'); fs.writeFileSync(f + '.tmp', JSON.stringify({ ...day, date: d, updated: new Date(now).toISOString(), od: day.od || 'bzzoiro' })); fs.renameSync(f + '.tmp', f); }

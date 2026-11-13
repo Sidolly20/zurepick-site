@@ -43,6 +43,7 @@ export function mapOdds(o = {}) {
   const u = pair(o.over_25_goals, o.under_25_goals); if (u) r.ou = u;
   const w = pair(o.over_15_goals, o.under_15_goals); if (w) r.o15 = w;
   const b = pair(o.btts_yes, o.btts_no); if (b) r.bt = b;
+  const t = pair(o.over_35_goals ?? o.over_35, o.under_35_goals ?? o.under_35); if (t) r.o35 = t;
   return r;
 }
 

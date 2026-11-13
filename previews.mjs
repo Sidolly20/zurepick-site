@@ -21,7 +21,7 @@ const okOdds = (od) => Array.isArray(od) && od.length > 1 && od.every((x) => x >
 const pct = (x) => Math.round(x * 100);
 const ord = (n) => n + (n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10 > 3 ? 0 : n % 10] || 'th');
 const sgn = (n) => (n > 0 ? '+' : '') + n;
-const KEYS = ['o', 'dc', 'ou', 'o15', 'bt'];
+const KEYS = ['o', 'dc', 'ou', 'o15', 'o35', 'bt'];
 
 export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SITE, RES = {} }) {
   const RESV = Object.values(RES);

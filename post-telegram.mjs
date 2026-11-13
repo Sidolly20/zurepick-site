@@ -9,7 +9,7 @@ if (!TOKEN || !CHAT) { console.log('Telegram: TELEGRAM_BOT_TOKEN or TELEGRAM_CHA
 const day = (o = 0) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(Date.now() + o * 864e5);
 const load = (d) => { try { return JSON.parse(fs.readFileSync(`data/${d}.json`, 'utf8')).matches || []; } catch { return []; } };
 const h = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const KEYS = ['o', 'dc', 'ou', 'o15', 'bt'];
+const KEYS = ['o', 'dc', 'ou', 'o15', 'o35', 'bt'];
 const rec = (ms) => ms.filter(settled).flatMap((m) => KEYS.map((k) => [k, pick(m, k)]).filter(([k, p]) => p && p.od && p.c >= MIN[k]).map(([k, p]) => ({ m, k, p, w: !!won(m, k, p) })));
 const date = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' }).format(Date.now());
 const foot = '\n\n18+ · Picks are chances, not guarantees. Play responsibly.';

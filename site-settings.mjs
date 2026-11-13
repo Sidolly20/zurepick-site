@@ -8,4 +8,12 @@ export const SETTINGS = {
   goatcounter: '',
   // Plausible (paid visit counter, no cookies): paste your domain, e.g. 'sidolly20.github.io'
   plausibleDomain: '',
+  // About page "Who runs ZurePicks" box. ownerName and ownerRole show as written.
+  ownerName: 'A. S. Jaye',
+  ownerRole: 'Founder and editor',
+  // Optional photo or drawing: upload the image to the repo root (for example owner.jpg) and write its file name here. Empty keeps the drawn portrait.
+  ownerPhoto: '',
+  // Optional: your own words about yourself (where you are, how long you have followed football, why you built the site).
+  // Write it in normal sentences between the quote marks. Leave '' to show only the standard text. Do not use the ' character; use ’ instead.
+  ownerBio: '',
 };
