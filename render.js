@@ -283,7 +283,7 @@ const PICK_ORDER = ['o', 'dc', 'ou', 'o15', 'o35', 'bt'];
 function liveCard(m, now) {
   const st = state(m, now), picks = PICK_ORDER.map((k) => { const p = pick(m, k); return p && p.c >= MIN[k] ? { k, p } : null; }).filter(Boolean);
   const href = PREVIEWS[m.id] || '';
-  const chips = picks.map(({ k, p }) => { const r = st.k == 'fin' ? (won(m, k, p) ? ' w' : ' l') : ''; return `<span class="lp${r}" title="${esc(MK[k].n[p.i])} · ${p.c}%">${r == ' w' ? '✓' : r == ' l' ? '✗' : '•'} <b>${esc(MK[k].l)}</b> ${esc(MK[k].n[p.i])} <em>${p.c}%</em></span>`; }).join('');
+  const chips = picks.map(({ k, p }) => { const r = st.k == 'fin' ? (won(m, k, p) ? ' ok' : ' bad') : ''; return `<span class="lp${r}" title="${esc(MK[k].n[p.i])} · ${p.c}%">${r == ' ok' ? '✓' : r == ' bad' ? '✗' : '•'} <b>${esc(MK[k].l)}</b> ${esc(MK[k].n[p.i])} <em>${p.c}%</em></span>`; }).join('');
   const w = st.k == 'fin' ? picks.filter(({ k, p }) => won(m, k, p)).length : 0;
   const sum = st.k == 'fin' && picks.length ? `<span class="ls">${w} of ${picks.length} picks won</span>` : '';
   const t = href ? `<a class="lt" href="${esc(href)}">` : '<div class="lt">', te = href ? '</a>' : '</div>';
@@ -293,14 +293,14 @@ export function liveHtml(ms, now = Date.now()) {
   const day = (t) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(t), today = day(now), seen = new Set(), all = [];
   for (const m of ms) if (!seen.has(m.id)) { seen.add(m.id); all.push(m); }
   const S = all.map((m) => ({ m, k: state(m, now).k })), t = (x) => Date.parse(x.m.d);
-  const live = S.filter((x) => x.k == 'live' || x.k == 'ko').sort((a, b) => t(a) - t(b));
+  const stale = (x) => x.k == 'ko' && now - t(x) > 135 * 6e4, live = S.filter((x) => (x.k == 'live' || x.k == 'ko') && !stale(x)).sort((a, b) => t(a) - t(b));
   const next = S.filter((x) => x.k == 'ns' && t(x) > now).sort((a, b) => t(a) - t(b));
   const soon = next.filter((x) => t(x) - now <= 4 * 36e5), later = soon.length ? [] : next.slice(0, 4);
-  const fin = S.filter((x) => x.k == 'fin' && day(t(x)) == today || x.k == 'fin' && now - t(x) < 20 * 36e5).sort((a, b) => t(b) - t(a));
+  const fin = S.filter((x) => (x.k == 'fin' || stale(x)) && (day(t(x)) == today || now - t(x) < 20 * 36e5)).sort((a, b) => t(b) - t(a));
   const wonN = fin.reduce((s, { m }) => s + PICK_ORDER.filter((k) => { const p = pick(m, k); return p && p.c >= MIN[k] && won(m, k, p); }).length, 0), pickN = fin.reduce((s, { m }) => s + PICK_ORDER.filter((k) => { const p = pick(m, k); return p && p.c >= MIN[k]; }).length, 0);
   const seg = (id, title, sub, items, empty, cls = '') => `<section class="lseg ${cls}" id="${id}"><h2>${title}<em>${items.length}</em></h2><p class="mut">${sub}</p>${items.length ? items.map((x) => liveCard(x.m, now)).join('') : `<div class="empty">${empty}</div>`}</section>`;
   const nx = next[0] ? `The next kick-off in our data is ${esc(next[0].m.h)} v ${esc(next[0].m.a)} at ${hm(next[0].m.d)} WAT.` : 'No more games are scheduled in our data for now.';
   return seg('live-now', '<i class="ld"></i>Live now', 'Games in play, with the current score and minute.', live, `No games in play right now. ${nx}`, 'lv')
     + seg('live-soon', soon.length || !later.length ? 'Kicking off in the next 4 hours' : 'Later today', soon.length || !later.length ? 'Not started yet, with our published picks and their chance.' : 'Nothing starts in the next 4 hours, so here are the next games on the list.', soon.length ? soon : later, 'Nothing is lined up in the next 4 hours.')
-    + seg('live-done', 'Finished today', `Final scores${pickN ? `, with every published pick graded: ${wonN} of ${pickN} won so far` : ''}.`, fin, 'No games have finished yet today.', 'fn');
+    + seg('live-done', 'Finished recently', `Final scores from the last day${pickN ? `, with every published pick graded: ${wonN} of ${pickN} won so far` : ''}. A game still waiting for its final score shows “Awaiting result”.`, fin, 'No games have finished yet.', 'fn');
 }
