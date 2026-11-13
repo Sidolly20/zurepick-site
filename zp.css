@@ -964,3 +964,29 @@ main.dayp .hero .kp span{font-size:.7rem!important}
 main.dayp .hero .eyebrow{letter-spacing:.06em!important;font-size:.68rem!important;display:flex!important;align-items:center;gap:.4rem;white-space:nowrap}
 main.dayp .hero .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:0 0 10px var(--g);flex:none}
 main.dayp .hero .eyebrow>*:first-child{flex:none}
+/* v10: home top: kick-off ticker, date line, two buttons */
+.tick{display:flex;align-items:stretch;margin:-1.1rem -16px 1rem;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);overflow:hidden}
+.tick[hidden]{display:none}
+.tick .tk-l{flex:none;display:flex;align-items:center;padding:0 .8rem;font:800 .66rem var(--fd);letter-spacing:.1em;text-transform:uppercase;color:var(--g);border-right:1px solid rgba(255,255,255,.1);background:rgba(46,240,162,.07)}
+.tick .tk-r{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tick .tk-r::-webkit-scrollbar{display:none}
+.tick .tk-r a{flex:none;display:flex;align-items:center;gap:.5rem;padding:.65rem .9rem;color:var(--ink);text-decoration:none;font-size:.8rem;border-right:1px solid rgba(255,255,255,.07);white-space:nowrap}
+.tick .tk-r a b{font:800 .84rem var(--fd);color:var(--g)}.tick .tk-r a b.lv{color:var(--no)}
+.tick .tk-r a i{font-style:normal;color:var(--mut);padding:0 .1rem}
+main.dayp .hero .eyebrow.dl{color:var(--mut)!important;text-transform:none;letter-spacing:0!important;font-size:.9rem!important;font-weight:600}
+main.dayp .hero .eyebrow.dl::before{display:none}
+.cta-row{display:flex;flex-wrap:wrap;gap:.6rem;margin:0 0 1.1rem}
+.cta-row .btn{display:inline-flex;align-items:center;justify-content:center;padding:.8rem 1.25rem;border-radius:14px;font:700 .95rem var(--fd);text-decoration:none;min-height:46px}
+.cta-row .btn.pri{background:var(--gold);color:#031a10;box-shadow:0 12px 26px -14px rgba(46,240,162,.9)}
+.cta-row .btn.ghost{border:1px solid rgba(255,255,255,.22);color:var(--ink);background:rgba(255,255,255,.04)}
+.hero.home{grid-template-areas:"tk tk" "eb bn" "h1 bn" "ld bn" "cr bn" "cta bn" "kp kp"!important}
+.hero.home .tick{grid-area:tk}.hero.home .cta-row{grid-area:cr}
+.hero.home .tick{border-radius:14px;margin:0 0 1.1rem;border:1px solid rgba(255,255,255,.1)}
+@media(max-width:760px){.hero.home{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"tk" "eb" "h1" "ld" "cr" "cta" "kp" "bn"!important}.hero.home .tick{margin:-1.1rem -16px 1rem;border-radius:0;border-width:0 0 1px}}
+/* v11: smoother landing */
+main.dayp .hero .kp,main.dayp .hero .kp>div{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+main.dayp .hero .kp{background:rgba(255,255,255,.05);clip-path:inset(0 round 18px)}
+main.dayp .hero .kp>div{background:transparent!important}
+.hero.home .lead{margin-bottom:1.1rem!important}
+@keyframes zup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:no-preference){.hero.home .eyebrow,.hero.home h1,.hero.home .lead,.hero.home .potd-wrap,.hero.home .kp{animation:zup .55s cubic-bezier(.2,.7,.2,1) both}.hero.home h1{animation-delay:.05s}.hero.home .lead{animation-delay:.1s}.hero.home .potd-wrap{animation-delay:.16s}.hero.home .kp{animation-delay:.24s}}

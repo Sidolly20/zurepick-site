@@ -1,4 +1,4 @@
-import { setPreviews, setCrests, settled, won, MK, TZ, board, comboHtml, combos, singleHtml, statsHtml, state, visible, fixturesByDay, leagueTest } from './render.js';
+import { PREVIEWS, esc, hm, setPreviews, setCrests, settled, won, MK, TZ, board, comboHtml, combos, singleHtml, statsHtml, state, visible, fixturesByDay, leagueTest } from './render.js';
 try { setCrests(await (await fetch('data/crests.json')).json()); } catch {}
 try { setPreviews(await (await fetch('data/previews.json')).json()); } catch {}
 const $ = (s) => document.querySelector(s), B = $('#board');
@@ -33,8 +33,17 @@ if (B) {
   }
   // Redraw without flicker: skip if nothing changed, swap only the rows that changed, and rebuild everything only when the list of games changes.
   function paintPotd() { const el = $('a.potd-hero') || $('a.potd'); if (!el || !S.data) return; const m = S.data.find((x) => x.id === el.dataset.id); if (!m) return; const slot = el.querySelector('.pp'), i = +el.dataset.i; let tag = ''; if (settled(m)) tag = won(m, 'o', { i }) ? `<span class="pr w">✓ Won ${m.sc[0]}–${m.sc[1]}</span>` : `<span class="pr l">✗ Lost ${m.sc[0]}–${m.sc[1]}</span>`; else { const q = state(m); if (q.k == 'live') tag = `<span class="pr">● Live ${q.big} · ${q.sm}</span>`; } const old = el.querySelector('.pr'); if (old && old.textContent == (tag ? tag.replace(/<[^>]+>/g, '') : '')) return; if (old) old.remove(); if (tag) slot.insertAdjacentHTML('beforeend', tag); }
+  function paintTick() {
+    const r = $('#tickr'); if (!r || !S.data) return; const now = Date.now();
+    const L = S.data.filter((m) => state(m).k === 'live').map((m) => ({ m, live: 1 }));
+    const N = S.data.filter((m) => state(m).k === 'ns' && Date.parse(m.d) - now < 12 * 36e5).sort((x, y) => Date.parse(x.d) - Date.parse(y.d)).slice(0, 10).map((m) => ({ m }));
+    const it = L.concat(N).slice(0, 12);
+    const lab = $('#tick .tk-l'); if (lab) lab.textContent = L.length ? 'Live now' : 'Next up';
+    const h = it.map(({ m, live }) => `<a href="${esc(PREVIEWS[m.id] || 'live.html')}">${live ? `<b class="lv">${state(m).big}</b>` : `<b>${hm(m.d)}</b>`}<span>${esc(m.h)} <i>v</i> ${esc(m.a)}</span></a>`).join('');
+    if (h !== r.dataset.h) { r.dataset.h = h; r.innerHTML = h; } $('#tick').hidden = !it.length;
+  }
   function paint(status) {
-    paintPotd();
+    paintPotd(); paintTick();
     if (LMODE) return paintLeague(status);
     const html = board(S.data, S.k, { lg: S.lg, q: S.q, min: S.min, sel: S.sel });
     swap(html);
