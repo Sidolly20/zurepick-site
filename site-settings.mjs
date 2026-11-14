@@ -16,4 +16,7 @@ export const SETTINGS = {
   // Optional: your own words about yourself (where you are, how long you have followed football, why you built the site).
   // Write it in normal sentences between the quote marks. Leave '' to show only the standard text. Do not use the ' character; use ’ instead.
   ownerBio: '',
+  // The date shown as "last reviewed" on guides and used in the sitemap for pages that do not change with the data.
+  // Update it when you genuinely revise the guides.
+  contentUpdated: '2026-11-13',
 };
