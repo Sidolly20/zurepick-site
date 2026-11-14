@@ -10,6 +10,13 @@ This update changes `build-pages.mjs`, `zp.css`, `site-settings.mjs`, the icons 
 - New logo mark, favicon, app icons and share image (WhatsApp/Telegram previews).
 - Pick of the day card, hero, KPI tiles, buttons, chips, FAQ and footer restyled; every other module inherits the new tokens.
 
+## Layout revamp (v11, the structure changed)
+- Hero: an open, full-width scoreboard header (big condensed headline) with the pick of the day as a ticket on the right. The old boxed card, pitch illustration and duplicated stat tiles are gone.
+- Stats: one proof strip with dividers instead of separate boxes.
+- Board: every game is a fixture card (kick-off tag, big team names, large odds buttons, pick pill). League groups are two-column grids on desktop.
+- Footer: moved outside `<main>` into a real footer with a brand block, link columns and a league list (the inline styles are gone).
+- Match, league and guide pages get a bold open headline instead of a boxed card.
+
 ## SEO changes (build-pages.mjs)
 - Titles are fitted to about 60 characters (the brand moves to og:site_name and the WebSite markup when space is short). Descriptions are trimmed to 158.
 - Structured data: Organization with logo and Telegram, WebSite, WebPage with dateModified, Article with author on every guide, ItemList on board pages, BreadcrumbList, FAQPage.
