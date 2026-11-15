@@ -71,8 +71,15 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
       return `<div class="mx-strip">${T(ms.length, 'Games today')}${T(tips, 'Tips published')}${T(S.r == null ? '–' : S.r + '%', 'Won, last 7 days', 'track-record.html')}${T(lg, 'Leagues today')}</div>${api.potd('last')}`;
     },
     radarAll() {
-      const l = upcoming(items).filter((it) => it.d <= dstr(1)).map((it) => ({ it, p: pick(it.m, 'o'), g: TAGS[it.file] || {} })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((a, b) => (b.g.tag ? 1 : 0) - (a.g.tag ? 1 : 0) || b.p.c - a.p.c).slice(0, 6);
-      return l.length ? `<section class="mx-card" id="radar"><h2>Today and tomorrow: games worth a look</h2><ul class="mx-rad">${l.map(({ it, p, g }) => `<li><a href="${it.file}"><small>${esc(it.L.name)} · ${sd(it.m.d)} · ${hm(it.m.d)}</small><b>${esc(it.m.h)} vs ${esc(it.m.a)}</b>${g.tag ? `<span class="mx-tag">${esc(g.tag)}</span>` : ''}</a><em class="on">${MK.o.s[p.i]} · ${p.c}%</em></li>`).join('')}</ul></section>` : '';
+      // best tip per game across every market (1X2, double chance, goals, BTTS), strongest first, up to 40
+      const LBL = { o: ['Home', 'Draw', 'Away'] }, lab = (k, i) => (LBL[k] || MK[k].n)[i];
+      const l = upcoming(items).filter((it) => it.d <= dstr(1)).map((it) => {
+        let best = null;
+        for (const k of KEYS) { const p = pick(it.m, k); if (!p || p.model || !p.od || p.c < MIN[k]) continue; const sc = p.c - (k == 'o' ? 0 : 3); if (!best || sc > best.sc) best = { k, p, sc }; }
+        return best && { it, k: best.k, p: best.p, g: TAGS[it.file] || {}, sc: best.sc };
+      }).filter(Boolean).sort((a, b) => (b.g.tag ? 1 : 0) - (a.g.tag ? 1 : 0) || b.sc - a.sc).slice(0, 40);
+      const li = ({ it, k, p, g }) => `<li><a href="${it.file}"><small>${esc(it.L.name)} · ${sd(it.m.d)} · ${hm(it.m.d)}</small><b>${esc(it.m.h)} vs ${esc(it.m.a)}</b>${g.tag ? `<span class="mx-tag">${esc(g.tag)}</span>` : ''}</a><em class="on">${lab(k, p.i)} · ${p.c}%</em></li>`;
+      return l.length ? `<section class="mx-card" id="radar"><h2>Today and tomorrow: games worth a look</h2><ul class="mx-rad">${l.slice(0, 8).map(li).join('')}</ul>${l.length > 8 ? `<details class="mx-more"><summary>Show ${l.length - 8} more games</summary><ul class="mx-rad">${l.slice(8).map(li).join('')}</ul></details>` : ''}</section>` : '';
     },
     recordStrip() {
       const ds = [...Array(7)].map((_, i) => dstr(-(7 - i))), cells = ds.map((d) => { const S = summary(rec(snaps[d] || [])); return `<a title="${S.w} of ${S.n} won" href="predictions-${d}.html" class="${S.n ? (S.r >= 60 ? 'dw' : 'dl') : 'dz'}"><small>${D(d + 'T12:00:00Z', { weekday: 'short', day: 'numeric' })}</small><b>${S.n ? S.r + '%' : '–'}</b></a>`; }).join('');
@@ -84,7 +91,7 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     },
     radar(L) {
       const l = upcoming(byLeague[L.slug] || []).slice(0, 8); if (!l.length) return '';
-      return `<section class="mx-card" id="radar"><h2>${esc(L.name)} matchday radar</h2><ul class="mx-rad">${l.map((it) => { const g = TAGS[it.file] || {}, p = pick(it.m, 'o'), pk = p && p.od && p.c >= MIN.o; return `<li><a href="${it.file}"><small>${sd(it.m.d)} · ${hm(it.m.d)}</small><b>${esc(it.m.h)} vs ${esc(it.m.a)}</b>${g.tag ? `<span class="mx-tag">${esc(g.tag)}</span>` : ''}</a><em class="${pk ? 'on' : ''}">${pk ? MK.o.s[p.i] + ' · ' + p.c + '%' : 'No tip'}</em></li>`; }).join('')}</ul></section>`;
+      return `<section class="mx-card" id="radar"><h2>${esc(L.name)} matchday radar</h2><ul class="mx-rad">${l.map((it) => { const g = TAGS[it.file] || {}, p = pick(it.m, 'o'), pk = p && p.od && p.c >= MIN.o; return `<li><a href="${it.file}"><small>${sd(it.m.d)} · ${hm(it.m.d)}</small><b>${esc(it.m.h)} vs ${esc(it.m.a)}</b>${g.tag ? `<span class="mx-tag">${esc(g.tag)}</span>` : ''}</a><em class="${pk ? 'on' : ''}">${pk ? ['Home', 'Draw', 'Away'][p.i] + ' · ' + p.c + '%' : 'No tip'}</em></li>`; }).join('')}</ul></section>`;
     },
     featured() {
       const l = upcoming(items).filter((it) => it.d <= dstr(1)).map((it) => ({ it, p: pick(it.m, 'o') })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((a, b) => b.p.c - a.p.c).slice(0, 8);

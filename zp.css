@@ -679,3 +679,6 @@ header .tgbtn{display:grid!important;margin-left:auto;width:32px;height:32px}
 header .tgbtn svg{width:16px;height:16px}
 @media(max-width:900px){header .mm{margin-left:.1rem}}
 .tabbar a{min-width:0;font-size:.7rem}
+.mx-more>summary{list-style:none;cursor:pointer;margin:.6rem 0 0;padding:.7rem 1rem;border-radius:999px;border:1px solid var(--line2);text-align:center;font-weight:800;font-size:.9rem;color:var(--brand-d)}
+.mx-more>summary::-webkit-details-marker{display:none}
+.mx-more[open]>summary{margin-bottom:.4rem}
