@@ -744,3 +744,10 @@ header .tgbtn svg{width:16px;height:16px}
 .sf-all{display:block;margin-top:.9rem;padding:.8rem 1rem;border-radius:999px;text-align:center;font-weight:800;background:var(--ink);color:#fff;text-decoration:none}
 .sf-none{padding:1rem;border-radius:14px;background:var(--warn-soft);font-weight:600}
 @media(min-width:760px){.sfs{grid-template-columns:1fr 1fr}}
+/* v4.3 banker record */
+.potd-hero .pd{display:block;margin:.1rem 0 .8rem;font-size:.78rem;font-weight:600;color:#bfe3cd}
+.potd-rec{display:flex;flex-direction:column;gap:.1rem;margin-top:.6rem;padding:.8rem 1rem;border-radius:16px;background:#fff;border:1px solid #d6e6dc;text-decoration:none;color:var(--ink)}
+.potd-rec b{font-family:var(--fd);font-size:1rem}
+.potd-rec span{font-size:.82rem;color:var(--brand-d);font-weight:700}
+.potd-none{padding:1rem 1.1rem;border-radius:18px;background:var(--warn-soft);display:flex;flex-direction:column;gap:.2rem}
+.potd-none span{font-size:.86rem}

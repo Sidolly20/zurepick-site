@@ -261,10 +261,19 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
   // The big button at the top of the home page: today's pick of the day (empty when there is no pick yet).
   api.potdHero = () => {
     let it, st, e, label = 'Banker of the day · pick of the day';
+    if (!potdNow) api.potd('last'); // make sure today's stored pick is loaded first, even if the home page is built before anything else asks for it
     if (potdNow) ({ it, st, e } = potdNow);
-    else { const cand = upcoming(items).map((x) => ({ it: x, p: pick(x.m, 'o') })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((x, y) => y.p.c - x.p.c); const b = cand.find((x) => x.p.od >= 1.3) || cand.find((x) => x.p.od >= 1.2); if (!b) return ''; it = b.it; st = b.p; label = 'Banker today · strongest pick'; }
+    else {
+      // no stored pick today: show the strongest game that has not started, today first, then tomorrow only (never later days)
+      const cand = upcoming(items).filter((x) => x.d <= dstr(1) && Date.parse(x.m.d) > Date.now()).map((x) => ({ it: x, p: pick(x.m, 'o') })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((x, y) => (x.it.d == y.it.d ? y.p.c - x.p.c : x.it.d < y.it.d ? -1 : 1));
+      const b = cand.find((x) => x.p.od >= 1.3) || cand.find((x) => x.p.od >= 1.2); if (b) { it = b.it; st = b.p; label = it.d == today ? 'Banker today · strongest pick' : 'Banker for tomorrow · strongest pick'; }
+    }
+    // record: every settled pick of the day, newest first, with the current winning run
+    const done = updateHist(null).filter((x) => x.res), wn = done.filter((x) => x.res == 'won').length; let run = 0; for (const x of done) { if (x.res == 'won') run++; else break; }
+    const rec = done.length ? `<a class="potd-rec" href="pick-of-the-day.html"><b>Banker record: ${wn} of ${done.length} won (${Math.round((wn / done.length) * 100)}%)</b><span>${run > 1 ? run + ' wins in a row · ' : ''}see every banker of the day →</span></a>` : '';
+    if (!it) return rec ? `<div class="potd-wrap"><div class="potd-none"><b>No banker yet</b><span>We name one only when a game has a 65%+ chance at odds of 1.30 or more. Check back tomorrow morning.</span></div>${rec}</div>` : '';
     const m = it.m;
-    return `<div class="potd-wrap"><a class="potd-hero" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="pt">${label}</span><span class="pm"><b>${esc(m.h)}</b><i>vs</i><b>${esc(m.a)}</b></span><span class="pp"><span class="pc"><strong>${st.c}%</strong><small>chance</small></span><span class="pk2"><small>Our pick</small>${MK.o.n[st.i]}</span><span class="po"><small>Odds</small>${Number(st.od).toFixed(2)}</span></span>${e ? `<span class="pe">${badge(e)}</span>` : ''}<span class="pgo">Read the preview</span></a></div>`;
+    return `<div class="potd-wrap"><a class="potd-hero" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="pt">${label}</span><span class="pm"><b>${esc(m.h)}</b><i>vs</i><b>${esc(m.a)}</b></span><span class="pd">${esc(it.L.name)} · ${sd(m.d)} · ${hm(m.d)} WAT</span><span class="pp"><span class="pc"><strong>${st.c}%</strong><small>chance</small></span><span class="pk2"><small>Our pick</small>${MK.o.n[st.i]}</span><span class="po"><small>Odds</small>${Number(st.od).toFixed(2)}</span></span>${e ? `<span class="pe">${badge(e)}</span>` : ''}<span class="pgo">Read the preview</span></a>${rec}</div>`;
   };
   function potdArchive() {
     const hist = updateHist(null), done = hist.filter((e) => e.res), w = done.filter((e) => e.res == 'won').length;
