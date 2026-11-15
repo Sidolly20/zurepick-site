@@ -672,3 +672,10 @@ header .tgbtn{margin-left:0}
 .row.saved{box-shadow:inset 3px 0 0 #f5b301}
 .kp{gap:.3rem 1.3rem}.kp b{font-size:1.3rem}.kp span{font-size:.74rem}
 .slipsw a{padding:.5rem .8rem;font-size:.86rem}
+
+/* v3.7 — header: Categories beside logo, Telegram at the right edge */
+header .mm{margin-left:.2rem}
+header .tgbtn{display:grid!important;margin-left:auto;width:32px;height:32px}
+header .tgbtn svg{width:16px;height:16px}
+@media(max-width:900px){header .mm{margin-left:.1rem}}
+.tabbar a{min-width:0;font-size:.7rem}
