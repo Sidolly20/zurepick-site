@@ -2,9 +2,9 @@
    Warm white paper, ink text, one orange accent for actions, green only for picks and wins.
    Written from scratch; there is no leftover from the old dark theme. */
 :root{
-  --bg:#f6f5f2;--card:#fff;--soft:#efede8;--ink:#171a1f;--mut:#667085;--line:#e6e3dc;--line2:#d6d2c8;
-  --brand:#d9480f;--brand-d:#b53a09;--brand-soft:#fdeee6;
-  --ok:#0b8f5a;--ok-soft:#e4f5ec;--bad:#d92d3a;--bad-soft:#fdecee;--live:#e5484d;--warn:#a96b0a;--warn-soft:#fdf3dc;
+  --bg:#f1f5f2;--card:#fff;--soft:#e7eee9;--ink:#0d1a14;--mut:#5b6b63;--line:#dce5de;--line2:#c8d5cc;
+  --brand:#0f6b45;--brand-d:#0b5535;--brand-soft:#dff0e6;
+  --ok:#0b8f5a;--ok-soft:#e4f5ec;--bad:#d92d3a;--bad-soft:#fdecee;--live:#e5484d;--warn:#8a5a00;--warn-soft:#fff2cc;
   --r:16px;--r2:12px;--sh:0 1px 2px rgba(23,26,31,.05),0 10px 28px -16px rgba(23,26,31,.16);
   --fd:"Bricolage Grotesque","Figtree","Segoe UI",system-ui,sans-serif;
   --f:"Figtree","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
@@ -16,7 +16,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--f);-
 img,svg{max-width:100%}
 a{color:var(--brand-d);text-decoration-thickness:1px;text-underline-offset:3px}
 a:hover{color:var(--brand)}
-:focus-visible{outline:3px solid rgba(217,72,15,.45);outline-offset:2px;border-radius:6px}
+:focus-visible{outline:3px solid rgba(15,107,69,.45);outline-offset:2px;border-radius:6px}
 ::selection{background:var(--brand);color:#fff}
 .skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:#fff;padding:.6rem 1rem;border-radius:10px;font-weight:700;z-index:99}
 .skip:focus{left:12px}
@@ -491,3 +491,71 @@ a.tl:hover{color:var(--brand)}
 .st tbody tr:nth-child(even) td{background:#fbfaf8}
 .st td:last-child,.st th:last-child{font-weight:800}
 @media(max-width:600px){.st th:nth-child(7),.st td:nth-child(7),.st th:nth-child(8),.st td:nth-child(8){display:none}.st td:nth-child(2),.st th:nth-child(2){min-width:8rem}}
+
+/* ======== v3: floodlit pitch ======== */
+.logo i{background:#ff5a1f}
+.hero h1 em,.hero h1 .hx,h1 em,h2 em{color:inherit;font-style:normal}
+.hero .eyebrow{background:var(--brand-soft);color:var(--brand-d)}
+body{background:var(--bg)}
+
+/* Pick of the day: the one bold element */
+.potd-wrap{margin:1.5rem 0 .5rem}
+.potd-hero{position:relative;overflow:hidden;isolation:isolate;display:grid;gap:1rem;padding:1.3rem 1.25rem 1.2rem;border-radius:24px;color:#fff;text-decoration:none;background:linear-gradient(155deg,#12875a 0%,#0b4d34 55%,#08301f 100%);box-shadow:0 26px 44px -26px rgba(8,48,31,.9)}
+.potd-hero:hover{color:#fff}
+.potd-hero::before{content:"";position:absolute;z-index:-1;right:-70px;top:50%;width:250px;height:250px;margin-top:-125px;border:2px solid rgba(255,255,255,.16);border-radius:50%}
+.potd-hero::after{content:"";position:absolute;z-index:-1;right:55px;top:0;bottom:0;width:2px;background:rgba(255,255,255,.16)}
+.potd-hero .pt{justify-self:start;padding:.3rem .8rem;border-radius:999px;background:#f5b301;color:#2a1c00;font-weight:800;font-size:.8rem}
+.potd-hero .pm{display:grid;gap:.1rem;font-family:var(--fd);font-size:clamp(1.6rem,6.5vw,2.4rem);line-height:1.05;letter-spacing:-.02em}
+.potd-hero .pm b{font-weight:800}
+.potd-hero .pm i{font-style:normal;font-family:var(--f);font-size:.9rem;font-weight:600;opacity:.7}
+.potd-hero .pp{display:grid;grid-template-columns:auto 1fr auto;gap:.6rem;align-items:stretch}
+.potd-hero .pp>span{display:grid;align-content:center;gap:.1rem;padding:.65rem .85rem;border-radius:14px;background:rgba(255,255,255,.12);backdrop-filter:blur(2px);font-weight:800;font-size:1.02rem}
+.potd-hero .pp small{font-size:.7rem;font-weight:600;opacity:.75}
+.potd-hero .pc strong{font-family:var(--fd);font-size:1.8rem;line-height:1;color:#f5b301}
+.potd-hero .po{font-family:var(--fd);font-size:1.4rem}
+.potd-hero .pgo{font-weight:700;font-size:.88rem;opacity:.9}
+.potd-hero .pgo::after{content:" \2192"}
+.potd-hero .pe{justify-self:start}
+
+/* Leagues tiles (Today and match pages) */
+.mx-lt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-top:.5rem}
+.mx-lt a{display:flex;align-items:center;gap:.65rem;padding:.6rem .7rem;border:1px solid var(--line);border-radius:14px;background:var(--bg);text-decoration:none;color:var(--ink);min-width:0}
+.mx-lt a:hover{border-color:var(--brand)}
+.mx-lt .lgo{width:36px;height:36px;padding:5px;border-radius:10px}
+.mx-lt span{min-width:0}.mx-lt b{display:block;font-size:.9rem;line-height:1.15}
+.mx-lt small{display:block;color:var(--mut);font-size:.74rem;line-height:1.25}
+@media(min-width:900px){.mx-lt{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Lists of picks and guides become cards */
+ul.pl{list-style:none;margin:.6rem 0 1rem;padding:0;display:grid;gap:.6rem}
+ul.pl li{padding:.8rem 1rem .8rem 1.1rem;border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:14px;background:var(--card);box-shadow:var(--sh)}
+ul.pl a{display:block;font-weight:800;color:var(--ink);text-decoration:none;line-height:1.25}
+ul.pl a:hover{color:var(--brand)}
+ul.pl small{display:block;margin-top:.2rem;color:var(--mut);font-size:.82rem}
+.grid>a:not(.lgc){flex-direction:column;align-items:flex-start;gap:.3rem;padding:1rem 1.1rem;font-weight:800;line-height:1.25;box-shadow:var(--sh)}
+.grid>a:not(.lgc) small{display:block;color:var(--mut);font-weight:500;font-size:.86rem;line-height:1.4}
+.grid>a:not(.lgc):hover{border-color:var(--brand)}
+
+/* finished games: readable labels */
+.row.loss .oc.pick small{color:var(--bad)}
+.row.win .oc.pick small{color:#e4f7ec}
+.row.win .ppill{background:var(--ok-soft);border-color:#bfe6d1}.row.win .ppill small,.row.win .ppill em{color:var(--ok)}
+
+/* footer: dark pitch, compact */
+footer.site{background:#08301f;color:#cfe4d8;border-top:0;margin-top:3rem;padding:2.2rem 0 7rem}
+footer.site a{color:#e8f5ee;text-decoration:none}footer.site a:hover{color:#f5b301}
+footer.site .logo{color:#fff}
+footer.site .fbrand p{color:#a9c7b8;max-width:46ch}
+footer.site .fg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem 1rem;margin:1.6rem 0}
+@media(min-width:900px){footer.site .fg{grid-template-columns:repeat(4,minmax(0,1fr))}}
+footer.site .fg b{display:block;margin-bottom:.5rem;color:#f5b301;font-size:.82rem;font-weight:800}
+footer.site .fg a{display:block;padding:.25rem 0;font-size:.92rem}
+footer.site .fx{margin:.6rem 0;border:1px solid rgba(255,255,255,.16);border-radius:14px;background:rgba(255,255,255,.05)}
+footer.site .fx summary{cursor:pointer;list-style:none;padding:.85rem 1rem;font-weight:800;display:flex;justify-content:space-between}
+footer.site .fx summary::-webkit-details-marker{display:none}
+footer.site .fx summary::after{content:"+";font-weight:800;color:#f5b301}
+footer.site .fx[open] summary::after{content:"\2212"}
+footer.site .fx>div{display:flex;flex-wrap:wrap;gap:.2rem .35rem;padding:0 1rem 1rem}
+footer.site .fx>div a{padding:.3rem .7rem;border-radius:999px;background:rgba(255,255,255,.08);font-size:.84rem}
+footer.site .fine{color:#a9c7b8;font-size:.82rem;max-width:70ch}
+footer.site .fine a{color:#f5b301;text-decoration:underline}

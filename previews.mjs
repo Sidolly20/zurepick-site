@@ -1,6 +1,6 @@
 // Match previews, team pages, results archive and weekly review: all built from the site's own data (odds, tables, tracked results).
 import fs from 'node:fs';
-import { MK, MIN, pick, won, settled, esc, hm, board, logoImg, emblemOf, CRESTS } from './render.js';
+import { MK, MIN, pick, won, settled, esc, hm, board, logoImg, emblemOf } from './render.js';
 import { teamKey, sameTeam } from './teams.js';
 import { matchModel, renderMatch } from './matchpage.mjs';
 
@@ -247,12 +247,11 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
   };
   // The big button at the top of the home page: today's pick of the day (empty when there is no pick yet).
   api.potdHero = () => {
-    if (!potdNow) return '';
-    const { it, st, e } = potdNow, m = it.m;
-    const TGI = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M21.9 4.1 2.8 11.4c-.9.4-.9 1.2-.2 1.4l4.9 1.5 1.9 5.8c.2.6.4.8.8.8.4 0 .6-.2.9-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.2-15.1c.3-1.2-.4-1.8-1.2-1.4ZM9.2 13.8l9.3-5.9c.4-.3.8-.1.5.2l-7.6 6.9-.3 3.2-1.9-4.4Z"/></svg>';
-    const mono = (n) => esc(String(n).split(/\s+/).filter((w) => /^[\p{L}]/u.test(w)).slice(0, 2).map((w) => w[0]).join('').toUpperCase() || '•');
-    const cr = (n) => { const s = CRESTS[teamKey(n)]; return `<span class="pzc">${s ? `<img src="${esc(s)}" alt="" width="46" height="46" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}<i>${mono(n)}</i></span>`; };
-    return `<div class="potd-wrap"><a class="potd-hero" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="pz-top"><small class="pt"><span>★</span> Pick of the day</small><small class="pz-ko">${esc(it.L.name)} · ${hm(m.d)} WAT</small></span><span class="pz-teams"><span class="pz-t">${cr(m.h)}<b>${esc(m.h)}</b></span><em>VS</em><span class="pz-t">${cr(m.a)}<b>${esc(m.a)}</b></span></span><span class="pp"><i class="zk">${MK.o.n[st.i]}</i><i class="zc">${st.c}% chance</i><i class="zo">${Number(st.od).toFixed(2)}</i>${e ? badge(e) : ''}</span></a></div>`;
+    let it, st, e, label = 'Pick of the day';
+    if (potdNow) ({ it, st, e } = potdNow);
+    else { const b = upcoming(items).map((x) => ({ it: x, p: pick(x.m, 'o') })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((x, y) => y.p.c - x.p.c)[0]; if (!b) return ''; it = b.it; st = b.p; label = 'Strongest pick today'; }
+    const m = it.m;
+    return `<div class="potd-wrap"><a class="potd-hero" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="pt">${label}</span><span class="pm"><b>${esc(m.h)}</b><i>vs</i><b>${esc(m.a)}</b></span><span class="pp"><span class="pc"><strong>${st.c}%</strong><small>chance</small></span><span class="pk2"><small>Our pick</small>${MK.o.n[st.i]}</span><span class="po"><small>Odds</small>${Number(st.od).toFixed(2)}</span></span>${e ? `<span class="pe">${badge(e)}</span>` : ''}<span class="pgo">Read the preview</span></a></div>`;
   };
   function potdArchive() {
     const hist = updateHist(null), done = hist.filter((e) => e.res), w = done.filter((e) => e.res == 'won').length;
