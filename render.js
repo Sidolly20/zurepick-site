@@ -13,6 +13,7 @@ export const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&a
 export const hm = (iso) => new Date(iso).toLocaleTimeString('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
 const norm = (od) => { const s = od.reduce((t, x) => t + 1 / x, 0); return od.map((x) => 1 / x / s); };
 // Pick = the outcome the bookmaker prices as most likely (margin removed). Without odds, the team-record model (m.pm) is used.
+export const MINOD = 1.15; // lowest odds at which we publish a tip
 export function pick(m, k) {
   const od = m[k]; let q, o = null;
   if (od && !od.some((x) => !(x > 1))) {
@@ -22,7 +23,9 @@ export function pick(m, k) {
   if (!q && k == 'dc' && m.o && !m.o.some((x) => !(x > 1))) { const p = norm(m.o); q = [p[0] + p[1], p[0] + p[2], p[1] + p[2]]; o = 'derived'; } // no double-chance prices: derive the chance from 1X2 odds
   if (!q && m.pm && (k == 'o' || k == 'dc')) { const p = m.pm.map((x) => x / 100); q = k == 'o' ? p : [p[0] + p[1], p[0] + p[2], p[1] + p[2]]; o = false; }
   if (!q) return null;
-  const i = q.indexOf(Math.max(...q)); return { i, c: Math.round(q[i] * 100), od: o === true ? od[i] : null, model: !o };
+  const i = q.indexOf(Math.max(...q));
+  if ((o === true ? od[i] : 1 / q[i]) < MINOD) return null; // no tip when it pays less than 1.15: a pick at 1.04 wins often but is worth nothing to a bettor
+  return { i, c: Math.round(q[i] * 100), od: o === true ? od[i] : null, model: !o };
 }
 // Quality bar: a pick is only published when its implied chance reaches this level (own tracked results: 1X2 picks under 60% won ~45-50%, 60%+ won ~80%).
 export const MIN = { o: 60, dc: 75, ou: 60, o15: 75, o35: 70, bt: 60 };
