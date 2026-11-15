@@ -632,3 +632,43 @@ header .tgbtn{margin-left:0}
 .mmp .mmc2 a{display:flex;align-items:center;min-height:44px;padding:.5rem .8rem;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:.9rem;font-weight:700;line-height:1.2;color:var(--ink);text-decoration:none}
 .mmp .mmc2 a:hover{border-color:var(--brand);background:var(--brand-soft);color:var(--brand-d)}
 .aibtn{padding:0 .8rem}
+
+/* v3.6 — Live bar (moving), unboxed stats, slip switcher, saved games */
+.tick{display:flex;align-items:stretch;background:#0b3d29;color:#e9f6ee;border-bottom:1px solid #082c1d;font-size:.82rem}
+.tick[hidden]{display:none}
+.tick .tk-l{flex:none;display:flex;align-items:center;gap:.45rem;padding:0 .9rem;background:#082c1d;color:#bfe3cd;font-family:var(--fd);font-weight:700;font-size:.78rem;text-decoration:none;position:relative;z-index:2}
+.tick .tk-l.on{color:#fff}
+.tick .tk-l.on::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:#ff4d4d;animation:tkp 1.4s ease-in-out infinite}
+@keyframes tkp{50%{opacity:.35;transform:scale(.8)}}
+.tick .tk-w{flex:1;min-width:0;overflow:hidden;position:relative}
+.tick .tk-r{display:flex;width:max-content;padding:0;overflow:visible;animation:tkm var(--tk,40s) linear infinite}
+.tick .tk-w:hover .tk-r,.tick .tk-w:active .tk-r{animation-play-state:paused}
+.tick .tk-s{display:flex;flex:none}
+@keyframes tkm{to{transform:translateX(-50%)}}
+.tick .tk-r a{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1.1rem;color:#e9f6ee;text-decoration:none;white-space:nowrap;border-right:1px solid rgba(255,255,255,.12)}
+.tick .tk-r a b{font-weight:600;color:#fff}
+.tick .tk-r a i{font-style:normal;font-weight:700;color:#f5b301;font-variant-numeric:tabular-nums}
+.tick .tk-r a.ft i{color:#9ec9b0}
+.tick .tk-r a em{font-style:normal;color:#f5b301}
+.tick .dot{width:.45rem;height:.45rem;border-radius:50%;background:#ff4d4d;animation:tkp 1.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.tick .tk-r{animation:none;width:auto;overflow-x:auto}.tick .tk-s[aria-hidden]{display:none}}
+
+/* stats: no boxes, fine type */
+.kp{display:flex;flex-wrap:wrap;gap:.4rem 2.2rem;margin:1.1rem 0 0;padding:0}
+.kp>div{display:flex;flex-direction:row;align-items:baseline;gap:.5rem;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.kp b{font-family:var(--fd);font-size:1.5rem;font-weight:300;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.kp span{font-size:.8rem;font-weight:400;color:var(--mut);letter-spacing:.01em}
+.kp .lv b{color:var(--live)}.kp .ok b{color:var(--ok)}
+
+/* slip switcher */
+.slipsw{display:flex;gap:.4rem;overflow-x:auto;margin:.2rem 0 1rem;padding:.2rem 0;scrollbar-width:none}
+.slipsw::-webkit-scrollbar{display:none}
+.slipsw a{flex:none;padding:.5rem 1rem;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:700;font-size:.9rem;text-decoration:none}
+.slipsw a[aria-current=page],.slipsw a[aria-current=page]:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* saved games */
+.row .sv{position:absolute;top:.35rem;right:.45rem;z-index:2;width:1.9rem;height:1.9rem;border:0;background:none;color:#b7c2bb;font-size:1.05rem;line-height:1;cursor:pointer;padding:0}
+.row .sv[aria-pressed=true]{color:#f5b301}
+.row.saved{box-shadow:inset 3px 0 0 #f5b301}
+.kp{gap:.3rem 1.3rem}.kp b{font-size:1.3rem}.kp span{font-size:.74rem}
+.slipsw a{padding:.5rem .8rem;font-size:.86rem}
