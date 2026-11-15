@@ -613,3 +613,22 @@ header .tgbtn{margin-left:0}
 .mmf{margin-top:.2rem;padding-top:.9rem;border-top:1px solid var(--line2)}
 .mmp a.mmt.ai{background:linear-gradient(150deg,#0f6b45,#08301f);border-color:transparent}
 .mmp a.mmt.ai b{color:#fff}.mmp a.mmt.ai small{color:#b8e0cd}
+
+/* ======== v3.5: stuck-hover fix on phones + bet types dropdown ======== */
+.scr button[aria-pressed=true],.scr button[aria-pressed=true]:hover,.scr a[aria-current],.scr a[aria-current]:hover,.scr .on,.scr .on:hover,.seg [aria-pressed=true]:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mm>summary{display:inline-flex;align-items:center;gap:.3rem;width:auto;height:44px;padding:0 .95rem;border-radius:999px;font-weight:800;font-size:.9rem;white-space:nowrap;color:var(--ink)}
+.mm>summary .car{font-style:normal;font-size:.8rem;transition:transform .15s}
+.mm[open]>summary{background:var(--ink);border-color:var(--ink);color:#fff}
+.mm[open]>summary .car{transform:rotate(180deg)}
+.mmp{left:12px;right:12px;top:68px;bottom:auto;max-height:min(74vh,600px);padding:1rem 1rem 1.1rem;border:1px solid var(--line2);border-radius:20px;background:var(--card);box-shadow:0 30px 60px -20px rgba(13,26,20,.45)}
+@media(min-width:900px){.mmp{left:auto;right:max(16px,calc((100vw - 1100px)/2));width:520px}}
+.mmw.bt{display:block;max-width:none;margin:0}
+.mmh{display:grid;gap:.1rem;margin:0 0 .9rem;padding-bottom:.8rem;border-bottom:1px solid var(--line)}
+.mmh b{font-family:var(--fd);font-size:1.25rem;letter-spacing:-.01em}.mmh span{color:var(--mut);font-size:.84rem}
+.mmw.bt .mms{margin:0 0 1rem}.mmw.bt .mms:last-child{margin-bottom:0}
+.mmw.bt h3{font-size:.8rem;color:var(--mut);font-family:var(--f);font-weight:700;margin:0 0 .45rem}
+.mmc2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
+.mmp .mmc2 a{display:flex;align-items:center;min-height:44px;padding:.5rem .8rem;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:.9rem;font-weight:700;line-height:1.2;color:var(--ink);text-decoration:none}
+.mmp .mmc2 a:hover{border-color:var(--brand);background:var(--brand-soft);color:var(--brand-d)}
+.aibtn{padding:0 .8rem}

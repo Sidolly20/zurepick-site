@@ -11,3 +11,4 @@ Look: floodlit pitch. Cool chalk background, deep pitch green, amber only for ti
 - 3.3: match cards are compact. The tip is shown once (green tile), the repeated "Our tip" strip and the H2H link are gone, and tapping a card opens the match page. AI picker button added to the phone header.
 - 3.2: no tips under 1.15 odds.
 - 3.4: the header menu is now organised: quick tiles, slips, predictions by day, tools, learn, our record, bet types and leagues as pills.
+- 3.5: selected market buttons stay readable after a tap on phones (stuck hover fixed). The header menu is now a compact Bet types dropdown.
