@@ -722,3 +722,25 @@ header .tgbtn svg{width:16px;height:16px}
 @media(min-width:760px){.rcs{overflow:visible;flex-wrap:wrap}.rcs li{flex:1 1 calc(33.3% - .6rem);max-width:none}}
 .rcw .rch h2{font-size:1.1rem;white-space:nowrap}.rcw .rch span{font-size:.72rem}
 .rcs{padding-bottom:.2rem}.rcw{padding-bottom:1rem}
+
+/* v4.2 — safest tips: ticket cards with a shield stub */
+.sfw{margin:1.6rem 0}
+.sfh{display:flex;align-items:baseline;justify-content:space-between;gap:.8rem;margin-bottom:.9rem}
+.sfh h2{margin:0;font-size:1.3rem}.sfh span{font-size:.74rem;color:var(--mut);font-weight:600}
+.sfs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:.8rem}
+.sfs li{margin:0;padding:0;border:0}
+.sf{display:grid;grid-template-columns:96px minmax(0,1fr);min-height:104px;border-radius:18px;overflow:hidden;text-decoration:none;color:var(--ink);background:#fff;border:1px solid #d6e6dc;box-shadow:0 10px 22px -16px rgba(11,85,53,.55);position:relative}
+.sf-st{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem;background:linear-gradient(170deg,#0f6b45,#073d27);color:#fff;padding:.7rem .4rem;position:relative}
+.sf-st svg{width:26px;height:26px;color:#f5b301}
+.sf-st b{font-family:var(--fd);font-size:1.45rem;font-weight:800;line-height:1}
+.sf-st small{font-size:.66rem;color:#bfe3cd;font-weight:600}
+.sf-st::after{content:"";position:absolute;right:-7px;top:0;bottom:0;width:14px;background:radial-gradient(circle at 7px 7px,#f1f5f2 5px,transparent 5.5px) 0 0/14px 14px repeat-y}
+.sf-mn{display:flex;flex-direction:column;justify-content:center;gap:.35rem;padding:.8rem 1rem .8rem 1.3rem;min-width:0}
+.sf-mn small{font-size:.72rem;color:var(--mut);font-weight:600;line-height:1.3}
+.sf-mn>b{font-family:var(--fd);font-size:1.05rem;line-height:1.2;font-weight:700}
+.sf-tp{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.sf-tp strong{padding:.25rem .7rem;border-radius:999px;background:var(--brand-soft);color:var(--brand-d);font-size:.84rem;font-weight:800}
+.sf-tp em{font-style:normal;font-weight:800;font-size:.86rem;color:#8a6200}
+.sf-all{display:block;margin-top:.9rem;padding:.8rem 1rem;border-radius:999px;text-align:center;font-weight:800;background:var(--ink);color:#fff;text-decoration:none}
+.sf-none{padding:1rem;border-radius:14px;background:var(--warn-soft);font-weight:600}
+@media(min-width:760px){.sfs{grid-template-columns:1fr 1fr}}

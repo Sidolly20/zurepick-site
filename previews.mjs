@@ -1,6 +1,6 @@
 // Match previews, team pages, results archive and weekly review: all built from the site's own data (odds, tables, tracked results).
 import fs from 'node:fs';
-import { MK, MIN, pick, won, settled, esc, hm, board, logoImg, emblemOf } from './render.js';
+import { MK, MIN, MINOD, pick, won, settled, esc, hm, board, logoImg, emblemOf } from './render.js';
 import { teamKey, sameTeam } from './teams.js';
 import { matchModel, renderMatch } from './matchpage.mjs';
 
@@ -86,6 +86,18 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     radar(L) {
       const l = upcoming(byLeague[L.slug] || []).slice(0, 8); if (!l.length) return '';
       return `<section class="mx-card" id="radar"><h2>${esc(L.name)} matchday radar</h2><ul class="mx-rad">${l.map((it) => { const g = TAGS[it.file] || {}, p = pick(it.m, 'o'), pk = p && p.od && p.c >= MIN.o; return `<li><a href="${it.file}"><small>${sd(it.m.d)} · ${hm(it.m.d)}</small><b>${esc(it.m.h)} vs ${esc(it.m.a)}</b>${g.tag ? `<span class="mx-tag">${esc(g.tag)}</span>` : ''}</a><em class="${pk ? 'on' : ''}">${pk ? ['Home', 'Draw', 'Away'][p.i] + ' · ' + p.c + '%' : 'No tip'}</em></li>`; }).join('')}</ul></section>`;
+    },
+    // Safest tips: strongest odds-based picks (chance 75%+, odds 1.15+), any market except double chance
+    safe(n = 8, o = {}) {
+      const SAFE = 75, l = upcoming(items).filter((it) => it.d <= dstr(1)).map((it) => {
+        let b = null; for (const k of ['o', 'ou', 'o15', 'o35', 'bt']) { const p = pick(it.m, k); if (!p || p.model || !p.od || p.od < MINOD || p.c < SAFE) continue; if (!b || p.c > b.p.c) b = { k, p }; }
+        return b && { it, k: b.k, p: b.p };
+      }).filter(Boolean).sort((a, b) => b.p.c - a.p.c || b.p.od - a.p.od).slice(0, n);
+      if (!l.length) return o.empty ? '<p class="sf-none">No game clears our safest-tip bar yet. Bookmakers publish most prices a day or two before kick-off, so check back later today.</p>' : '';
+      const tip = (k, i) => (k == 'o' ? ['Home win', 'Draw', 'Away win'][i] : MK[k].n[i]);
+      const card = ({ it, k, p }) => `<li><a class="sf" href="${it.file}"><span class="sf-st"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l8 3v6.2c0 4.6-3.2 8.3-8 9.8-4.8-1.5-8-5.2-8-9.8V5.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.3 12.2l2.7 2.7 4.7-5.3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><b>${p.c}%</b><small>chance</small></span><span class="sf-mn"><small>${esc(it.L.name)} · ${sd(it.m.d)} · ${hm(it.m.d)}</small><b>${esc(it.m.h)} vs ${esc(it.m.a)}</b><span class="sf-tp"><strong>${esc(tip(k, p.i))}</strong><em>Odds ${p.od.toFixed(2)}</em></span></span></a></li>`;
+      const h = o.h2 ? `<div class="sfh"><h2>${o.h2}</h2>${o.sub ? `<span>${o.sub}</span>` : ''}</div>` : '';
+      return `<section class="sfw" id="safest">${h}<ul class="sfs">${l.map(card).join('')}</ul>${o.more ? `<a class="sf-all" href="safest-football-tips-today.html">See all safest tips today</a>` : ''}</section>`;
     },
     featured() {
       const l = upcoming(items).filter((it) => it.d <= dstr(1)).map((it) => ({ it, p: pick(it.m, 'o') })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((a, b) => b.p.c - a.p.c).slice(0, 8);
@@ -248,15 +260,15 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
   };
   // The big button at the top of the home page: today's pick of the day (empty when there is no pick yet).
   api.potdHero = () => {
-    let it, st, e, label = 'Pick of the day';
+    let it, st, e, label = 'Banker of the day · pick of the day';
     if (potdNow) ({ it, st, e } = potdNow);
-    else { const cand = upcoming(items).map((x) => ({ it: x, p: pick(x.m, 'o') })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((x, y) => y.p.c - x.p.c); const b = cand.find((x) => x.p.od >= 1.3) || cand.find((x) => x.p.od >= 1.2); if (!b) return ''; it = b.it; st = b.p; label = 'Strongest pick today'; }
+    else { const cand = upcoming(items).map((x) => ({ it: x, p: pick(x.m, 'o') })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((x, y) => y.p.c - x.p.c); const b = cand.find((x) => x.p.od >= 1.3) || cand.find((x) => x.p.od >= 1.2); if (!b) return ''; it = b.it; st = b.p; label = 'Banker today · strongest pick'; }
     const m = it.m;
     return `<div class="potd-wrap"><a class="potd-hero" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="pt">${label}</span><span class="pm"><b>${esc(m.h)}</b><i>vs</i><b>${esc(m.a)}</b></span><span class="pp"><span class="pc"><strong>${st.c}%</strong><small>chance</small></span><span class="pk2"><small>Our pick</small>${MK.o.n[st.i]}</span><span class="po"><small>Odds</small>${Number(st.od).toFixed(2)}</span></span>${e ? `<span class="pe">${badge(e)}</span>` : ''}<span class="pgo">Read the preview</span></a></div>`;
   };
   function potdArchive() {
     const hist = updateHist(null), done = hist.filter((e) => e.res), w = done.filter((e) => e.res == 'won').length;
-    page('pick-of-the-day.html', { title: 'Pick of the Day: Free Football Tip & Results Record', desc: `Our football pick of the day, every day, with the result kept for good${done.length ? `: ${w} of ${done.length} won (${Math.round((w / done.length) * 100)}%)` : ''}. Every pick, win or lose.`, h1: 'Pick of the day: <em>the record</em>', lead: `Every morning we choose one pick with a strong chance and a fair price, and we keep the result forever, win or lose. ${done.length ? `So far ${w} of ${done.length} have won (${Math.round((w / done.length) * 100)}%).` : 'The record builds as days finish.'}`, crumb: 'Pick of the day', eyebrow: 'One pick a day · results kept for good', kp: [[done.length || '–', 'Picks settled'], [w, 'Won'], [done.length ? Math.round((w / done.length) * 100) + '%' : '–', 'Win rate']],
+    page('pick-of-the-day.html', { title: 'Banker of the Day: Free Football Pick of the Day & Record', desc: `Our banker of the day, the football pick of the day, every day, with the result kept for good${done.length ? `: ${w} of ${done.length} won (${Math.round((w / done.length) * 100)}%)` : ''}. Every pick, win or lose.`, h1: 'Banker of the day: <em>pick of the day record</em>', lead: `Every morning we choose one pick with a strong chance and a fair price, and we keep the result forever, win or lose. ${done.length ? `So far ${w} of ${done.length} have won (${Math.round((w / done.length) * 100)}%).` : 'The record builds as days finish.'}`, crumb: 'Pick of the day', eyebrow: 'One pick a day · results kept for good', kp: [[done.length || '–', 'Picks settled'], [w, 'Won'], [done.length ? Math.round((w / done.length) * 100) + '%' : '–', 'Win rate']],
       body: `<div class="prose"><h2>Every pick of the day</h2><ul class="pl">${hist.map((e) => `<li><a href="${e.file || 'index.html'}">${esc(e.h)} vs ${esc(e.a)}</a> <small>${full(e.date + 'T12:00:00Z')} · ${MK.o.n[e.i]} · ${e.c}% chance · odds ${Number(e.od).toFixed(2)} ${badge(e)}</small></li>`).join('') || '<li>No picks recorded yet.</li>'}</ul><h2>How the pick of the day is chosen</h2><p>Each morning we look at the day’s games that haven’t started and pick the 1X2 result the market rates highest, as long as the price is worth taking (odds of at least 1.30, and a chance of 65% or more). The pick is saved once and never changes, so the record can’t be edited after the fact. Read more in <a href="how-it-works.html">how it works</a>, or see the <a href="weekly-review.html">weekly review</a>.</p></div>` });
   }
   api.write = () => {
