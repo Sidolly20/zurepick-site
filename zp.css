@@ -751,3 +751,14 @@ header .tgbtn svg{width:16px;height:16px}
 .potd-rec span{font-size:.82rem;color:var(--brand-d);font-weight:700}
 .potd-none{padding:1rem 1.1rem;border-radius:18px;background:var(--warn-soft);display:flex;flex-direction:column;gap:.2rem}
 .potd-none span{font-size:.86rem}
+
+/* v4.4 contact cards, 404 button */
+.ct{display:grid;grid-template-columns:1fr;gap:.7rem;margin:1.2rem 0}
+@media(min-width:640px){.ct{grid-template-columns:1fr 1fr}}
+.ctc{display:flex;align-items:center;gap:.9rem;padding:1rem 1.1rem;border-radius:18px;background:#fff;border:1px solid var(--line);text-decoration:none!important;color:var(--ink);box-shadow:0 8px 20px -16px rgba(11,85,53,.5)}
+.ctc i{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--brand-soft);font-style:normal;font-size:1.25rem}
+.ctc span{display:flex;flex-direction:column;min-width:0}
+.ctc b{font-family:var(--fd);font-size:1.05rem}
+.ctc small{font-size:.84rem;color:var(--mut);overflow-wrap:anywhere}
+.cta{display:inline-block;padding:.8rem 1.3rem;border-radius:999px;background:var(--ink);color:#fff;font-weight:800;text-decoration:none}
+.ai-hero h1{color:var(--ink);-webkit-text-fill-color:currentColor;background:none}

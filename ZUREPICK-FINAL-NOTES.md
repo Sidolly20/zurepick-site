@@ -10,3 +10,8 @@ Files: render.js, zp.css, build-pages.mjs, previews.mjs, app.js, ticker.js, mani
 - New page safest-football-tips-today.html (chance 75%+, odds 1.15+, no double chance), also shown on the home page under the games. In the sitemap automatically.
 - Home board opens on Top picks (mixed markets, no double chance, odds 1.15+); 1X2 and other buttons still filter.
 - Live bar scrolls under the header; saved-game stars; slip switcher; AI in bottom bar; Telegram logo at right.
+
+## Last fixes (final 4)
+- AI Betting Assistant page now uses the same header, footer and bottom bar as every other page (it was a separate old page: old header with an 18+ badge, near-invisible title, old footer). Its widget lives in ai-assistant.src.html (new file, upload it too). Do not delete it.
+- Contact and Partner pages: the contact cards (Email, Telegram, WhatsApp) are styled again.
+- Home banker card reads today's saved pick and the record counts settled picks of today.

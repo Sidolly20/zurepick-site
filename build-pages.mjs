@@ -648,6 +648,17 @@ page('tools.html', { title: 'Betting Odds Tools – Odds Converter & Accumulator
   body: `<div class="prose"><h2>Odds converter</h2><p><label>Decimal odds <input class="f" id="d" type="number" step="0.01" min="1.01" value="2.50"></label></p><p id="dr" class="mono"></p><h2>Accumulator calculator</h2><p><label>Decimal odds, comma separated <input class="f" id="a" value="1.50, 1.80, 2.10"></label> <label>Stake <input class="f" id="s" type="number" min="0" value="1000"></label></p><p id="ar" class="mono"></p><p class="mut">Every extra selection multiplies the odds but also the risk: one loss loses the whole bet.</p></div><script>(function(){var $=function(i){return document.getElementById(i)};function fr(d){var x=d-1;for(var b=1;b<=50;b++){var a=Math.round(x*b);if(Math.abs(a/b-x)<.005)return a+"/"+b}return x.toFixed(2)}function c1(){var d=+$("d").value;$("dr").textContent=d>1?"Fractional "+fr(d)+" · American "+(d>=2?"+"+Math.round((d-1)*100):Math.round(-100/(d-1)))+" · Implied chance "+(100/d).toFixed(1)+"%":"Enter odds above 1.00"}function c2(){var o=$("a").value.split(",").map(Number).filter(function(x){return x>1}),s=+$("s").value||0,t=o.reduce(function(p,x){return p*x},1);$("ar").textContent=o.length?o.length+" selections · combined odds "+t.toFixed(2)+" · return "+(t*s).toFixed(2)+" · profit "+(t*s-s).toFixed(2):"Enter odds above 1.00"}document.addEventListener("input",function(){c1();c2()});c1();c2()})()</script>` });
 
 const today = dstr(0);
+// AI picker page: its widget is kept in ai-assistant.src.html and wrapped in the shared header, footer and tab bar here
+{
+  const src = fs.readFileSync('ai-assistant.src.html', 'utf8'), g = (re) => (src.match(re) || [])[1] || '';
+  const style = g(/<style>([\s\S]*?)<\/style>/), ld = (src.match(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g) || []).join('');
+  const heroEnd = src.indexOf('</section>', src.indexOf('<section class="ai-hero"')) + 10, mainEnd = src.indexOf('</main>');
+  const inner = src.slice(heroEnd, mainEnd).replace(/<footer>[\s\S]*?<\/footer>/, '');
+  const tail = src.slice(mainEnd + 7).replace(/<\/body>[\s\S]*$/, '');
+  const alias = ':root{--g:var(--brand);--gi:#fff;--pu:var(--brand-d);--pk:var(--brand-soft)}.ai-hero{display:none}';
+  page('ai-betting-assistant.html', { title: g(/<title>([\s\S]*?)<\/title>/).replace(/&amp;/g, '&'), desc: g(/<meta name="description" content="([^"]*)"/), h1: g(/<h1>([\s\S]*?)<\/h1>/), lead: g(/<p class="lead">([\s\S]*?)<\/p>/), crumb: 'AI Betting Assistant', eyebrow: g(/<p class="eyebrow">([\s\S]*?)<\/p>/),
+    body: `<style>${alias}${style}</style>${ld}${inner}${tail}` });
+}
 if (!PAGES.includes('ai-betting-assistant.html')) PAGES.push('ai-betting-assistant.html');
 fs.writeFileSync('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${PAGES.filter((p) => p != 'football-predictions-today.html').map((p) => `<url><loc>${SITE}/${p == 'index.html' ? '' : p}</loc><lastmod>${MODS[p] || today}</lastmod></url>`).join('\n')}\n</urlset>\n`);
 fs.writeFileSync('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
