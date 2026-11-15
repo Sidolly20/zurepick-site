@@ -30,7 +30,7 @@ export function pick(m, k) {
 // Best tip for a game across every market (used by the mixed "Top picks" board). 1X2 wins ties.
 export function bestPick(m) {
   let best = null;
-  for (const k of ['o', 'dc', 'ou', 'o15', 'o35', 'bt']) { const p = pick(m, k); if (!p || p.c < MIN[k]) continue; const sc = p.c - (k == 'o' ? 0 : 3) - (p.model ? 6 : 0); if (!best || sc > best.sc) best = { k, p, sc }; }
+  for (const k of ['o', 'ou', 'o15', 'o35', 'bt']) { const p = pick(m, k); if (!p || p.c < MIN[k] || (p.od != null && p.od < MINOD)) continue; const sc = p.c - (k == 'o' ? 0 : 3) - (p.model ? 6 : 0); if (!best || sc > best.sc) best = { k, p, sc }; }
   return best;
 }
 // Quality bar: a pick is only published when its implied chance reaches this level (own tracked results: 1X2 picks under 60% won ~45-50%, 60%+ won ~80%).
