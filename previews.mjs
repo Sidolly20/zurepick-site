@@ -249,7 +249,7 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
   api.potdHero = () => {
     let it, st, e, label = 'Pick of the day';
     if (potdNow) ({ it, st, e } = potdNow);
-    else { const b = upcoming(items).map((x) => ({ it: x, p: pick(x.m, 'o') })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((x, y) => y.p.c - x.p.c)[0]; if (!b) return ''; it = b.it; st = b.p; label = 'Strongest pick today'; }
+    else { const cand = upcoming(items).map((x) => ({ it: x, p: pick(x.m, 'o') })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((x, y) => y.p.c - x.p.c); const b = cand.find((x) => x.p.od >= 1.3) || cand.find((x) => x.p.od >= 1.2); if (!b) return ''; it = b.it; st = b.p; label = 'Strongest pick today'; }
     const m = it.m;
     return `<div class="potd-wrap"><a class="potd-hero" href="${it.file}" data-id="${esc(m.id)}" data-i="${st.i}"><span class="pt">${label}</span><span class="pm"><b>${esc(m.h)}</b><i>vs</i><b>${esc(m.a)}</b></span><span class="pp"><span class="pc"><strong>${st.c}%</strong><small>chance</small></span><span class="pk2"><small>Our pick</small>${MK.o.n[st.i]}</span><span class="po"><small>Odds</small>${Number(st.od).toFixed(2)}</span></span>${e ? `<span class="pe">${badge(e)}</span>` : ''}<span class="pgo">Read the preview</span></a></div>`;
   };
