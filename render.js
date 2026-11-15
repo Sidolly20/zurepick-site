@@ -27,9 +27,16 @@ export function pick(m, k) {
   if ((o === true ? od[i] : 1 / q[i]) < MINOD) return null; // no tip when it pays less than 1.15: a pick at 1.04 wins often but is worth nothing to a bettor
   return { i, c: Math.round(q[i] * 100), od: o === true ? od[i] : null, model: !o };
 }
+// Best tip for a game across every market (used by the mixed "Top picks" board). 1X2 wins ties.
+export function bestPick(m) {
+  let best = null;
+  for (const k of ['o', 'dc', 'ou', 'o15', 'o35', 'bt']) { const p = pick(m, k); if (!p || p.c < MIN[k]) continue; const sc = p.c - (k == 'o' ? 0 : 3) - (p.model ? 6 : 0); if (!best || sc > best.sc) best = { k, p, sc }; }
+  return best;
+}
 // Quality bar: a pick is only published when its implied chance reaches this level (own tracked results: 1X2 picks under 60% won ~45-50%, 60%+ won ~80%).
 export const MIN = { o: 60, dc: 75, ou: 60, o15: 75, o35: 70, bt: 60 };
 export function visible(ms, k, o = {}) {
+  if (k == 'mix') { const all = o.min === 'all', min = all || o.min === undefined || o.min === '' || o.min === null ? 0 : +o.min; let L = ms.filter((m) => { const b = bestPick(m); return (all || (b && b.p.c >= min)) && (o.sel == null || o.sel === '' || (b && b.p.i === +o.sel)) && (!o.lg || m.li == o.lg) && (!o.match || o.match(m)); }); if (o.q) { const q = o.q.toLowerCase(); L = L.filter((m) => (m.h + ' ' + m.a + ' ' + m.lg + ' ' + m.cn).toLowerCase().includes(q)); } return L; }
   const all = o.min === 'all'; // "All games": list every game we hold, with or without odds or a pick
   const min = all || o.min === undefined || o.min === '' || o.min === null ? MIN[k] : +o.min; // min 0 = show every pick
   let L = ms.filter((m) => { const p = pick(m, k); return (all || (p && p.c >= min)) && (o.sel == null || o.sel === '' || (p && p.i === +o.sel)) && (!o.lg || m.li == o.lg) && (!o.match || o.match(m)); });
@@ -70,16 +77,16 @@ export function row(m, k, o = {}) {
   const eo = k == 'dc' && !od.length && m.o && !m.o.some((x) => !(x > 1)) ? dcFrom(m.o) : null;
   const fp = ['o','ou','o15','o35','bt'].includes(k) && od.length && !od.some((x) => !(x > 1)) ? (() => { const q = od.map((x) => 1 / x), t = q.reduce((a, b) => a + b, 0); return q.map((x) => Math.round((x / t) * 100)); })() : null; // margin-free chance for each outcome
   const cells = eo ? eo.map((x, i) => `<span class="oc est${pk && pk.i == i ? ' pick' : ''}" title="Estimated from the 1X2 odds"><small>${M.s[i]}${pk && pk.i == i ? ' · ' + pk.c + '%' : ''}</small>~${x.toFixed(2)}</span>`).join('') : (od.length ? od : M.s.map(() => null)).map((x, i) => x
-    ? `<button type="button" class="oc${pk && pk.i == i ? ' pick' : ''}" data-id="${m.id}" data-i="${i}" data-od="${x}" aria-label="${esc(M.n[i])} at ${x}"><small>${M.s[i]}${pk && pk.i == i ? ' · ' + pk.c + '%' : fp ? ' · ' + fp[i] + '%' : ''}</small>${Number(x).toFixed(2)}</button>`
+    ? `<button type="button" class="oc${pk && pk.i == i ? ' pick' : ''}" data-k="${k}" data-id="${m.id}" data-i="${i}" data-od="${x}" aria-label="${esc(M.n[i])} at ${x}"><small>${M.s[i]}${pk && pk.i == i ? ' · ' + pk.c + '%' : fp ? ' · ' + fp[i] + '%' : ''}</small>${Number(x).toFixed(2)}</button>`
     : pk && pk.i == i ? `<span class="oc nil pick" title="Predicted from team form, no odds published yet"><small>${M.s[i]} · ${pk.c}%</small>pick</span>` : `<span class="oc nil"><small>${M.s[i]}</small>–</span>`).join('');
   const pkh = pk ? `<span>${esc(M.n[pk.i])}</span><i style="--w:${pk.c}%"></i><em>${pk.c}% · ${pk.model ? 'team-record model' : 'from odds'}</em>` : `<span class="mut">${od.length ? 'No strong pick' : st.k == 'ns' ? 'Odds not out yet' : 'Not tipped'}</span><i style="--w:0%"></i><em>${od.length ? 'Below our quality bar' : st.k == 'ns' ? 'Check back closer to kick-off' : 'No odds were published'}</em>`;
-  return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time>${PREVIEWS[m.id] ? `<a class="tm" href="${esc(PREVIEWS[m.id])}" title="Match preview and prediction">` : '<div class="tm">'}<b>${badge(m, m.h)}<span>${PREVIEWS[m.id] ? esc(m.h) : tlink(m.h)}</span></b><b>${badge(m, m.a)}<span>${PREVIEWS[m.id] ? esc(m.a) : tlink(m.a)}</span></b>${PREVIEWS[m.id] ? '</a>' : '</div>'}<div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
+  return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time>${o.mix ? `<span class="mkt">${esc(M.l)}</span>` : ''}${PREVIEWS[m.id] ? `<a class="tm" href="${esc(PREVIEWS[m.id])}" title="Match preview and prediction">` : '<div class="tm">'}<b>${badge(m, m.h)}<span>${PREVIEWS[m.id] ? esc(m.h) : tlink(m.h)}</span></b><b>${badge(m, m.a)}<span>${PREVIEWS[m.id] ? esc(m.a) : tlink(m.a)}</span></b>${PREVIEWS[m.id] ? '</a>' : '</div>'}<div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
 }
 const lgSrc = (m) => m.lo || CRESTS['lg:' + normName(m.cn) + ':' + normName(m.lg)] || CRESTS['lg::' + normName(m.lg)] || '';
 const lgLogo = (m) => { const s = lgSrc(m); return s ? `<img src="${esc(s)}" alt="" width="20" height="20" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''; };
 export function board(ms, k, o = {}) {
-  let L = visible(ms, k, o);
-  if (o.max) L = L.slice().sort((a, b) => (pick(b, k)?.c || 0) - (pick(a, k)?.c || 0)).slice(0, o.max);
+  let L = visible(ms, k, o); const mix = k == 'mix', rk = (m) => (mix ? bestPick(m)?.k || 'o' : k), cf = (m) => (mix ? bestPick(m)?.p.c : pick(m, k)?.c) || 0;
+  if (o.max) L = L.slice().sort((a, b) => cf(b) - cf(a)).slice(0, o.max);
   if (!L.length && o.min === 'all') return '<div class="empty">No games found for this day yet. The schedule fills in as our data feed updates.</div>';
   if (!L.length) { const n = ms.filter((m) => (!o.lg || m.li == o.lg) && (!o.match || o.match(m))).length; return '<div class="empty">No picks meet our quality bar for this day yet. We only publish games where the chance is strong enough, so quiet days are normal.' + (n && !o.max ? ` <button type="button" class="lnk" data-all>Show all ${n} games</button>` : '') + '</div>'; }
   const held = ms.filter((m) => (!o.lg || m.li == o.lg) && (!o.match || o.match(m))).length;
@@ -89,10 +96,10 @@ export function board(ms, k, o = {}) {
   const rank = (g) => { const i = PRIO.indexOf(+g.split('|')[0]); return i < 0 ? 99 : i; };
   // Leagues with only 1-2 games are merged into one shared card (league shown on each row) so cards hold many matches, not one.
   const SMALL = 3, small = Object.keys(G).filter((g) => G[g].length < SMALL), mergeable = small.length > 1 && small.reduce((n, g) => n + G[g].length, 0) >= 4;
-  const tag = (m) => row(m, k).replace(/(<\/b>)(<\/a>|<\/div>)/, `$1<small class="lgt">${esc(m.lg)}</small>$2`);
+  const tag = (m) => row(m, rk(m), { mix }).replace(/(<\/b>)(<\/a>|<\/div>)/, `$1<small class="lgt">${esc(m.lg)}</small>$2`);
   const big = Object.keys(G).filter((g) => !mergeable || G[g].length >= SMALL).sort((a, b) => rank(a) - rank(b) || G[b].length - G[a].length || a.localeCompare(b)).map((g) => {
     const [, cn, lg] = g.split('|'), x = G[g].sort((a, b) => a.d.localeCompare(b.d));
-    return `<section class="lg"><h3>${lgLogo(x[0])}<span>${esc(cn)} · ${esc(lg)}</span><em>${x.length}</em></h3>${x.map((m) => row(m, k)).join('')}</section>`;
+    return `<section class="lg"><h3>${lgLogo(x[0])}<span>${esc(cn)} · ${esc(lg)}</span><em>${x.length}</em></h3>${x.map((m) => row(m, rk(m), { mix })).join('')}</section>`;
   }).join('');
   if (!mergeable) return hint + more + big;
   const rest = small.flatMap((g) => G[g]).sort((a, b) => a.d.localeCompare(b.d));

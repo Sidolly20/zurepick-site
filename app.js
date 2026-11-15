@@ -1,4 +1,4 @@
-import { PREVIEWS, esc, hm, setPreviews, setCrests, settled, won, MK, TZ, board, comboHtml, combos, singleHtml, statsHtml, state, visible, fixturesByDay, leagueTest } from './render.js';
+import { bestPick, setPreviews, setCrests, settled, won, MK, TZ, board, comboHtml, combos, singleHtml, statsHtml, state, visible, fixturesByDay, leagueTest } from './render.js';
 try { setCrests(await (await fetch('data/crests.json')).json()); } catch {}
 try { setPreviews(await (await fetch('data/previews.json')).json()); } catch {}
 const $ = (s) => document.querySelector(s), B = $('#board');
@@ -33,17 +33,8 @@ if (B) {
   }
   // Redraw without flicker: skip if nothing changed, swap only the rows that changed, and rebuild everything only when the list of games changes.
   function paintPotd() { const el = $('a.potd-hero') || $('a.potd'); if (!el || !S.data) return; const m = S.data.find((x) => x.id === el.dataset.id); if (!m) return; const slot = el.querySelector('.pp'), i = +el.dataset.i; let tag = ''; if (settled(m)) tag = won(m, 'o', { i }) ? `<span class="pr w">✓ Won ${m.sc[0]}–${m.sc[1]}</span>` : `<span class="pr l">✗ Lost ${m.sc[0]}–${m.sc[1]}</span>`; else { const q = state(m); if (q.k == 'live') tag = `<span class="pr">● Live ${q.big} · ${q.sm}</span>`; } const old = el.querySelector('.pr'); if (old && old.textContent == (tag ? tag.replace(/<[^>]+>/g, '') : '')) return; if (old) old.remove(); if (tag) slot.insertAdjacentHTML('beforeend', tag); }
-  function paintTick() {
-    const r = $('#tickr'); if (!r || !S.data) return; const now = Date.now();
-    const L = S.data.filter((m) => state(m).k === 'live').map((m) => ({ m, live: 1 }));
-    const N = S.data.filter((m) => state(m).k === 'ns' && Date.parse(m.d) - now < 12 * 36e5).sort((x, y) => Date.parse(x.d) - Date.parse(y.d)).slice(0, 10).map((m) => ({ m }));
-    const it = L.concat(N).slice(0, 12);
-    const lab = $('#tick .tk-l'); if (lab) lab.textContent = L.length ? 'Live now' : 'Next up';
-    const h = it.map(({ m, live }) => `<a href="${esc(PREVIEWS[m.id] || 'live.html')}">${live ? `<b class="lv">${state(m).big}</b>` : `<b>${hm(m.d)}</b>`}<span>${esc(m.h)} <i>v</i> ${esc(m.a)}</span></a>`).join('');
-    if (h !== r.dataset.h) { r.dataset.h = h; r.innerHTML = h; } $('#tick').hidden = !it.length;
-  }
   function paint(status) {
-    paintPotd(); paintTick();
+    paintPotd();
     if (LMODE) return paintLeague(status);
     const html = board(S.data, S.k, { lg: S.lg, q: S.q, min: S.min, sel: S.sel });
     swap(html);
@@ -67,7 +58,7 @@ if (B) {
     if (all.length) { S.pool = all; paintTop(); if (LMODE) paintLeague('Recent results and the next three days · updated ' + fmt(new Date().toISOString())); }
   }
   function mark() {
-    document.querySelectorAll('.oc').forEach((b) => b.classList.toggle('sel', slip.some((s) => s.id == b.dataset.id && s.k == S.k && s.i == b.dataset.i)));
+    document.querySelectorAll('.oc').forEach((b) => b.classList.toggle('sel', slip.some((s) => s.id == b.dataset.id && s.k == (b.dataset.k || S.k) && s.i == b.dataset.i)));
     const bar = $('#slip'); if (!bar) return;
     bar.hidden = !slip.length;
     const tot = slip.reduce((p, s) => p * s.od, 1);
@@ -94,7 +85,7 @@ if (B) {
   }
   const strip = $('#days'); if (strip) strip.innerHTML = [-2, -1, 0, 1, 2, 3].map((o) => `<button type="button" class="chip" data-o="${o}" aria-pressed="${o == S.off}">${lab(o)}</button>`).join('');
   if (strip) strip.onclick = (e) => { const b = e.target.closest('[data-o]'); if (!b) return; S.off = +b.dataset.o; strip.querySelectorAll('.chip').forEach((x) => x.setAttribute('aria-pressed', x == b)); load(); };
-  const tabs = $('#mkts'); tabs.innerHTML = Object.keys(MK).map((k) => `<button type="button" class="chip" data-k="${k}" aria-pressed="${k == S.k}">${MK[k].l}</button>`).join('');
+  const tabs = $('#mkts'); tabs.innerHTML = ['mix', ...Object.keys(MK)].map((k) => `<button type="button" class="chip" data-k="${k}" aria-pressed="${k == S.k}">${k == 'mix' ? 'Top picks' : MK[k].l}</button>`).join('');
   tabs.onclick = (e) => { const b = e.target.closest('[data-k]'); if (!b) return; S.k = b.dataset.k; S.sel = null; tabs.querySelectorAll('.chip').forEach((x) => x.setAttribute('aria-pressed', x == b)); paint(); };
   $('#q').oninput = (e) => { S.q = e.target.value.trim(); paint(); };
   if ($('#min')) $('#min').onchange = (e) => { S.min = e.target.value; paint(); };
@@ -102,9 +93,9 @@ if (B) {
   B.onclick = (e) => {
     const b = e.target.closest('.oc'); if (!b) return;
     const m = (LMODE ? S.pool || [] : S.data).find((x) => x.id == b.dataset.id), i = +b.dataset.i, at = slip.findIndex((s) => s.id == m.id);
-    const same = at >= 0 && slip[at].k == S.k && slip[at].i == i;
+    const same = at >= 0 && slip[at].k == (b.dataset.k || S.k) && slip[at].i == i;
     if (at >= 0) slip.splice(at, 1);
-    if (!same) slip.push({ id: m.id, h: m.h, a: m.a, k: S.k, i, od: +b.dataset.od, n: MK[S.k].n[i] });
+    if (!same) slip.push({ id: m.id, h: m.h, a: m.a, k: b.dataset.k || S.k, i, od: +b.dataset.od, n: MK[b.dataset.k || S.k].n[i] });
     save(); mark();
   };
   // "Add games to slip" on a combo: adds every game of that combo (one pick per game)

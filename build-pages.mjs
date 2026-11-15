@@ -271,7 +271,7 @@ const faqCommon = [
   ['What does BTTS or GG mean?', 'BTTS (also called GG) means both teams to score. It wins when each side finds the net at least once, whatever the final result. A 1-1 draw and a 4-3 win both count.'],
 ];
 // Home / today
-const dayPage = (file, off, h1, lead, extra = {}) => page(file, { title: extra.title, desc: extra.desc, h1, lead, crumb: extra.crumb, canon: extra.canon, kp: kpFor(snapFor(off), 'o'), board: { k: 'o', off, ms: snapFor(off) }, top: off >= 0, faq: faqCommon, body: extra.body, art: extra.art, eyebrow: extra.eyebrow, cta: extra.cta, pre: extra.pre });
+const dayPage = (file, off, h1, lead, extra = {}) => page(file, { title: extra.title, desc: extra.desc, h1, lead, crumb: extra.crumb, canon: extra.canon, kp: kpFor(snapFor(off), 'o'), board: { k: 'mix', off, ms: snapFor(off) }, top: off >= 0, faq: faqCommon, body: extra.body, art: extra.art, eyebrow: extra.eyebrow, cta: extra.cta, pre: extra.pre });
 const nLg = new Set(snapFor(0).map((m) => m.li)).size;
 const tipsIn = (ms) => ms.filter((m) => ['o', 'dc', 'ou', 'o15', 'o35', 'bt'].some((k) => { const p = pick(m, k); return p && p.c >= MIN[k]; })).length;
 const homeSeo = () => {

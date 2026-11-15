@@ -71,15 +71,9 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
       return `<div class="mx-strip">${T(ms.length, 'Games today')}${T(tips, 'Tips published')}${T(S.r == null ? '–' : S.r + '%', 'Won, last 7 days', 'track-record.html')}${T(lg, 'Leagues today')}</div>${api.potd('last')}`;
     },
     radarAll() {
-      // best tip per game across every market (1X2, double chance, goals, BTTS), strongest first, up to 40
-      const LBL = { o: ['Home', 'Draw', 'Away'] }, lab = (k, i) => (LBL[k] || MK[k].n)[i];
-      const l = upcoming(items).filter((it) => it.d <= dstr(1)).map((it) => {
-        let best = null;
-        for (const k of KEYS) { const p = pick(it.m, k); if (!p || p.model || !p.od || p.c < MIN[k]) continue; const sc = p.c - (k == 'o' ? 0 : 3); if (!best || sc > best.sc) best = { k, p, sc }; }
-        return best && { it, k: best.k, p: best.p, g: TAGS[it.file] || {}, sc: best.sc };
-      }).filter(Boolean).sort((a, b) => (b.g.tag ? 1 : 0) - (a.g.tag ? 1 : 0) || b.sc - a.sc).slice(0, 40);
-      const li = ({ it, k, p, g }) => `<li><a href="${it.file}"><small>${esc(it.L.name)} · ${sd(it.m.d)} · ${hm(it.m.d)}</small><b>${esc(it.m.h)} vs ${esc(it.m.a)}</b>${g.tag ? `<span class="mx-tag">${esc(g.tag)}</span>` : ''}</a><em class="on">${lab(k, p.i)} · ${p.c}%</em></li>`;
-      return l.length ? `<section class="mx-card" id="radar"><h2>Today and tomorrow: games worth a look</h2><ul class="mx-rad">${l.slice(0, 8).map(li).join('')}</ul>${l.length > 8 ? `<details class="mx-more"><summary>Show ${l.length - 8} more games</summary><ul class="mx-rad">${l.slice(8).map(li).join('')}</ul></details>` : ''}</section>` : '';
+      const l = upcoming(items).filter((it) => it.d <= dstr(1)).map((it) => ({ it, p: pick(it.m, 'o'), g: TAGS[it.file] || {} })).filter((x) => x.p && x.p.od && x.p.c >= MIN.o).sort((a, b) => (b.g.tag ? 1 : 0) - (a.g.tag ? 1 : 0) || b.p.c - a.p.c).slice(0, 6);
+      const T = (n) => (['Home', 'Draw', 'Away'][n]);
+      return l.length ? `<section class="mx-card rcw" id="radar"><div class="rch"><h2>Games worth a look</h2><span>Today and tomorrow · swipe</span></div><ul class="rcs">${l.map(({ it, p, g }, n) => `<li><a class="rc${n == 0 ? ' top' : ''}" href="${it.file}"><span class="rc-lg">${n == 0 ? '<em>Best pick</em>' : ''}${esc(it.L.name)} · ${sd(it.m.d)} · ${hm(it.m.d)}</span><span class="rc-tm"><b>${esc(it.m.h)}</b><i>vs</i><b>${esc(it.m.a)}</b></span>${g.tag ? `<span class="mx-tag">${esc(g.tag)}</span>` : ''}<span class="rc-bt"><span class="ring" style="--p:${p.c}"><b>${p.c}%</b></span><span class="rc-tip"><small>Our tip</small><strong>${T(p.i)}</strong><small>Odds ${p.od.toFixed(2)}</small></span><span class="rc-go" aria-hidden="true">→</span></span></a></li>`).join('')}</ul></section>` : '';
     },
     recordStrip() {
       const ds = [...Array(7)].map((_, i) => dstr(-(7 - i))), cells = ds.map((d) => { const S = summary(rec(snaps[d] || [])); return `<a title="${S.w} of ${S.n} won" href="predictions-${d}.html" class="${S.n ? (S.r >= 60 ? 'dw' : 'dl') : 'dz'}"><small>${D(d + 'T12:00:00Z', { weekday: 'short', day: 'numeric' })}</small><b>${S.n ? S.r + '%' : '–'}</b></a>`; }).join('');
