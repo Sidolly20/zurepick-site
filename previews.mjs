@@ -4,13 +4,15 @@ import { MK, MIN, MINOD, pick, won, settled, esc, hm, board, logoImg, emblemOf }
 import { teamKey, sameTeam } from './teams.js';
 import { matchModel, renderMatch } from './matchpage.mjs';
 
-// Keep unfinished match pages out of search. The build only rewrites recent days,
-// so older pages still marked indexable are switched to noindex here.
+// Individual match pages (prediction-*.html) and dated archive pages (predictions-DATE, weekly-review-DATE, week-in-review-DATE)
+// are temporary: they must never be indexed.
+// The build only rewrites recent days, so every older match page is normalised to noindex, follow here.
+// robots.txt must keep allowing these pages, otherwise Googlebot cannot crawl them and never sees the noindex.
 for (const f of fs.readdirSync('.')) {
-  if (!/^prediction-.*\.html$/.test(f)) continue;
+  if (!/^(prediction-.*|predictions-\d{4}-\d\d-\d\d|weekly-review-\d{4}-\d\d-\d\d|week-in-review-\d{4}-\d\d-\d\d)\.html$/.test(f)) continue;
   const s = fs.readFileSync(f, 'utf8');
-  if (s.includes('Match Report') || !s.includes('name="robots" content="index,follow')) continue;
-  fs.writeFileSync(f, s.replace('name="robots" content="index,follow', 'name="robots" content="noindex,follow'));
+  const t = s.replace(/<meta name="robots" content="[^"]*">/, '<meta name="robots" content="noindex, follow">');
+  if (t !== s) fs.writeFileSync(f, t);
 }
 
 const slug = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -129,7 +131,7 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
     const c = { m, L, hr, ar, H, file, SITE, D: { t }, state, ps, formH, formA, fbH: guided ? 'g' : '', fbA: '', tableNote, tableSize: PM[key]?.n || size, tlink };
     const M = matchModel(c); c.M = M;
     const rich = [hr && ar, H, formH.length >= 3 && formA.length >= 3, M.o25 != null].filter(Boolean).length;
-    const index = idx && !!L.slug && ps.length > 0 && state == 'post';
+    const index = false; // match pages are never indexed (noindex, follow) and never listed in sitemap.xml
     const body = renderMatch(c), ag = M.angle, p1 = pick(m, 'o');
     TAGS[file] = { tag: ag.id == 'standard' ? '' : ag.tag, fc: M.fc, fav: M.fav, state };
     const ptxt = ps.length ? `${MK[ps[0][0]].n[ps[0][1].i]} (${ps[0][1].c}%)` : 'no pick clears our quality bar';
@@ -278,7 +280,7 @@ export function makePreviews({ page, snaps, TABLES, LG, leagueTest, dstr, TZ, SI
   function potdArchive() {
     const hist = updateHist(null), done = hist.filter((e) => e.res), w = done.filter((e) => e.res == 'won').length;
     page('pick-of-the-day.html', { title: 'Banker of the Day: Free Football Pick of the Day & Record', desc: `Our banker of the day, the football pick of the day, every day, with the result kept for good${done.length ? `: ${w} of ${done.length} won (${Math.round((w / done.length) * 100)}%)` : ''}. Every pick, win or lose.`, h1: 'Banker of the day: <em>pick of the day record</em>', lead: `Every morning we choose one pick with a strong chance and a fair price, and we keep the result forever, win or lose. ${done.length ? `So far ${w} of ${done.length} have won (${Math.round((w / done.length) * 100)}%).` : 'The record builds as days finish.'}`, crumb: 'Pick of the day', eyebrow: 'One pick a day · results kept for good', kp: [[done.length || '–', 'Picks settled'], [w, 'Won'], [done.length ? Math.round((w / done.length) * 100) + '%' : '–', 'Win rate']],
-      body: `<div class="prose"><h2>Every pick of the day</h2><ul class="pl">${hist.map((e) => `<li><a href="${e.file || 'index.html'}">${esc(e.h)} vs ${esc(e.a)}</a> <small>${full(e.date + 'T12:00:00Z')} · ${MK.o.n[e.i]} · ${e.c}% chance · odds ${Number(e.od).toFixed(2)} ${badge(e)}</small></li>`).join('') || '<li>No picks recorded yet.</li>'}</ul><h2>How the pick of the day is chosen</h2><p>Each morning we look at the day’s games that haven’t started and pick the 1X2 result the market rates highest, as long as the price is worth taking (odds of at least 1.30, and a chance of 65% or more). The pick is saved once and never changes, so the record can’t be edited after the fact. Read more in <a href="how-it-works.html">how it works</a>, or see the <a href="weekly-review.html">weekly review</a>.</p></div>` });
+      body: `<div class="prose"><h2>Every pick of the day</h2><ul class="pl">${hist.map((e) => `<li><a href="${e.file || './'}">${esc(e.h)} vs ${esc(e.a)}</a> <small>${full(e.date + 'T12:00:00Z')} · ${MK.o.n[e.i]} · ${e.c}% chance · odds ${Number(e.od).toFixed(2)} ${badge(e)}</small></li>`).join('') || '<li>No picks recorded yet.</li>'}</ul><h2>How the pick of the day is chosen</h2><p>Each morning we look at the day’s games that haven’t started and pick the 1X2 result the market rates highest, as long as the price is worth taking (odds of at least 1.30, and a chance of 65% or more). The pick is saved once and never changes, so the record can’t be edited after the fact. Read more in <a href="how-it-works.html">how it works</a>, or see the <a href="weekly-review.html">weekly review</a>.</p></div>` });
   }
   api.write = () => {
     const cut = dstr(-14);
