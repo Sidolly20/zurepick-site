@@ -846,3 +846,9 @@ i.bd{font-size:.6rem}
 .row .nt{margin:0;padding:0 .3rem;font-size:.8rem;font-weight:600;color:var(--mut)}
 .row.live .nt{color:var(--live)}
 .row .lgt{display:block;margin-top:.1rem;font-size:.72rem;font-weight:600;color:var(--mut)}
+
+/* ===== Card tweaks: hide market label; taller pick bar with a clear strip at the bottom for the star ===== */
+.row .mkt{display:none}
+.row .ods{position:relative}
+.row .oc{min-height:74px;padding-bottom:1.5rem}
+.row .oc.nopick{min-height:56px;padding-bottom:.45rem}
