@@ -27,3 +27,8 @@ every indexed page has one H1, canonical, social tags and valid schema, no dupli
 REAL PHOTO LATER: upload your photo to the repo root (for example owner.jpg) and write owner.jpg in site-settings.mjs after ownerPhoto:. It replaces the monogram automatically.
 
 NEW PAGES IN THIS VERSION: jackpot-predictions.html (free jackpot planner), african-football-predictions.html, saudi-pro-league-predictions.html and 5 guides.
+
+CARD UPGRADE (added)
+  render.js   row() rewritten: one pick bar, Upcoming/Live/Full-time status, Won/Lost pills, live "needs 1 more goal" hint, WAT label
+  zp.css      new "Clean match card" block added at the very end
+  Same install: copy all files over your repo, push, run "Update match data". Test adding a pick to the slip once.

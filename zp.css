@@ -798,3 +798,51 @@ i.bd{display:inline-grid;place-items:center;overflow:hidden;font-style:normal;fo
 .oc{min-height:54px;border-radius:14px;border-color:var(--line);background:#fff;transition:border-color .15s ease,transform .1s ease}
 .oc:active{transform:scale(.97)}
 .oc small{text-transform:uppercase;letter-spacing:.04em;font-size:.62rem}
+
+/* ===== Clean match card: one pick bar, clear status (look + markup only) ===== */
+.row{grid-template-areas:"t sb" "m m" "o o";gap:.7rem .8rem;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.row::before{display:none}
+.row time,.row.live time,.row.win time,.row.loss time{display:inline-flex;align-items:baseline;gap:.3rem;border:0;border-radius:10px;padding:.22rem .65rem;background:var(--brand-soft);color:var(--brand-d);font-size:.9rem;font-weight:800;letter-spacing:0}
+.row time small{font-size:.58rem;font-weight:700;opacity:.7;letter-spacing:.04em}
+.row .sb{justify-self:end;display:flex;align-items:center;gap:.45rem}
+.row .sb strong{font-size:1.25rem;font-weight:800;color:var(--ink)}
+.row .sb small,.row.live .sb small{font-size:.8rem;font-weight:600;color:var(--mut)}
+.row.live .sb small{color:var(--live);font-weight:800}
+.row .up{font-size:.9rem;font-weight:700;color:var(--ok)}
+.row .pp{font-size:.8rem;font-weight:700;color:var(--mut)}
+.row .lvp{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .6rem;border-radius:8px;background:var(--bad-soft);color:var(--live);font-size:.8rem;font-weight:800}
+.row .lvp i{width:7px;height:7px;border-radius:50%;background:var(--live);animation:zpPulse 1.2s ease-in-out infinite}
+.row .tm{gap:.5rem}
+.row .tm b,.row .tm b+b{font-size:1.06rem;font-weight:700;color:var(--ink);gap:.6rem}
+.row .tm .bd,.bd{width:28px;height:28px}
+i.bd{font-size:.6rem}
+.row .ods,.row .ods.c2,.row .ods.c3{display:grid;grid-template-columns:minmax(0,1fr);gap:.4rem}
+.row .mkt{grid-column:auto;font-size:.72rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+/* the pick bar */
+.row .oc{flex-direction:row;justify-content:flex-start;gap:.6rem;width:100%;min-height:56px;padding:.45rem .5rem .45rem 1rem;border:0;border-radius:16px;font-size:1.05rem;text-align:left}
+.row .oc .pn{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;font-weight:700}
+.row .oc .pn b{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .oc .pi{font-style:normal;font-weight:800}
+.row .oc .pr{padding:.15rem .6rem;border-radius:8px;font-size:.78rem;font-weight:800}
+.row .oc .pc{font-size:.9rem;font-weight:600;font-variant-numeric:tabular-nums}
+.row .oc .po{display:grid;place-items:center;min-width:76px;height:42px;padding:0 .6rem;border-radius:12px;background:#fff;font-size:1.2rem;font-weight:800;font-variant-numeric:tabular-nums}
+/* Upcoming + Won: solid green. Lost: red. Postponed / no pick: grey. Make Upcoming lighter by changing the first rule's background only. */
+.row .oc.pick{background:var(--ok);color:#fff}
+.row .oc.pick .po{color:#065f3b}
+.row .oc.pick .pr{background:rgba(0,0,0,.22);color:#fff}
+.row .oc.pick .pc{color:rgba(255,255,255,.9)}
+.row.loss .oc.pick{background:var(--bad-soft);box-shadow:inset 0 0 0 1.5px rgba(217,45,58,.45);color:var(--bad)}
+.row.loss .oc.pick .pr{background:var(--bad);color:#fff}
+.row.loss .oc.pick .pc{color:var(--bad)}
+.row.loss .oc.pick .po{color:var(--bad)}
+.row.pst .oc.pick{background:var(--soft);color:var(--mut)}
+.row.pst .oc.pick .po{color:var(--mut)}
+.row.pst .oc.pick .pc{color:var(--mut)}
+.row .oc.nopick{background:var(--bg);color:var(--mut);box-shadow:inset 0 0 0 1px var(--line);cursor:default}
+.row .oc.nopick .pc{font-size:.74rem;text-align:right;line-height:1.2;padding-right:.5rem}
+.row .oc.sel{background:var(--ink);color:#fff}
+.row .oc.sel .po{color:var(--ink)}
+.row .oc.pick:active{transform:scale(.985)}
+.row .nt{margin:0;padding:0 .3rem;font-size:.8rem;font-weight:600;color:var(--mut)}
+.row.live .nt{color:var(--live)}
+.row .lgt{display:block;margin-top:.1rem;font-size:.72rem;font-weight:600;color:var(--mut)}

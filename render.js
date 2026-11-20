@@ -70,17 +70,30 @@ const tlink = (n) => { const h = teamHref(n); return h ? `<a class="tl" href="${
 export let PREVIEWS = {}; export const setPreviews = (p) => { PREVIEWS = p || {}; };
 const badge = (m, name) => { const ch = CRESTS[teamKey(m.h)], ca = CRESTS[teamKey(m.a)], c = CRESTS[teamKey(name)]; return !ch && !ca ? '' : c ? `<img class="bd" src="${esc(c)}" alt="" width="18" height="18" loading="lazy" referrerpolicy="no-referrer" onerror="var i=document.createElement('i');i.className='bd';i.textContent='${esc(mono(name))}';this.replaceWith(i)">` : `<i class="bd">${esc(mono(name))}</i>`; };
 const dcFrom = (o) => [1 / (1 / o[0] + 1 / o[1]), 1 / (1 / o[0] + 1 / o[2]), 1 / (1 / o[1] + 1 / o[2])];
+// One short line under the pick while the game is live: how far the pick is from winning.
+function liveHint(m, k, pk, st) {
+  if (!pk || st.k != 'live' || !m.sc) return '';
+  const h = m.sc[0] ?? 0, a = m.sc[1] ?? 0, g = h + a, L = { ou: 2.5, o15: 1.5, o35: 3.5 }[k];
+  if (L && pk.i == 0) { const n = Math.floor(L) + 1 - g; return n <= 0 ? '✓ Already won' : `Needs ${n} more goal${n > 1 ? 's' : ''}`; }
+  if (L && pk.i == 1) return g > L ? 'Already lost' : `Still under ${L} goals`;
+  if (k == 'bt' && pk.i == 0) return h > 0 && a > 0 ? '✓ Already won' : h == 0 && a == 0 ? 'Needs both teams to score' : 'Needs one more team to score';
+  return '';
+}
 export function row(m, k, o = {}) {
   let pk = pick(m, k); if (o.bar && pk && pk.c < (MIN[k] ?? 60)) pk = null; // league pages list every game but only show picks that clear the quality bar
   const M = MK[k], od = m[k] || [], st = state(m);
   const w = st.k == 'fin' && pk ? (won(m, k, pk) ? ' win' : ' loss') : '';
   const eo = k == 'dc' && !od.length && m.o && !m.o.some((x) => !(x > 1)) ? dcFrom(m.o) : null;
-  const fp = ['o','ou','o15','o35','bt'].includes(k) && od.length && !od.some((x) => !(x > 1)) ? (() => { const q = od.map((x) => 1 / x), t = q.reduce((a, b) => a + b, 0); return q.map((x) => Math.round((x / t) * 100)); })() : null; // margin-free chance for each outcome
-  const cells = eo ? eo.map((x, i) => `<span class="oc est${pk && pk.i == i ? ' pick' : ''}" title="Estimated from the 1X2 odds"><small>${M.s[i]}${pk && pk.i == i ? ' · ' + pk.c + '%' : ''}</small>~${x.toFixed(2)}</span>`).join('') : (od.length ? od : M.s.map(() => null)).map((x, i) => x
-    ? `<button type="button" class="oc${pk && pk.i == i ? ' pick' : ''}" data-k="${k}" data-id="${m.id}" data-i="${i}" data-od="${x}" aria-label="${esc(M.n[i])} at ${x}"><small>${M.s[i]}${pk && pk.i == i ? ' · ' + pk.c + '%' : fp ? ' · ' + fp[i] + '%' : ''}</small>${Number(x).toFixed(2)}</button>`
-    : pk && pk.i == i ? `<span class="oc nil pick" title="Predicted from team form, no odds published yet"><small>${M.s[i]} · ${pk.c}%</small>pick</span>` : `<span class="oc nil"><small>${M.s[i]}</small>–</span>`).join('');
-  const pkh = pk ? `<span>${esc(M.n[pk.i])}</span><i style="--w:${pk.c}%"></i><em>${pk.c}% · ${pk.model ? 'team-record model' : 'from odds'}</em>` : `<span class="mut">${od.length ? 'No strong pick' : st.k == 'ns' ? 'Odds not out yet' : 'Not tipped'}</span><i style="--w:0%"></i><em>${od.length ? 'Below our quality bar' : st.k == 'ns' ? 'Check back closer to kick-off' : 'No odds were published'}</em>`;
-  return `<article class="row ${st.k}${w}" data-id="${m.id}"><time>${hm(m.d)}</time>${o.mix ? `<span class="mkt">${esc(M.l)}</span>` : ''}${PREVIEWS[m.id] ? `<a class="tm" href="${esc(PREVIEWS[m.id])}" title="Match preview and prediction">` : '<div class="tm">'}<b>${badge(m, m.h)}<span>${PREVIEWS[m.id] ? esc(m.h) : tlink(m.h)}</span></b><b>${badge(m, m.a)}<span>${PREVIEWS[m.id] ? esc(m.a) : tlink(m.a)}</span></b>${PREVIEWS[m.id] ? '</a>' : '</div>'}<div class="ods c${M.s.length}">${cells}</div><div class="pk">${pkh}</div><div class="sb"><strong>${st.big}</strong><small>${st.sm}</small></div></article>`;
+  const x = pk ? (eo ? eo[pk.i] : od[pk.i]) : null, live = x && x > 1;
+  const ic = w == ' win' ? '✓' : w == ' loss' ? '✕' : '';
+  const hint = liveHint(m, k, pk, st) || (pk && pk.model ? 'Based on team record · odds not out yet' : '');
+  const src = pk ? `${pk.c}% chance · ${pk.model ? 'team-record model' : 'from bookmaker odds'}` : '';
+  const inner = pk ? `<span class="pn">${ic ? `<i class="pi">${ic}</i>` : ''}<b>${esc(M.n[pk.i])}</b></span>${w ? `<span class="pr">${w == ' win' ? 'Won' : 'Lost'}</span>` : ''}<span class="pc" title="${src}">${pk.c}%</span><span class="po">${live ? (+x).toFixed(2) : '–'}</span>` : '';
+  const bar = !pk ? `<div class="oc nil nopick"><span class="pn"><b>${od.length ? 'No strong pick' : st.k == 'ns' ? 'Odds not out yet' : 'Not tipped'}</b></span><span class="pc">${od.length ? 'Below our quality bar' : st.k == 'ns' ? 'Check back closer to kick-off' : 'No odds were published'}</span></div>`
+    : live && !eo ? `<button type="button" class="oc pick" data-k="${k}" data-id="${m.id}" data-i="${pk.i}" data-od="${x}" aria-label="${esc(M.n[pk.i])} at ${x}, ${pk.c}% chance" title="${src}">${inner}</button>`
+    : `<div class="oc nil pick${eo ? ' est' : ''}" title="${eo ? 'Estimated from the 1X2 odds' : src}">${inner}</div>`;
+  const sb = st.k == 'ns' ? '<span class="up">Upcoming</span>' : st.k == 'pst' ? '<span class="pp">Postponed</span>' : `${st.k == 'live' ? '<span class="lvp"><i></i>Live</span>' : ''}<strong>${st.big}</strong><small>${st.sm}</small>`;
+  return `<article class="row ${st.k}${w}" data-id="${m.id}"><time datetime="${esc(m.d)}" title="Kick-off, West Africa Time">${hm(m.d)}<small>WAT</small></time><div class="sb">${sb}</div>${PREVIEWS[m.id] ? `<a class="tm" href="${esc(PREVIEWS[m.id])}" title="Match preview and prediction">` : '<div class="tm">'}<b>${badge(m, m.h)}<span>${PREVIEWS[m.id] ? esc(m.h) : tlink(m.h)}</span></b><b>${badge(m, m.a)}<span>${PREVIEWS[m.id] ? esc(m.a) : tlink(m.a)}</span></b>${PREVIEWS[m.id] ? '</a>' : '</div>'}<div class="ods c${M.s.length}">${o.mix ? `<span class="mkt">${esc(M.l)}</span>` : ''}${bar}${hint ? `<p class="nt">${esc(hint)}</p>` : ''}</div></article>`;
 }
 const lgSrc = (m) => m.lo || CRESTS['lg:' + normName(m.cn) + ':' + normName(m.lg)] || CRESTS['lg::' + normName(m.lg)] || '';
 const lgLogo = (m) => { const s = lgSrc(m); return s ? `<img src="${esc(s)}" alt="" width="20" height="20" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''; };
