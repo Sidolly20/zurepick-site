@@ -762,3 +762,15 @@ header .tgbtn svg{width:16px;height:16px}
 .ctc small{font-size:.84rem;color:var(--mut);overflow-wrap:anywhere}
 .cta{display:inline-block;padding:.8rem 1.3rem;border-radius:999px;background:var(--ink);color:#fff;font-weight:800;text-decoration:none}
 .ai-hero h1{color:var(--ink);-webkit-text-fill-color:currentColor;background:none}
+
+/* League "right now" box: stat tiles and points race (these children had no styling) */
+.mx-stats{grid-template-columns:repeat(2,minmax(0,1fr));margin:.9rem 0 1rem}
+.mx-stats>div{display:flex;flex-direction:column;gap:.15rem;padding:.8rem .9rem;border:1px solid var(--line);border-radius:var(--r2);background:var(--bg);min-width:0}
+.mx-stats b{font-size:1.12rem;line-height:1.25;overflow-wrap:anywhere}
+.mx-stats span{font-size:.72rem;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.mx-stats small{font-size:.8rem;color:var(--mut)}
+.mx-race>div{display:grid;grid-template-columns:minmax(6.5rem,40%) minmax(0,1fr) auto;align-items:center;gap:.6rem;font-size:.88rem}
+.mx-race span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.mx-race i{display:block;height:10px;border-radius:99px;background:var(--brand)}
+.mx-race em{font-style:normal;font-weight:800;font-variant-numeric:tabular-nums;min-width:1.6rem;text-align:right}
+@media(min-width:700px){.mx-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}

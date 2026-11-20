@@ -608,3 +608,57 @@ Object.assign(REL, {
   'btts-predictions.html': [['over-2-5-goals-vs-btts.html', 'Over 2.5 goals vs BTTS: which is better?']],
   'under-2-5-goals-predictions.html': [['over-2-5-goals-vs-btts.html', 'Over 2.5 goals vs BTTS']]
 });
+
+// ============ JACKPOT PAGE (new): calculator + honest strategy ============
+NEW_GUIDES.push({ slug: 'jackpot-predictions', h: 'Jackpot predictions: how to fill a jackpot slip, with a free calculator',
+  blurb: 'A free jackpot planner (lines, cost and real chance) and a sensible way to use win chances for 13, 15 and 17 game jackpots.',
+  title: 'Jackpot Predictions: Free Jackpot Calculator & Strategy', desc: 'Jackpot predictions done honestly: a free jackpot calculator for lines, cost and chance, plus how to use 1X2 win chances to fill a 13, 15 or 17 game jackpot.',
+  lead: 'Nobody can promise a jackpot win. What you can do is understand the odds, plan your lines and stop paying for “sure jackpot” tips.',
+  body: `<h2>Free jackpot planner</h2><p>Enter how many games the jackpot has, how many you will cover with two results (a double) or three (a triple), and what one line costs. The planner shows how many lines you are buying, the total cost and the honest chance of getting every game right.</p>
+<div class="prose" id="jp-box" style="border:1px solid var(--line);border-radius:14px;padding:1rem;background:var(--card)">
+<p><label>Games in the jackpot <select class="f" id="jp-n"><option>13</option><option selected>15</option><option>17</option></select></label></p>
+<p><label>Games covered with 2 results (doubles) <input class="f" id="jp-d" type="number" min="0" max="17" value="6"></label></p>
+<p><label>Games covered with 3 results (triples) <input class="f" id="jp-t" type="number" min="0" max="17" value="0"></label></p>
+<p><label>Price of one line <input class="f" id="jp-p" type="number" min="0" step="any" value="100"></label></p>
+<p><label>Chance you get a single right, % <input class="f" id="jp-s" type="number" min="1" max="99" value="55"></label></p>
+<p><label>Chance a double covers the result, % <input class="f" id="jp-c" type="number" min="1" max="99" value="78"></label></p>
+<p id="jp-out" class="mono" aria-live="polite"></p></div>
+<script>(function(){var g=function(i){return document.getElementById(i)};function f(n){return n.toLocaleString('en-US',{maximumFractionDigits:0})}
+function run(){var n=+g('jp-n').value,d=Math.max(0,+g('jp-d').value||0),t=Math.max(0,+g('jp-t').value||0),p=+g('jp-p').value||0,s=(+g('jp-s').value||50)/100,c=(+g('jp-c').value||75)/100,o=g('jp-out');
+if(d+t>n){o.textContent='Doubles plus triples cannot be more than the number of games ('+n+').';return}
+var singles=n-d-t,lines=Math.pow(2,d)*Math.pow(3,t),chance=Math.pow(s,singles)*Math.pow(c,d);
+o.innerHTML='Singles: <b>'+singles+'</b><br>Lines to buy: <b>'+f(lines)+'</b><br>Total cost: <b>'+f(lines*p)+'</b><br>Chance of all '+n+' correct: <b>'+(chance*100<0.01?'under 0.01':(chance*100).toFixed(chance*100<1?3:2))+'%</b>, about 1 in <b>'+f(1/chance)+'</b>'}
+['jp-n','jp-d','jp-t','jp-p','jp-s','jp-c'].forEach(function(i){g(i).addEventListener('input',run)});run()})();</script>
+<p>With the default numbers (15 games, 6 doubles, 9 singles at 55%) you buy 64 lines and the chance of a perfect slip is about 1 in 960. Cover more games and the cost doubles with every double, so the chance rises slowly while the bill rises fast. That is the real trade-off in every jackpot.</p>
+<h2>How jackpots work</h2><p>A football jackpot asks you to predict the result (home win, draw or away win) of a fixed list of matches, usually 13 to 17, chosen by the operator. Prizes depend on how many you get right, and the biggest prize needs all of them. Formats, prices and prize rules differ by operator and change over time, so always read the rules on the operator’s own page before you play.</p>
+<h2>A sensible way to fill a jackpot slip</h2><ol><li><b>Rate every game first.</b> Use the win chances on the <a href="1x2-predictions.html">1X2 page</a> and the <a href="football-predictions-weekend.html">weekend page</a>. Games with a favourite above about 65% are your natural singles.</li><li><b>Expect draws.</b> Roughly a quarter of matches end level, so in 15 games three or four draws is normal. A slip with no draws is unusually optimistic. See <a href="draw-predictions.html">draw predictions</a>.</li><li><b>Double the close games.</b> Where no result is clearly ahead, cover two outcomes. The <a href="double-chance-predictions.html">double chance</a> chances show you how likely each cover is.</li><li><b>Triples are expensive.</b> A triple multiplies your cost by three. Use one only on a game that makes no sense at all, such as a derby with both teams in chaos.</li><li><b>Set the budget first.</b> Decide what you can lose, then see how many doubles it buys on the planner above.</li></ol>
+<h2>What we do not do</h2><p>ZurePicks does not know the operator’s jackpot lists in advance, does not sell “sure jackpot” tips and does not take bets. If someone offers a fixed or guaranteed jackpot for a fee, read <a href="fixed-matches-and-sure-odds-scams.html">fixed matches and sure odds scams</a> and <a href="are-sure-odds-real.html">are sure odds real?</a> before you pay anything. For the basics, see <a href="jackpot-predictions-explained.html">jackpot predictions explained</a>.</p><h2>Play small, play for fun</h2><p>A jackpot is a lottery with better information. Treat the cost of your lines like the price of a ticket, not an investment, and read <a href="responsible-gambling.html">responsible gambling</a> if it starts to feel like more than that.</p>`,
+  faq: [['What are the best jackpot predictions?', 'No one can promise them. The best approach is to rate every game with win chances, play the strongest favourites as singles, double the close games and expect about a quarter of the results to be draws.'], ['How many draws are in a jackpot?', 'About one match in four ends level, so a 15-game jackpot usually has three or four draws.'], ['How many lines do I buy if I double some games?', 'Two to the power of the number of doubles, times three to the power of the number of triples. Six doubles is 64 lines.'], ['Does ZurePicks give jackpot fixtures or sure jackpot tips?', 'No. We do not publish operators’ jackpot lists in advance and we do not sell sure tips. We show win chances for football matches that you can use to plan your own slip.']] });
+Object.assign(REL, {
+  'jackpot-predictions-explained.html': [['jackpot-predictions.html', 'Jackpot predictions: free planner and strategy']],
+  '1x2-predictions.html': [...REL['1x2-predictions.html'], ['jackpot-predictions.html', 'Jackpot predictions and planner']],
+  'draw-predictions.html': [['jackpot-predictions.html', 'Jackpot predictions and planner']],
+  'football-predictions-weekend.html': [...REL['football-predictions-weekend.html'], ['jackpot-predictions.html', 'Jackpot planner']],
+  'football-betting-glossary.html': [...REL['football-betting-glossary.html'], ['jackpot-predictions.html', 'Jackpot planner']]
+});
+
+// ============ AFRICAN FOOTBALL HUB (new league-style page) ============
+TITLES['african-football-predictions.html'] = { title: 'African Football Predictions Today: NPFL, CAF & More', desc: 'Free African football predictions today: NPFL, CAF Champions League, Botola Pro, Tunisia, Kenya, Angola and more, with odds, win chance and kick-offs in WAT.' };
+KW['african-football-predictions.html'] = { s: [
+  ['African football predictions: what this page covers',
+   'This is the one page for football on the continent. It brings together the Nigeria Premier Football League, the CAF Champions League and Confederation Cup, Botola Pro in Morocco, the Tunisian Ligue 1, the Girabola in Angola and the leagues we can find fixtures for in Kenya, Ghana, Uganda, Tanzania, Ethiopia, Zambia, Zimbabwe and other countries. Every kick-off is shown in West Africa Time, so there is no converting in your head.',
+   'Fixtures come from our data providers, so a league appears when they carry it. Some competitions have full bookmaker odds and others have none yet. Where there is no price you will see “odds not out yet” and no tip, because a pick without a price behind it is a guess.'],
+  ['How African football differs from Europe, for betting',
+   [ '<b>Less information.</b> Fewer reporters and fewer published injuries mean prices can be less sharp, and your own knowledge of a team matters more.', '<b>Strong home advantage.</b> Travel, pitches and heat make away wins harder. Check the home and away record, not only the table.', '<b>Fixture changes.</b> Dates and times move more often, so check the kick-off on the card before you bet.', '<b>Smaller samples.</b> A few games can swing the numbers. Keep stakes small and treat any percentage as a guide.' ],
+   'For single leagues with their own page, see the <a href="npfl-predictions.html">NPFL</a>, <a href="caf-champions-league-predictions.html">CAF Champions League</a>, <a href="botola-pro-predictions.html">Botola Pro</a> and <a href="tunisian-ligue-1-predictions.html">Tunisian Ligue 1</a> predictions.'],
+  ['Betting on African matches sensibly',
+   'The same rules apply as anywhere: set a budget, keep the stake to 1% to 2% of it and never chase a loss. Use <a href="football-predictions-nigeria-time-wat.html">our time guide</a> for converting kick-offs, and <a href="betting-tips-for-sportybet-bet9ja-msport-1xbet.html">the bookmaker guide</a> to rebuild a slip in your app.']
+], faq: [['Where can I find African football predictions today?', 'On this page. It lists today’s and the next two days of fixtures from African leagues and CAF competitions, with odds and win chance where bookmakers publish them.'], ['Which African leagues does ZurePicks cover?', 'The NPFL, CAF Champions League and Confederation Cup, Botola Pro, Tunisian Ligue 1, Girabola and other leagues our data providers carry, such as Kenya, Ghana, Uganda and Tanzania.']] };
+Object.assign(REL, {
+  'index.html': [...REL['index.html'], ['african-football-predictions.html', 'African football predictions']],
+  'npfl-predictions.html': [['african-football-predictions.html', 'All African football predictions']],
+  'caf-champions-league-predictions.html': [['african-football-predictions.html', 'All African football predictions']],
+  'botola-pro-predictions.html': [['african-football-predictions.html', 'All African football predictions']],
+  'tunisian-ligue-1-predictions.html': [['african-football-predictions.html', 'All African football predictions']],
+  'football-predictions-nigeria-time-wat.html': [['african-football-predictions.html', 'African football predictions today']]
+});
