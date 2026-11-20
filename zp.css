@@ -798,6 +798,3 @@ i.bd{display:inline-grid;place-items:center;overflow:hidden;font-style:normal;fo
 .oc{min-height:54px;border-radius:14px;border-color:var(--line);background:#fff;transition:border-color .15s ease,transform .1s ease}
 .oc:active{transform:scale(.97)}
 .oc small{text-transform:uppercase;letter-spacing:.04em;font-size:.62rem}
-.oc.pick{background:linear-gradient(180deg,#eef9f3,#d8f0e4);border-color:rgba(11,143,90,.5)}
-.row.win .oc.pick{background:linear-gradient(180deg,#14a86b,var(--ok))}
-.row.loss .oc.pick{background:linear-gradient(180deg,#fff7f7,var(--bad-soft))}
