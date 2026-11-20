@@ -5,11 +5,12 @@ Copy ALL the files in this folder into the MAIN folder of your repo (replace the
 FILES
   keyword-content.mjs   NEW      all new text, titles, descriptions, related links
   guides-intent.mjs     NEW      from the earlier SEO fix (your repo did not have it)
-  build-pages.mjs       CHANGED  earlier SEO-fix version + 4 small lines (plug-in, new guides, Saudi Pro League) + African football hub page + the About page portrait (clean white ASJ monogram instead of the drawing)
+  build-pages.mjs       CHANGED  earlier SEO-fix version + 4 small lines (plug-in, new guides, Saudi Pro League) + African football hub page + menu and footer links for the new pages + the About page portrait (clean white ASJ monogram instead of the drawing)
   previews.mjs          CHANGED  earlier SEO-fix version + 1 fix (Pick of the Day no longer links to deleted match pages)
   extra-pages.mjs       CHANGED  earlier SEO-fix version, untouched by me
   sitemap.xml           CHANGED  152 pages
-  zp.css                CHANGED  only added lines at the end: fixes the League "right now" stat boxes and points race
+  zp.css                CHANGED  only added lines at the end: League "right now" stat boxes + points race fix, and the classier match-card look
+  render.js             CHANGED  2 small edits to the team badge only: a team without a crest shows its initials (no empty grey circle)
   site-settings.mjs     CHANGED  one line only: contentUpdated is now 2026-11-20 (all your other settings are untouched)
   fix-existing-pages.mjs         optional, you do not need to run it
 

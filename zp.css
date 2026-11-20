@@ -774,3 +774,30 @@ header .tgbtn svg{width:16px;height:16px}
 .mx-race i{display:block;height:10px;border-radius:99px;background:var(--brand)}
 .mx-race em{font-style:normal;font-weight:800;font-variant-numeric:tabular-nums;min-width:1.6rem;text-align:right}
 @media(min-width:700px){.mx-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* ===== Match card polish (look only; no behaviour changes) ===== */
+.row{border-radius:18px;border-color:rgba(20,40,30,.09);box-shadow:0 1px 2px rgba(15,30,22,.05),0 10px 26px -14px rgba(15,30,22,.2);transition:box-shadow .2s ease}
+@media(hover:hover){.row:hover{box-shadow:0 2px 4px rgba(15,30,22,.06),0 16px 32px -14px rgba(15,30,22,.28)}}
+.row::before{width:3px;border-radius:0 3px 3px 0}
+.row.win::before{background:linear-gradient(180deg,var(--ok),#6fd6a8)}
+.row.loss::before{background:linear-gradient(180deg,var(--bad),#f09a9a)}
+.row.live::before{animation:zpPulse 1.6s ease-in-out infinite}
+@keyframes zpPulse{50%{opacity:.3}}
+@media(prefers-reduced-motion:reduce){.row.live::before{animation:none}}
+.row time{background:transparent;border:1px solid var(--line2);color:var(--mut);font-size:.78rem;letter-spacing:.02em;padding:.12rem .55rem}
+.row.live time{border-color:var(--live);color:var(--live)}
+.row.win time{border-color:rgba(11,143,90,.45);color:var(--ok)}
+.row.loss time{border-color:rgba(214,69,69,.4);color:var(--bad)}
+.row .sb strong{letter-spacing:.01em}
+.row.win .sb small::before,.row.loss .sb small::before{content:"";display:inline-block;width:.45rem;height:.45rem;margin-right:.3rem;border-radius:50%;vertical-align:.05em}
+.row.win .sb small::before{background:var(--ok)}.row.loss .sb small::before{background:var(--bad)}
+.row .tm b{font-size:1.08rem;letter-spacing:-.015em}
+.row .tm b+b{font-weight:600;color:#4a5361;font-size:1.02rem}
+.row .tm .bd,.bd{border:1px solid var(--line);background:#fff}
+i.bd{display:inline-grid;place-items:center;overflow:hidden;font-style:normal;font-size:.46rem;font-weight:800;letter-spacing:0;color:var(--brand-d);background:var(--ok-soft)}
+.oc{min-height:54px;border-radius:14px;border-color:var(--line);background:#fff;transition:border-color .15s ease,transform .1s ease}
+.oc:active{transform:scale(.97)}
+.oc small{text-transform:uppercase;letter-spacing:.04em;font-size:.62rem}
+.oc.pick{background:linear-gradient(180deg,#eef9f3,#d8f0e4);border-color:rgba(11,143,90,.5)}
+.row.win .oc.pick{background:linear-gradient(180deg,#14a86b,var(--ok))}
+.row.loss .oc.pick{background:linear-gradient(180deg,#fff7f7,var(--bad-soft))}

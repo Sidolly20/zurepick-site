@@ -68,7 +68,7 @@ export let CRESTS = {}; export const setCrests = (c) => { CRESTS = c || {}; };
 export const teamHref = (n) => PREVIEWS['t:' + teamKey(n)] || '';
 const tlink = (n) => { const h = teamHref(n); return h ? `<a class="tl" href="${esc(h)}" title="${esc(n)} form and next match">${esc(n)}</a>` : esc(n); };
 export let PREVIEWS = {}; export const setPreviews = (p) => { PREVIEWS = p || {}; };
-const badge = (m, name) => { const ch = CRESTS[teamKey(m.h)], ca = CRESTS[teamKey(m.a)], c = CRESTS[teamKey(name)]; return !ch && !ca ? '' : c ? `<img class="bd" src="${esc(c)}" alt="" width="18" height="18" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">` : '<i class="bd"></i>'; };
+const badge = (m, name) => { const ch = CRESTS[teamKey(m.h)], ca = CRESTS[teamKey(m.a)], c = CRESTS[teamKey(name)]; return !ch && !ca ? '' : c ? `<img class="bd" src="${esc(c)}" alt="" width="18" height="18" loading="lazy" referrerpolicy="no-referrer" onerror="var i=document.createElement('i');i.className='bd';i.textContent='${esc(mono(name))}';this.replaceWith(i)">` : `<i class="bd">${esc(mono(name))}</i>`; };
 const dcFrom = (o) => [1 / (1 / o[0] + 1 / o[1]), 1 / (1 / o[0] + 1 / o[2]), 1 / (1 / o[1] + 1 / o[2])];
 export function row(m, k, o = {}) {
   let pk = pick(m, k); if (o.bar && pk && pk.c < (MIN[k] ?? 60)) pk = null; // league pages list every game but only show picks that clear the quality bar
