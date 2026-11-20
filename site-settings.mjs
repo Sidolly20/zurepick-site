@@ -18,5 +18,5 @@ export const SETTINGS = {
   ownerBio: '',
   // The date shown as "last reviewed" on guides and used in the sitemap for pages that do not change with the data.
   // Update it when you genuinely revise the guides.
-  contentUpdated: '2026-11-13',
+  contentUpdated: '2026-11-20',
 };
