@@ -18,7 +18,7 @@ async function load() {
   N.sort((a, b) => (b[2] - a[2]) || a[0] - b[0]);
   const items = [...L, ...N.slice(0, 12).map((x) => x[1]), ...F.slice(0, 8)];
   if (!items.length) { bar.hidden = true; return; }
-  if (lab) { lab.textContent = L.length ? 'Live now' : 'Next up'; lab.className = 'tk-l' + (L.length ? ' on' : ''); }
+  if (lab) { lab.textContent = L.length ? (N.length || F.length ? 'Live & next' : 'Live now') : 'Next up'; lab.className = 'tk-l' + (L.length ? ' on' : ''); }
   const h = items.join('');
   if (rail.dataset.h !== h) { rail.dataset.h = h; rail.innerHTML = '<div class="tk-s">' + h + '</div><div class="tk-s" aria-hidden="true">' + h + '</div>'; rail.style.setProperty('--tk', Math.max(25, items.length * 7) + 's'); }
   bar.hidden = false;

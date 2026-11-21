@@ -66,7 +66,9 @@ const KNOWN = [['england', 'premierleague', 39], ['spain', 'laliga', 140], ['ita
 const siteLeagueId = (l, id) => { const n = (l?.n || '').toLowerCase().replace(/[^a-z0-9]/g, ''), c = (l?.c || '').toLowerCase(); const k = KNOWN.find(([cc, nn]) => nn === n && (!cc || c.includes(cc))); return k ? k[2] : 100000 + (+id || 0); };
 
 const dayAt = (t) => new Intl.DateTimeFormat('en-CA', { timeZone: env('TZ_NAME', 'Africa/Lagos') }).format(new Date(t));
-const toMatch = (e, L) => { const l = L[e.league_id]; return { id: 'bsd:' + e.id, bid: e.id, d: e.event_date, li: siteLeagueId(l, e.league_id), se: e.season_id ?? null, lg: l?.n || 'League ' + e.league_id, cn: l?.c || '', lo: l?.lo || null, h: e.home_team, a: e.away_team, st: mapStatus(e), el: num(e.current_minute), sc: [num(e.home_score), num(e.away_score)] }; };
+// BSD team ids (used for logos: https://sports.bzzoiro.com/docs/images/). Tries the likely field names; null when the feed has none.
+const tid = (e, s) => e[s + '_team_id'] ?? e[s + '_id'] ?? e[s + '_team_obj']?.id ?? (e[s + '_team'] && typeof e[s + '_team'] == 'object' ? e[s + '_team'].id : null) ?? null;
+const toMatch = (e, L) => { const l = L[e.league_id]; return { id: 'bsd:' + e.id, bid: e.id, hid: tid(e, 'home'), aid: tid(e, 'away'), d: e.event_date, li: siteLeagueId(l, e.league_id), se: e.season_id ?? null, lg: l?.n || 'League ' + e.league_id, cn: l?.c || '', lo: l?.lo || null, h: e.home_team, a: e.away_team, st: mapStatus(e), el: num(e.current_minute), sc: [num(e.home_score), num(e.away_score)] }; };
 function advance(m, e) { // never moves a match backwards
   const st = mapStatus(e); if (rank(st) < rank(m.st)) return false;
   const next = [st, rank(st) >= 1 ? num(e.current_minute) ?? m.el : m.el, rank(st) >= 2 ? [num(e.home_score), num(e.away_score)] : m.sc], was = JSON.stringify([m.st, m.el, m.sc]);
@@ -88,7 +90,7 @@ export async function collect({ dataDir = path.resolve(env('DATA_DIR', path.join
     const t = Date.parse(e.event_date); if (!t || !e.home_team || !e.away_team) continue;
     const day = getDay(dayAt(t));
     const m = day.matches.find((x) => String(x.bid) === String(e.id) || x.id === 'bsd:' + e.id) || day.matches.find((x) => Math.abs(Date.parse(x.d) - t) < 3 * 36e5 && sameTeam(x.h, e.home_team) && sameTeam(x.a, e.away_team));
-    if (m) { m.bid = e.id; if (advance(m, e)) moved++; } else { day.matches.push(toMatch(e, L)); fresh++; }
+    if (m) { m.bid = e.id; if (m.hid == null) m.hid = tid(e, 'home'); if (m.aid == null) m.aid = tid(e, 'away'); if (advance(m, e)) moved++; } else { day.matches.push(toMatch(e, L)); fresh++; }
   }
   // Odds: one call per game, soonest kick-offs first. Far-away games have no prices yet, so they are retried every 4 hours (every 30 minutes close to kick-off).
   const cand = Object.values(days).flatMap((d) => d.matches).filter((m) => m.bid && !FINAL.includes(m.st) && Date.parse(m.d) > now - 3 * 36e5 && Date.parse(m.d) < now + 72 * 36e5 && (!m.oa || now - m.oa > (Date.parse(m.d) - now < 3 * 36e5 ? 30 * 6e4 : 4 * 36e5)))

@@ -966,3 +966,27 @@ header .w{height:52px;gap:.5rem}
 header .tgbtn{width:30px;height:30px}
 /* soft fade where ticker games slide out from under the "Live now" label */
 .tick .tk-w::before{content:"";position:absolute;left:0;top:0;bottom:0;width:16px;z-index:1;background:linear-gradient(90deg,#0b3d29,rgba(11,61,41,0));pointer-events:none}
+
+/* ===== Save star: a clear round button in the card's top-right corner (status text moves left of it) ===== */
+.row .sv,.row .sv:not(#x){top:8px;bottom:auto;right:10px;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#eef3f0;box-shadow:inset 0 0 0 1px #dbe5df;color:#8a9a92;font-size:1.1rem;line-height:1;transition:transform .12s,background .12s}
+.row .sv::before{content:"";position:absolute;inset:-6px}
+.row .sv:active{transform:scale(.9)}
+.row .sv[aria-pressed=true]{background:#fff3c4;box-shadow:inset 0 0 0 1px #f0cf62;color:#d99a00}
+.row .sb{padding-right:2.5rem}
+
+/* ===== Teams without a crest get a coloured monogram (colour is stable per team) ===== */
+.bd.mn{display:inline-grid;place-items:center;background:hsl(var(--h) 55% 92%);color:hsl(var(--h) 62% 25%);box-shadow:inset 0 0 0 1px hsl(var(--h) 40% 80%);font-style:normal;font-weight:800;font-size:.5rem;letter-spacing:-.02em;line-height:1;overflow:hidden}
+
+/* ===== Live page cards: badge spacing + compact "foundation" look to match the board ===== */
+.lc{--ld:#bfe3d0;--ld2:#e2f2ea;gap:.4rem;padding:.7rem .85rem;margin-bottom:10px;border-radius:18px;background:linear-gradient(#fff,#fbfdfc);
+  box-shadow:0 5px 0 -1px var(--ld),0 11px 0 -6px var(--ld2),0 18px 22px -12px rgba(11,90,58,.35)}
+.lc.lv{--ld:#f6b9bd;--ld2:#fbdcde;border-color:var(--line)}
+.lc .lh{font-size:.78rem}
+.lc .lt b{display:flex;align-items:center;gap:.5rem;min-width:0;font-size:1rem;font-weight:700}
+.lc .lt b span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lc .lt .bd{flex:none;width:22px;height:22px}
+.lc .lt{display:grid;gap:.2rem}
+.lc .lx strong{font-size:1.15rem}
+.lc .lx small{font-size:.78rem}
+.lc .lps{display:flex;flex-wrap:wrap;gap:.3rem}
+.lc .lp{padding:.18rem .55rem;font-size:.72rem}
