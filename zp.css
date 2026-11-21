@@ -852,7 +852,7 @@ i.bd{font-size:.6rem}
 .row .ods{position:relative}
 
 /* ===== Clean top: only the day tabs, then straight to the games ===== */
-#mkts,.tools:has(#min),#status,.more{display:none!important}
+#mkts,.tools.tmain,#status,.more{display:none!important}
 
 /* ===== Compact cards: smaller, tighter, no empty space ===== */
 .row{gap:.4rem .6rem;padding:10px 12px;border-radius:14px}
@@ -874,12 +874,12 @@ i.bd{font-size:.6rem}
 .row .nt{font-size:.72rem;padding:0 .2rem}
 
 /* ===== Foundation look: each card stands on a stacked base; pick bar is a raised button ===== */
-.row{--ld:#bfe3d0;--ld2:#e2f2ea;position:relative;margin-bottom:16px;border:1px solid #e3ebe6;border-radius:20px;background:linear-gradient(#fff,#fbfdfc);
+.row{--ld:#bfe3d0;--ld2:#e2f2ea;position:relative;margin-bottom:10px;border:1px solid #e3ebe6;border-radius:20px;background:linear-gradient(#fff,#fbfdfc);
   box-shadow:0 5px 0 -1px var(--ld),0 11px 0 -6px var(--ld2),0 18px 22px -12px rgba(11,90,58,.35)}
 .row.win{--ld:#5fc79c;--ld2:#c9eadb}
 .row.loss{--ld:#f2b6bb;--ld2:#f9dcde}
 .row.live{--ld:#f6b9bd;--ld2:#fbdcde}
-.row.pst,.row.ns:not(:has(.pick)){--ld:#d9dfdc;--ld2:#eceeed}
+.row.pst,.row.nopk{--ld:#d9dfdc;--ld2:#eceeed}
 .row .oc.pick{box-shadow:0 3px 0 #06694a,0 6px 10px -4px rgba(6,105,74,.45)}
 .row.loss .oc.pick{box-shadow:inset 0 0 0 1.5px rgba(217,45,58,.45),0 3px 0 rgba(217,45,58,.35)}
 .row.pst .oc.pick{box-shadow:0 3px 0 #cfd6d2}
@@ -932,3 +932,28 @@ i.bd{font-size:.6rem}
 .rc-tip strong{font-size:.98rem}
 .rc-tip small{font-size:.62rem}
 .rc-go{width:26px;height:26px;font-size:.8rem}
+
+/* ===== Fixes + hardening ===== */
+/* 1. Side-by-side comparison table: its label cell reused the .lb class (also the 4px confidence bar), so labels were clipped. */
+td.lb,th.lb{display:table-cell;position:static;height:auto;overflow:visible;background:none;border-radius:0;grid-column:auto;text-align:center;font-size:.78rem;font-weight:700;color:var(--mut);white-space:normal}
+td.lb::after,th.lb::after{content:none}
+table:has(td.lb){display:table;width:100%;table-layout:auto}
+table:has(td.lb) td:first-child,table:has(td.lb) th:first-child{text-align:left}
+table:has(td.lb) td:last-child,table:has(td.lb) th:last-child{text-align:right}
+/* 2. Contrast: white text on the bar and green text on white pass 4.5:1 */
+.row .oc.pick{background:#087a4d;box-shadow:0 3px 0 #05573a,0 6px 10px -4px rgba(6,105,74,.45)}
+.row .oc.pick .po{color:#065a3a}
+.row .up{color:#08724a}
+/* 3. Long team names never push the card wider */
+.row{min-width:0}
+.row .tm b{min-width:0}
+.row .tm b span,.row .tm b a{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 4. Motion + tiny screens */
+@media(prefers-reduced-motion:reduce){.row .lvp i{animation:none}}
+@media(max-width:340px){.row .oc{padding-left:.6rem;gap:.3rem}.row .oc .po{min-width:54px}.row .oc .pn{font-size:.88rem}.row .oc .pc{font-size:.72rem}}
+.row .oc.pick,.row.win .oc.pick,.row.live .oc.pick,.row.ns .oc.pick{background:#087a4d}
+.row.loss .oc.pick{background:var(--bad-soft)}
+.row.pst .oc.pick{background:var(--soft)}
+table:has(td.lb) td,table:has(td.lb) th{vertical-align:middle}
+.row .oc.nopick .pn b{white-space:normal;overflow:visible}
+.row .oc.nopick{flex-wrap:wrap;row-gap:.1rem}

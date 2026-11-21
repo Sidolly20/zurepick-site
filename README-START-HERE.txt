@@ -32,3 +32,10 @@ CARD UPGRADE (added)
   render.js   row() rewritten: one pick bar, Upcoming/Live/Full-time status, Won/Lost pills, live "needs 1 more goal" hint, WAT label
   zp.css      new "Clean match card" block added at the very end
   Same install: copy all files over your repo, push, run "Update match data". Test adding a pick to the slip once.
+
+FINAL HARDENING PASS (added)
+  zp.css          fixes the clipped labels in the "side by side" comparison table (.lb class collision),
+                  darker green for readable white text, long-name + 320px handling, reduced-motion support
+  render.js       cards get a "nopk" class when there is no pick (no :has() needed)
+  build-pages.mjs main filters get a "tmain" class so they can be hidden without :has()
+  INSTALL: copy ALL files over the repo, push, run "Update match data", hard-refresh the phone.
