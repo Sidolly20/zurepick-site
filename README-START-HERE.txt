@@ -39,3 +39,7 @@ FINAL HARDENING PASS (added)
   render.js       cards get a "nopk" class when there is no pick (no :has() needed)
   build-pages.mjs main filters get a "tmain" class so they can be hidden without :has()
   INSTALL: copy ALL files over the repo, push, run "Update match data", hard-refresh the phone.
+
+HEADER PASS (added)
+  zp.css          header 62px -> 52px, smaller logo/Categories pill/Telegram button, soft fade on the ticker edge
+  build-pages.mjs the "Home" breadcrumb no longer shows on the home page (other pages keep it; SEO breadcrumb data unchanged)

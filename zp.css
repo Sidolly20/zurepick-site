@@ -957,3 +957,12 @@ table:has(td.lb) td:last-child,table:has(td.lb) th:last-child{text-align:right}
 table:has(td.lb) td,table:has(td.lb) th{vertical-align:middle}
 .row .oc.nopick .pn b{white-space:normal;overflow:visible}
 .row .oc.nopick{flex-wrap:wrap;row-gap:.1rem}
+
+/* ===== Slimmer header ===== */
+header .w{height:52px;gap:.5rem}
+.logo{font-size:1.1rem;gap:.45rem}
+.logo i{width:28px;height:28px;border-radius:9px;font-size:.98rem}
+.mm>summary{height:34px;padding:0 .75rem;font-size:.82rem}
+header .tgbtn{width:30px;height:30px}
+/* soft fade where ticker games slide out from under the "Live now" label */
+.tick .tk-w::before{content:"";position:absolute;left:0;top:0;bottom:0;width:16px;z-index:1;background:linear-gradient(90deg,#0b3d29,rgba(11,61,41,0));pointer-events:none}
