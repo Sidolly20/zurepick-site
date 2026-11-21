@@ -103,7 +103,7 @@ export function board(ms, k, o = {}) {
   if (!L.length && o.min === 'all') return '<div class="empty">No games found for this day yet. The schedule fills in as our data feed updates.</div>';
   if (!L.length) { const n = ms.filter((m) => (!o.lg || m.li == o.lg) && (!o.match || o.match(m))).length; return '<div class="empty">No picks meet our quality bar for this day yet. We only publish games where the chance is strong enough, so quiet days are normal.' + (n && !o.max ? ` <button type="button" class="lnk" data-all>Show all ${n} games</button>` : '') + '</div>'; }
   const held = ms.filter((m) => (!o.lg || m.li == o.lg) && (!o.match || o.match(m))).length;
-  const more = o.min !== 'all' && !o.max && !o.q && held > L.length ? `<div class="more"><span>Showing ${L.length} of ${held} games that clear our quality bar.</span><button type="button" data-all>Show all ${held} games</button></div>` : '';
+  const more = ''; // "Showing X of Y" box removed to keep the board clean
   const hint = o.min === 'all' ? `<div class="empty" style="padding:10px 14px;margin-bottom:10px">Showing all ${L.length} games in our data for this day. Games without a tip have no odds yet or did not pass our quality bar.</div>` : '';
   const G = {}; for (const m of L) (G[m.li + '|' + m.cn + '|' + m.lg] ??= []).push(m);
   const rank = (g) => { const i = PRIO.indexOf(+g.split('|')[0]); return i < 0 ? 99 : i; };

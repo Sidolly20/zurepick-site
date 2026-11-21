@@ -850,5 +850,38 @@ i.bd{font-size:.6rem}
 /* ===== Card tweaks: hide market label; taller pick bar with a clear strip at the bottom for the star ===== */
 .row .mkt{display:none}
 .row .ods{position:relative}
-.row .oc{min-height:74px;padding-bottom:1.5rem}
-.row .oc.nopick{min-height:56px;padding-bottom:.45rem}
+
+/* ===== Clean top: only the day tabs, then straight to the games ===== */
+#mkts,.tools:has(#min),#status,.more{display:none!important}
+
+/* ===== Compact cards: smaller, tighter, no empty space ===== */
+.row{gap:.4rem .6rem;padding:10px 12px;border-radius:14px}
+.row time,.row.live time,.row.win time,.row.loss time{padding:.1rem .5rem;border-radius:8px;font-size:.78rem}
+.row time small{font-size:.52rem}
+.row .sb strong{font-size:1.05rem}
+.row .sb small,.row .up,.row .pp{font-size:.74rem}
+.row .lvp{padding:.1rem .45rem;font-size:.7rem}
+.row .tm{gap:.2rem}
+.row .tm b,.row .tm b+b{font-size:.95rem;gap:.5rem}
+.row .tm .bd,.bd{width:22px;height:22px}
+.row .ods,.row .ods.c2,.row .ods.c3{gap:.25rem;position:relative}
+.row .oc{min-height:46px;padding:.25rem .3rem .25rem .8rem;border-radius:12px;font-size:.95rem;gap:.45rem}
+.row .oc .pc{font-size:.8rem}
+.row .oc .pr{padding:.1rem .45rem;font-size:.68rem}
+.row .oc .po{min-width:62px;height:34px;border-radius:10px;font-size:1.05rem}
+.row .oc.nopick{min-height:40px}
+.row .oc.nopick .pc{font-size:.68rem}
+.row .nt{font-size:.72rem;padding:0 .2rem}
+
+/* ===== Foundation look: each card stands on a stacked base; pick bar is a raised button ===== */
+.row{--ld:#bfe3d0;--ld2:#e2f2ea;position:relative;margin-bottom:16px;border:1px solid #e3ebe6;border-radius:20px;background:linear-gradient(#fff,#fbfdfc);
+  box-shadow:0 5px 0 -1px var(--ld),0 11px 0 -6px var(--ld2),0 18px 22px -12px rgba(11,90,58,.35)}
+.row.win{--ld:#5fc79c;--ld2:#c9eadb}
+.row.loss{--ld:#f2b6bb;--ld2:#f9dcde}
+.row.live{--ld:#f6b9bd;--ld2:#fbdcde}
+.row.pst,.row.ns:not(:has(.pick)){--ld:#d9dfdc;--ld2:#eceeed}
+.row .oc.pick{box-shadow:0 3px 0 #06694a,0 6px 10px -4px rgba(6,105,74,.45)}
+.row.loss .oc.pick{box-shadow:inset 0 0 0 1.5px rgba(217,45,58,.45),0 3px 0 rgba(217,45,58,.35)}
+.row.pst .oc.pick{box-shadow:0 3px 0 #cfd6d2}
+.row .oc.pick:active{transform:translateY(2px);box-shadow:0 1px 0 #06694a}
+.row .oc.nopick{box-shadow:inset 0 0 0 1px #e3ebe6}
