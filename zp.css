@@ -885,3 +885,50 @@ i.bd{font-size:.6rem}
 .row.pst .oc.pick{box-shadow:0 3px 0 #cfd6d2}
 .row .oc.pick:active{transform:translateY(2px);box-shadow:0 1px 0 #06694a}
 .row .oc.nopick{box-shadow:inset 0 0 0 1px #e3ebe6}
+
+/* ===== Compact top of page: header text, banker hero, banker record, "Games worth a look", ticker ===== */
+.tick .tk-r a{padding:.35rem .9rem;font-size:.74rem}
+.tick .tk-l{font-size:.7rem;padding:0 .7rem}
+.crumbs{margin:.5rem 0 .1rem;font-size:.74rem}
+.hero{padding:.1rem 0 .2rem}
+.hero h1{font-size:clamp(1.45rem,6vw,1.9rem);line-height:1.12;letter-spacing:-.02em;margin:.2rem 0 0}
+.hero .hx{display:block;margin-top:.15rem;font-size:.55em;line-height:1.25}
+.lead{font-size:.9rem;line-height:1.4;margin:.4rem 0 0}
+.by{margin:.4rem 0 0;font-size:.78rem}
+.kp{gap:.35rem;margin:.6rem 0 0}
+.kp>div{gap:.3rem;padding:.2rem .6rem;font-size:.78rem}
+.kp>div b{font-size:.95rem}
+.potd-wrap{margin:.8rem 0 .3rem}
+.potd-hero{gap:.55rem;padding:.8rem .9rem;border-radius:18px}
+.potd-hero .pt{padding:.18rem .6rem;font-size:.7rem}
+.potd-hero .pm{display:flex;flex-wrap:wrap;align-items:baseline;gap:.1rem .45rem;font-size:clamp(1.15rem,5vw,1.5rem)}
+.potd-hero .pm i{font-size:.75rem}
+.potd-hero .pd{font-size:.76rem}
+.potd-hero .pp{gap:.4rem}
+.potd-hero .pp>span{padding:.4rem .6rem;border-radius:11px;font-size:.9rem}
+.potd-hero .pp small{font-size:.62rem}
+.potd-hero .pc strong{font-size:1.3rem}
+.potd-hero .po{font-size:1.1rem}
+.potd-hero .pgo{font-size:.78rem}
+.potd-hero::before{width:170px;height:170px;margin-top:-85px;right:-60px}
+.potd-rec{margin-top:.4rem;padding:.5rem .8rem;border-radius:13px}
+.potd-rec b{font-size:.9rem}
+.potd-rec span{font-size:.74rem}
+.rcw{padding:.7rem 0 .4rem;margin:.6rem 0}
+.rcw .rch{padding:0 .9rem;margin-bottom:.45rem}
+.rcw .rch h2{font-size:1.02rem}
+.rcw .rch span{font-size:.68rem}
+.rcs{padding:.1rem .9rem .5rem;gap:.55rem}
+.rcs li{flex:0 0 66%;max-width:250px}
+.rc{gap:.4rem;padding:.65rem .75rem;border-radius:16px}
+.rc-lg{font-size:.66rem}
+.rc-lg em{font-size:.6rem;padding:.05rem .4rem}
+.rc-tm b{font-size:.98rem}
+.rc-tm i{font-size:.62rem}
+.ring{width:44px;height:44px}
+.ring::before{inset:5px}
+.ring b{font-size:.76rem}
+.rc-bt{gap:.55rem}
+.rc-tip strong{font-size:.98rem}
+.rc-tip small{font-size:.62rem}
+.rc-go{width:26px;height:26px;font-size:.8rem}
