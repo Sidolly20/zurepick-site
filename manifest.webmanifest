@@ -1,6 +1,6 @@
 {
- "name": "ZurePicks \u2013 Football Predictions",
- "short_name": "ZurePicks",
+ "name": "ZurePick \u2013 Football Predictions",
+ "short_name": "ZurePick",
  "start_url": "./",
  "display": "standalone",
  "background_color": "#f1f5f2",
