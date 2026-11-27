@@ -21,4 +21,4 @@ jobs:
           MODE: ${{ inputs.mode }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          SITE_URL: https://sidolly20.github.io/zurepick-site
+          SITE_URL: https://zurepick.com
