@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { liveHtml, logoImg, emblemOf, setCrests, setPreviews, MK, TZ, MIN, pick, won, settled, esc, board, comboHtml, singles, singleHtml, singleRecord, statsHtml, visible, fixturesByDay, standingsHtml, leagueTest, state, hm } from './render.js';
 import { teamKey } from './teams.js';
 const BUILD = Date.now().toString(36);
-const SITE = (process.env.SITE_URL || 'https://sidolly20.github.io/zurepick-site').replace(/\/$/, '');
+const SITE = (process.env.SITE_URL || 'https://zurepick.com').replace(/\/$/, '');
 const dstr = (o) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date(Date.now() + o * 864e5));
 const nice = (o) => new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(Date.now() + o * 864e5));
 const short = (o) => new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(Date.now() + o * 864e5));

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { combos, pick, won, settled, MK, MIN, hm } from './render.js';
 const MODE = process.argv[2] || process.env.MODE || 'slips';
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN, CHAT = process.env.TELEGRAM_CHAT_ID, API = process.env.TELEGRAM_API_BASE || 'https://api.telegram.org';
-const SITE = (process.env.SITE_URL || 'https://sidolly20.github.io/zurepick-site').replace(/\/$/, ''), TZ = 'Africa/Lagos';
+const SITE = (process.env.SITE_URL || 'https://zurepick.com').replace(/\/$/, ''), TZ = 'Africa/Lagos';
 if (!TOKEN || !CHAT) { console.log('Telegram: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set, skipped'); process.exit(0); }
 const day = (o = 0) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(Date.now() + o * 864e5);
 const load = (d) => { try { return JSON.parse(fs.readFileSync(`data/${d}.json`, 'utf8')).matches || []; } catch { return []; } };
