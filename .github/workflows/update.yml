@@ -44,6 +44,8 @@ jobs:
           SITE_URL: https://zurepick.com
       # Swaps the old GitHub address for zurepick.com in pages that are not rebuilt.
       - run: node move-domain.mjs
+      # Keeps the repository small: removes finished match pages older than 3 days and un-links them.
+      - run: node prune-old-pages.mjs
       # One-time cleanup of old duplicate files (safe to leave in; does nothing once they are gone).
       - run: rm -f "app (1).js" "app. Js" update.yml 2026-10-2?.json form.json history.json
       - run: |
