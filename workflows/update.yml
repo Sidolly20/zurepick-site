@@ -1,0 +1,55 @@
+name: Update match data
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Fixtures, live scores, results and odds from Bzzoiro (no API-Football needed).
+      - run: node collect-bsd.mjs
+        continue-on-error: true
+        env:
+          BZZOIRO_KEY: ${{ secrets.BZZOIRO_KEY }}
+      # Free results feed for the team-record model (refreshes itself at most every 12 hours).
+      - run: node collect-results.mjs
+        continue-on-error: true
+      # League tables (free football-data.org key; skipped quietly if the key is missing).
+      - run: node collect-tables.mjs
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+      # Head-to-head history (free football-data.org key; fetched once per pairing, then reused).
+      - run: node collect-h2h.mjs
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+      # Records each slip leg shown on the site, so the Telegram results can grade it later.
+      - run: node log-slips.mjs
+        continue-on-error: true
+      # Pages are built separately so a problem here can never block the data update.
+      - run: node build-pages.mjs
+        continue-on-error: true
+        env:
+          SITE_URL: https://zurepick.com
+      # Swaps the old GitHub address for zurepick.com in pages that are not rebuilt.
+      - run: node move-domain.mjs
+      # Keeps the repository small: removes finished match pages older than 3 days and un-links them.
+      - run: node prune-old-pages.mjs
+      # One-time cleanup of old duplicate files (safe to leave in; does nothing once they are gone).
+      - run: rm -f "app (1).js" "app. Js" update.yml 2026-10-2?.json form.json history.json
+      - run: |
+          git config user.name "match-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || (git commit -m "Update match data" && git pull --rebase && git push)
