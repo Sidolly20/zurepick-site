@@ -1279,7 +1279,12 @@ header .w>.tgbtn svg{width:22px!important;height:22px!important}
 .tabbar a i{font-size:.95rem!important;line-height:1.1}
 body{padding-bottom:64px!important}
 
-/* "Won" tag: styled if the site already prints one, added if it doesn't (never both) */
+/* win/loss tags: the site already prints them, so only restyle (no extra tags) */
 body .row.win .oc.pick .pr{background:var(--mint)!important;color:#03140c!important}
-body .row.win .oc.pick .pn:not(:has(.pr))::after{content:"Won";font-size:.66rem;font-weight:700;padding:.1rem .45rem;border-radius:6px;background:var(--mint);color:#03140c;margin-left:.45rem}
-body .row.loss .oc.pick .pn:not(:has(.pr))::after{content:"Lost";font-size:.66rem;font-weight:700;padding:.1rem .45rem;border-radius:6px;background:var(--coral);color:#2a0508;margin-left:.45rem}
+body .row.loss .oc.pick .pr{background:var(--coral)!important;color:#2a0508!important}
+
+/* header v3: Telegram pinned to the far right edge; Categories stays right after the logo */
+header .w{position:relative;padding-right:46px}
+header .w>.bt{order:2;margin:0 0 0 .6rem!important}
+header .w>.tgbtn{position:absolute!important;right:14px;top:50%;transform:translateY(-50%);margin:0!important;z-index:2}
+@media(min-width:1180px){header .w>.tgbtn{right:18px}}
